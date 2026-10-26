@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>QUIZFORCE EDITION 11 ⚡ — Play QUIZFORCE - learn faster | Lightning Edition</title>
+<title>QUIZFORCE - EDITION 12</title>
 <style>
   :root{
     --bg:#f6f7fb;--card:#ffffff;--text:#134e4a;--muted:#6b7280;--accent:#1682d4;
@@ -344,7 +344,7 @@ a{color:#6fe5d8!important}
 <div aria-label="Quizforce new logo" class="logo"><svg aria-label="Quizforce lightning Q logo" class="qf-emblem" role="img" viewbox="0 0 120 120"><defs><lineargradient id="qfGrad" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#2dd4bf"></stop><stop offset="1" stop-color="#0f766e"></stop></lineargradient></defs><rect fill="#082f35" height="114" rx="29" width="114" x="3" y="3"></rect><rect fill="none" height="104" opacity=".55" rx="25" stroke="#5eead4" stroke-width="2" width="104" x="8" y="8"></rect><path d="M83 80 A36 36 0 1 0 61 95" fill="none" stroke="url(#qfGrad)" stroke-linecap="round" stroke-width="15"></path><path d="M67 53 49 79h15l-5 24 29-37H71l9-13Z" fill="#fbbf24" stroke="#fff0b0" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="89" cy="24" fill="#fbbf24" r="4"></circle><circle cx="28" cy="91" fill="#5eead4" r="3"></circle></svg></div>
 <div class="muted">TEST COMPLETE</div>
 <div class="bigscore" id="finalScore"></div>
-<div id="finalMsg"></div><div id="qf11Rewards" class="qf11-rewards"></div><div class="note" id="personalBest"></div>
+<div id="finalMsg"></div><div id="qfRecommendedTutorial" class="note" style="margin:14px auto;padding:14px;border:1px solid #4ebec6;border-radius:12px;max-width:550px" hidden></div><div id="qf11Rewards" class="qf11-rewards"></div><div class="note" id="personalBest"></div>
 <div class="qf-save-score"><label for="qfPlayerName">Your leaderboard name (nickname only)</label><input id="qfPlayerName" maxlength="18" placeholder="Enter a nickname" autocomplete="nickname"><label for="qfPlayerCountry">Country</label><select id="qfPlayerCountry" style="width:100%;margin-bottom:10px"></select><button class="primary" id="qfSaveScore" type="button">🏆 Submit Worldwide Score</button><div id="qfSaveMessage" aria-live="polite"></div></div><button class="secondary hidden" id="review">🔁 Retry missed questions</button>
 <div class="actions" style="justify-content:center">
 <button class="primary" id="fresh" style="width:auto">Fresh Test</button>
@@ -365,7 +365,7 @@ function makeMC(item){
   return {...item,options,answer:options.indexOf(item.c)}
 }
 function norm(s){return s.toLowerCase().replace(/[.,!?;:'’"]/g," ").replace(/\s+/g," ").trim()}
-function markText(q,val){const v=norm(val);return q.accept.some(a=>v.includes(norm(a)))}
+function markText(q,val){const v=norm(val);if(q.q==="Name one pronoun.")return q.accept.some(a=>v===norm(a));return q.accept.some(a=>v.includes(norm(a)))}
 
 const banks={};
 
@@ -615,7 +615,7 @@ TX("What is a verb?",["action word","doing word","shows an action"],"A verb show
 TX("What does an adjective do?",["describes a noun","describing word"],"An adjective describes a noun."),
 TX("What does an adverb often describe?",["describes a verb","how an action happens","verb"],"An adverb often describes a verb."),
 TX("Add the missing punctuation: Where are you going",["?","question mark"],"A question mark is needed."),
-TX("Name one pronoun.",["he","she","it","they","we","you","i"],"Examples include he, she, it and they."),
+TX("Name one pronoun.",["i", "me", "my", "mine", "myself", "we", "us", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "themself", "this", "that", "these", "those", "who", "whom", "whose", "which", "what", "whoever", "whomever", "whichever", "whatever", "someone", "somebody", "something", "anyone", "anybody", "anything", "everyone", "everybody", "everything", "no one", "nobody", "nothing", "none", "one", "ones", "each", "either", "neither", "both", "all", "any", "some", "many", "much", "few", "several", "other", "others", "another", "enough", "most", "more", "less", "little", "such"],"Examples include he, she, they, his, hers, mine, who and themselves."),
 TX("Name one conjunction.",["and","but","because","although","so","or"],"These are conjunctions."),
 TX("What is a simile?",["comparison using like or as","compares using like or as"],"A simile compares using like or as."),
 TX("What is a metaphor?",["direct comparison","compares without like or as"],"A metaphor makes a direct comparison."),
@@ -2311,7 +2311,7 @@ $("#learnIdk").onclick=()=>{
 $("#skipIdk").onclick=advanceFromHelp;
 $("#continueLearn").onclick=advanceFromHelp;
 $("#retryLearn").onclick=()=>{show("quiz");renderQ()};
-const QF_COUNTRIES={ZA:"South Africa",GB:"United Kingdom",US:"United States",AU:"Australia",NZ:"New Zealand",CA:"Canada",IN:"India",DE:"Germany",FR:"France",BR:"Brazil",JP:"Japan",KE:"Kenya",NG:"Nigeria",ZW:"Zimbabwe",NA:"Namibia",BW:"Botswana",LS:"Lesotho",SZ:"Eswatini",MZ:"Mozambique",ZM:"Zambia",MW:"Malawi",GH:"Ghana",EG:"Egypt",AE:"United Arab Emirates",IE:"Ireland",NL:"Netherlands",IT:"Italy",ES:"Spain",PT:"Portugal",CH:"Switzerland",SE:"Sweden",NO:"Norway",DK:"Denmark",FI:"Finland",BE:"Belgium",AT:"Austria",GR:"Greece",TR:"Türkiye",CN:"China",KR:"South Korea",SG:"Singapore",MY:"Malaysia",TH:"Thailand",PH:"Philippines",ID:"Indonesia",PK:"Pakistan",BD:"Bangladesh",MX:"Mexico",AR:"Argentina",CL:"Chile",CO:"Colombia",PE:"Peru",UG:"Uganda",TZ:"Tanzania",RW:"Rwanda",ET:"Ethiopia"};
+const QF_COUNTRIES={ZA:"South Africa",GB:"United Kingdom",US:"United States",AU:"Australia",NZ:"New Zealand",CA:"Canada",IN:"India",DE:"Germany",FR:"France",BR:"Brazil",JP:"Japan",KE:"Kenya",NG:"Nigeria",ZW:"Zimbabwe",NA:"Namibia",BW:"Botswana",LS:"Lesotho",SZ:"Eswatini",MZ:"Mozambique",ZM:"Zambia",MW:"Malawi",GH:"Ghana",EG:"Egypt",AE:"United Arab Emirates",IE:"Ireland",NL:"Netherlands",IT:"Italy",ES:"Spain",PT:"Portugal",CH:"Switzerland",SE:"Sweden",NO:"Norway",DK:"Denmark",FI:"Finland",BE:"Belgium",AT:"Austria",GR:"Greece",TR:"Türkiye",CN:"China",KR:"South Korea",SG:"Singapore",MY:"Malaysia",TH:"Thailand",PH:"Philippines",ID:"Indonesia",PK:"Pakistan",BD:"Bangladesh",MX:"Mexico",AR:"Argentina",CL:"Chile",CO:"Colombia",PE:"Peru",VE:"Venezuela",UG:"Uganda",TZ:"Tanzania",RW:"Rwanda",ET:"Ethiopia"};
 const countrySelect=document.querySelector("#qfPlayerCountry");
 Object.entries(QF_COUNTRIES).sort((a,b)=>a[1].localeCompare(b[1])).forEach(([code,name])=>{const opt=document.createElement("option");opt.value=code;opt.textContent=name+" ("+code+")";countrySelect.appendChild(opt)});
 countrySelect.value=localStorage.getItem("qf-country")||"ZA";
@@ -2350,6 +2350,7 @@ $("#qfBoardFilter").onchange=qfRenderBoard;
 $("#qfBoardRefresh").onclick=qfLoadBoard;
 $("#qfSaveScore").onclick=async()=>{
  if(!qfLastResult || qfScoreSubmissionState!=="ready")return;
+ if(qfLastResult.review){$("#qfSaveMessage").textContent="Practice retries cannot be submitted. Only original tests count on the worldwide leaderboard.";return;}
  const name=$("#qfPlayerName").value.trim();
  if(qfLastResult.__submitted){$("#qfSaveMessage").textContent="This test score has already been submitted.";return;}
  if(!/^[\p{L}\p{N}_ .-]{2,18}$/u.test(name)){$("#qfSaveMessage").textContent="Use a nickname of 2–18 letters or numbers (no real name).";return;}
@@ -2367,14 +2368,61 @@ $("#qfSaveScore").onclick=async()=>{
   await qfLoadBoard();
  }catch(e){if(submissionSequence===qfResultSequence && qfScoreSubmissionState!=="submitted"){qfScoreSubmissionState="ready";$("#qfSaveMessage").textContent="Score not sent: "+e.message+". Please try again.";btn.disabled=false;}}
 };
-function finish(){if(qf11RunFinished)return;qf11RunFinished=true;qf11EndRun();show("results");qfResultSequence++;qfScoreSubmissionState="ready";$("#qfSaveScore").textContent="🏆 Submit Worldwide Score";const pct=Math.round(score/test.length*100);
+function qfTutorialForMistakes(items){
+ const joined=items.map(q=>String(q.bankKey||'')+' '+String(q.q||'')).join(' ').toLowerCase();
+ const rules=[
+ [/graph|bar chart|data handling/, 'Bar Graphs', 'Mathematics'],
+ [/perimeter|area|square metre|square centimeter/, 'Perimeter and Area', 'Mathematics'],
+ [/geometry|angle|triangle|rectangle|parallel|symmetry|2d|3d|shape/, 'Geometry Lab', 'Mathematics'],
+ [/percent|%/, 'Percentages', 'Mathematics'],
+ [/decimal|tenths|hundredths/, 'Decimals', 'Mathematics'],
+ [/equivalent fraction/, 'Equivalent Fractions', 'Mathematics'],
+ [/fraction|numerator|denominator/, 'Fractions', 'Mathematics'],
+ [/bodmas|order of operations|brackets/, 'Order of Operations', 'Mathematics'],
+ [/divid|quotient|\u00f7/, 'Division', 'Mathematics'],
+ [/multip|times|\u00d7/, 'Multiplication', 'Mathematics'],
+ [/subtract|difference|minus/, 'Subtraction', 'Mathematics'],
+ [/add|sum|plus/, 'Addition', 'Mathematics'],
+ [/moon|lunar/, 'Moon Phases', 'Natural Sciences'],
+ [/rotation|revolution|orbit|earth|sun/, 'Earth’s Rotation and Revolution', 'Natural Sciences'],
+ [/water|filter|purif/, 'Water Purification', 'Natural Sciences'],
+ [/resource|conserv|sustain/, 'Conservation and Sustainability', 'Natural Sciences'],
+ [/map|compass|scale|direction/, 'Map Reading', 'Social Sciences'],
+ [/democra|election|vote/, 'Democracy', 'Social Sciences'],
+ [/rights|responsibilit/, 'Rights and Responsibilities', 'Social Sciences'],
+ [/mandela|history|historical|apartheid/, 'Historical People', 'Social Sciences'],
+ [/comprehension|passage|infer|reading/, 'Reading Comprehension', 'English'],
+ [/werkwoord/, 'Werkwoorde', 'Afrikaans'],
+ [/sinbou|leesbegrip/, 'Sinbou en Leesbegrip', 'Afrikaans']
+ ];
+ for(const [re,title,category] of rules)if(re.test(joined))return {title,category};
+ const fallback={maths:['Order of Operations','Mathematics'],science:['Natural Resources','Natural Sciences'],social:['Map Reading','Social Sciences'],english:['Reading Comprehension','English'],afrikaans:['Werkwoorde','Afrikaans']};
+ const [title,category]=fallback[selected]||['Learn How','All'];return {title,category};
+}
+function qfShowRecommendation(){
+ const el=document.getElementById('qfRecommendedTutorial');
+ if(!el)return;
+ el.hidden=missed.length===0;
+ if(!missed.length){el.replaceChildren();return;}
+ const lesson=qfTutorialForMistakes(missed);
+ el.replaceChildren();
+ const title=document.createElement('strong');title.textContent='🎓 Recommended tutorial: '+lesson.title;
+ const note=document.createElement('p');note.textContent='Review this Captain Cosmo lesson, then retry your missed questions.';
+ const btn=document.createElement('button');btn.type='button';btn.className='secondary';btn.textContent='🚀 Open recommended tutorial';
+ btn.onclick=()=>{if(typeof window.openCosmoLearnHow==='function'){window.openCosmoLearnHow(lesson.category,lesson.title)}else alert('Open LEARN HOW from the home page and choose '+lesson.title+'.')};
+ el.append(title,note,btn);
+}
+function finish(){if(qf11RunFinished)return;qf11RunFinished=true;qf11EndRun();show("results");qfResultSequence++;qfScoreSubmissionState="ready";$("#qfSaveScore").hidden=false;$("#qfSaveScore").textContent="🏆 Submit Worldwide Score";const pct=Math.round(score/test.length*100);
  qfLastResult={pct,correct:score,total:test.length,subject:((meta[selected]&&meta[selected][0])||selected)};
- $("#qfSaveScore").disabled=false;$("#qfSaveMessage").textContent="";
+ if(reviewMode){qfLastResult.review=true;}
+ $("#qfSaveScore").disabled=reviewMode;$("#qfSaveScore").hidden=reviewMode;$("#qfSaveMessage").textContent="";
  $("#finalScore").textContent=score+" / "+test.length+" • "+pct+"%";
  $("#finalMsg").textContent=pct>=90?"🏆 Outstanding!":pct>=75?"🔥 Great work!":pct>=60?"💪 Good effort — keep practising!":"📚 Keep practising — you've got this!";
+ qfShowRecommendation();
+ if(reviewMode){$("#qfSaveMessage").textContent="📝 Practice only — retry scores cannot be submitted to the leaderboard.";}
  const key="qf-best-"+selected+"-"+$("#difficulty").value;
- const old=Number(localStorage.getItem(key)||0);if(pct>old)localStorage.setItem(key,String(pct));
- $("#personalBest").textContent="Personal best: "+Math.max(old,pct)+"%";
+ const old=Number(localStorage.getItem(key)||0);if(!reviewMode&&pct>old)localStorage.setItem(key,String(pct));
+ $("#personalBest").textContent="Personal best: "+(reviewMode?old:Math.max(old,pct))+"%";
  $("#review").classList.toggle("hidden",missed.length===0);
  $("#review").textContent="🔁 Retry "+missed.length+" missed question"+(missed.length===1?"":"s");
 }
@@ -2420,15 +2468,63 @@ const KEY='qf11-cosmic-progress-v1';
 const ranks=[['🚀 Space Cadet',0],['🌙 Moon Explorer',500],['🪐 Planet Hunter',1500],['⭐ Star Commander',3000],['🌌 Galaxy Master',6000],['👑 Galactic Legend',10000]];
 const badgeDefs=[['first','🚀 First Launch'],['perfect','💯 Perfect Score'],['ten','🎯 Ten Tests'],['fifty','🏆 Fifty Tests'],['speed','⏱️ Speedrunner'],['speed10','⚡ Lightning Fast'],['daily','🌟 Daily Hero'],['master','👑 Galactic Legend']];
 const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
-function fresh(){return {xp:0,tests:0,streak:0,lastDay:'',badges:[],speedBest:0,day:today(),missions:{test:false,accuracy:false,speed:false},claimed:false}}
+function fresh(){return {xp:0,tests:0,streak:0,lastDay:'',badges:[],speedBest:0,day:today(),missions:{test:false,accuracy:false,speed:false},claimed:false,perfectRuns:0,accurateRuns:0,speedRuns:0,dailyWins:0,rankRewards:[],rankStats:{}}}
 function load(){try{const o=JSON.parse(localStorage.getItem(KEY));if(!o||typeof o!=='object')return fresh();return {...fresh(),...o,missions:{...fresh().missions,...o.missions},badges:Array.isArray(o.badges)?o.badges:[]}}catch(e){return fresh()}}
 let state=load(),runStarted=false,runFinished=false,speed=false,deadline=0,ticker=null,runReview=false;
 function rollover(){if(state.day!==today()){state.day=today();state.missions={test:false,accuracy:false,speed:false};state.claimed=false;}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}renderDashboard()}
 function rank(){let n=0;for(let i=0;i<ranks.length;i++)if(state.xp>=ranks[i][1])n=i;return n}
+// Each rank has its own 15 milestone challenges, recorded independently.
+const rankChallenges = ranks.map((r,ri)=>{
+ const b=ri+1;
+ return [
+  ['tests',b*2,'Complete '+b*2+' tests'],
+  ['tests',b*4,'Complete '+b*4+' tests'],
+  ['tests',b*6,'Complete '+b*6+' tests'],
+  ['tests',b*8,'Complete '+b*8+' tests'],
+  ['tests',b*10,'Complete '+b*10+' tests'],
+  ['accurateRuns',b,'Score 80%+ in '+b+' tests'],
+  ['accurateRuns',b*2,'Score 80%+ in '+b*2+' tests'],
+  ['accurateRuns',b*3,'Score 80%+ in '+b*3+' tests'],
+  ['perfectRuns',b,'Earn '+b+' perfect scores'],
+  ['perfectRuns',b*2,'Earn '+b*2+' perfect scores'],
+  ['speedRuns',b,'Complete '+b+' Speedruns'],
+  ['speedRuns',b*3,'Complete '+b*3+' Speedruns'],
+  ['speedBest',b*3,'Reach '+b*3+' correct in one Speedrun'],
+  ['dailyWins',b,'Finish all daily missions '+b+' times'],
+  ['dailyWins',b*2,'Finish all daily missions '+b*2+' times']
+ ];
+});
+function rankProgress(ri){
+ const base=state.rankStats&&state.rankStats[ri]||{};
+ return rankChallenges[ri].map(([key,target,label],i)=>({key,target,label,done:(base[key]||0)>=target,index:i}));
+}
+function rankChallengePanel(){
+ const ri=rank(),progress=rankProgress(ri),done=progress.filter(c=>c.done).length;
+ const rows=progress.map(c=>`<div style="padding:7px 0;border-bottom:1px solid #ffffff22">${c.done?'✅':'⬜'} ${c.label} <small>(${Math.min(c.target,(state.rankStats?.[ri]?.[c.key]||0))}/${c.target})</small></div>`).join('');
+ const rewardId='rank'+ri;
+ return `<div style="margin-top:15px;padding:14px;border:1px solid #78dfff;border-radius:14px;background:#11243e;color:#f2faff"><h3 style="margin:0 0 6px">🏅 ${ranks[ri][0]} — 15 Rank Challenges</h3><p style="margin:0 0 8px">${done}/15 complete · Finish all 15 for a unique rank achievement and +250 XP</p><details><summary style="cursor:pointer;font-weight:bold">View all 15 challenges</summary>${rows}</details>${state.rankRewards?.includes(rewardId)?'<p>🏆 Rank achievement unlocked!</p>':''}</div>`;
+}
+function updateRankChallenges(){
+ if(!state.rankStats)state.rankStats={};if(!state.rankRewards)state.rankRewards=[];
+ // Only the current rank accrues rank-challenge progress; older ranks retain their progress.
+ const ri=rank();const st=state.rankStats[ri]||(state.rankStats[ri]={});
+ st.tests=(st.tests||0)+1;
+ if(typeof score==='number' && typeof test!=='undefined' && test.length && score/test.length>=.8)st.accurateRuns=(st.accurateRuns||0)+1;
+ if(typeof score==='number' && typeof test!=='undefined' && test.length && score===test.length)st.perfectRuns=(st.perfectRuns||0)+1;
+ if(speed)st.speedRuns=(st.speedRuns||0)+1;
+ st.speedBest=Math.max(st.speedBest||0,speed?score:0);
+ if(Object.values(state.missions).every(Boolean)&&state.claimed&&!st._dailyClaimedOn?.includes?.(today())){
+  st._dailyClaimedOn=Array.isArray(st._dailyClaimedOn)?st._dailyClaimedOn:[];
+  st._dailyClaimedOn.push(today());st.dailyWins=(st.dailyWins||0)+1;
+ }
+ if(rankProgress(ri).every(x=>x.done)&&!state.rankRewards.includes('rank'+ri)){
+  state.rankRewards.push('rank'+ri);state.xp+=250;
+ }
+}
 function renderDashboard(){rollover();const i=rank(),cur=ranks[i],next=ranks[i+1],percent=next?Math.min(100,Math.round(100*(state.xp-cur[1])/(next[1]-cur[1]))):100;
 const checks=[['test','Complete a test (10+ questions)'],['accuracy','Score 80% or higher (10+ questions)'],['speed','Get 5 correct in Speedrun']];
-$('#qf11Dashboard').innerHTML=`<h3>🌌 COSMIC RANKS — ${cur[0]}</h3><div>⭐ <strong>${state.xp.toLocaleString()} XP</strong> ${next?'· Next: '+next[0]+' at '+next[1].toLocaleString()+' XP':'· Maximum rank!'}</div><div class="qf11-meter"><div style="width:${percent}%"></div></div><div class="qf11-small">${state.tests} completed tests · ⏱️ Speedrun best: ${state.speedBest} correct</div><div class="qf11-missions"><strong>🎯 Daily Missions (${checks.filter(x=>state.missions[x[0]]).length}/3)</strong>${checks.map(([key,label])=>'<div>'+(state.missions[key]?'✅':'⬜')+' '+label+'</div>').join('')}<div>🎁 All 3 missions = +30 XP ${state.claimed?'(claimed!)':''}</div></div><div style="margin-top:12px"><strong>🏆 Achievements (${state.badges.length}/${badgeDefs.length})</strong><div class="qf11-small">${badgeDefs.map(([id,label])=>(state.badges.includes(id)?'✅ ':'🔒 ')+label).join(' · ')}</div></div>`;
+$('#qf11Dashboard').innerHTML=`<h3>🌌 COSMIC RANKS — ${cur[0]}</h3><div>⭐ <strong>${state.xp.toLocaleString()} XP</strong> ${next?'· Next: '+next[0]+' at '+next[1].toLocaleString()+' XP':'· Maximum rank!'}</div><div class="qf11-meter"><div style="width:${percent}%"></div></div><div class="qf11-small">${state.tests} completed tests · ⏱️ Speedrun best: ${state.speedBest} correct</div><div class="qf11-missions"><strong>🎯 Daily Missions (${checks.filter(x=>state.missions[x[0]]).length}/3)</strong>${checks.map(([key,label])=>'<div>'+(state.missions[key]?'✅':'⬜')+' '+label+'</div>').join('')}<div>🎁 All 3 missions = +30 XP ${state.claimed?'(claimed!)':''}</div></div><div style="margin-top:12px"><strong>🏆 Achievements (${state.badges.length}/${badgeDefs.length})</strong><div class="qf11-small">${badgeDefs.map(([id,label])=>(state.badges.includes(id)?'✅ ':'🔒 ')+label).join(' · ')}</div></div>${rankChallengePanel()}`;
 }
 const slider=$('#qf11Slider'),select=$('#count');
 function sync(v){v=Math.max(5,Math.min(40,Number(v)||15));slider.value=v;$('#qf11CountText').textContent=v;let opt=[...select.options].find(x=>Number(x.value)===v);if(!opt){opt=document.createElement('option');opt.value=String(v);opt.textContent=String(v);select.appendChild(opt)}select.value=String(v)}
@@ -2439,15 +2535,31 @@ window.qf11BeginRun=function(){clearInterval(ticker);runFinished=false;window.qf
 const timer=$('#qf11Timer');timer.hidden=!speed;if(speed){function tick(){if(!runStarted||runFinished)return;const left=Math.max(0,Math.ceil((deadline-Date.now())/1000));timer.textContent='⏱️ SPEEDRUN · '+left+' seconds remaining';if(left===0){clearInterval(ticker);if(typeof finish==='function')finish()}}tick();ticker=setInterval(tick,250)}};
 window.qf11CancelRun=function(){clearInterval(ticker);runStarted=false;runFinished=true;window.qf11RunFinished=true;$('#qf11Timer').hidden=true};
 window.qf11EndRun=function(){if(runFinished)return;runFinished=true;runStarted=false;clearInterval(ticker);$('#qf11Timer').hidden=true;rollover();const n=test.length,correct=score,pct=n?Math.round(correct*100/n):0;let xp=0,newBadges=[];
-if(!runReview){state.tests++;if(n>=10&&!speed)xp+=50;if(speed){xp+=25;state.speedBest=Math.max(state.speedBest,correct)}if(n>=10&&pct===100)xp+=20;
+if(!runReview){state.tests++;if(n>=10&&!speed)xp+=50;if(speed){xp+=25;state.speedBest=Math.max(state.speedBest,correct)}if(n>=10&&pct===100){xp+=20;state.perfectRuns=(state.perfectRuns||0)+1;}if(n>=10&&pct>=80)state.accurateRuns=(state.accurateRuns||0)+1;if(speed)state.speedRuns=(state.speedRuns||0)+1;
 if(n>=10)state.missions.test=true;if(n>=10&&pct>=80)state.missions.accuracy=true;if(speed&&correct>=5)state.missions.speed=true;
 const badge=(id)=>{if(!state.badges.includes(id)){state.badges.push(id);newBadges.push(badgeDefs.find(x=>x[0]===id)[1])}};
 badge('first');if(n>=10&&pct===100)badge('perfect');if(state.tests>=10)badge('ten');if(state.tests>=50)badge('fifty');if(speed)badge('speed');if(speed&&correct>=10)badge('speed10');
-if(Object.values(state.missions).every(Boolean)&&!state.claimed){xp+=30;state.claimed=true;badge('daily')}
-state.xp+=xp;if(state.xp>=10000)badge('master');save();}
+if(Object.values(state.missions).every(Boolean)&&!state.claimed){xp+=30;state.claimed=true;state.dailyWins=(state.dailyWins||0)+1;badge('daily')}
+state.xp+=xp;updateRankChallenges();if(state.xp>=10000)badge('master');save();}
 const rewards=$('#qf11Rewards');rewards.innerHTML=`<strong>🌌 ${runReview?'Mistake review — no XP':'+'+xp+' XP earned!'}</strong><br>${speed?'⏱️ Speedrun score: '+correct+' correct<br>':''}${newBadges.map(b=>'🏆 NEW ACHIEVEMENT: '+b+'<br>').join('')}${!runReview?'⭐ Total: '+state.xp.toLocaleString()+' XP · '+ranks[rank()][0]:''}`;
 };
 renderDashboard();
 })();
-</script></body>
+</script><style id="cosmo-learn-css">#cosmoEntry{display:block;margin:12px auto;width:min(100%,440px);padding:16px;border:2px solid #6beaff;border-radius:16px;background:linear-gradient(110deg,#13384b,#392269);color:white;font-size:20px;font-weight:900;cursor:pointer}#cosmoPanel{position:fixed;z-index:999999;inset:0;overflow:auto;background:radial-gradient(ellipse at top,#203b71,#080f25 65%);color:#eefaff;padding:18px;font-family:system-ui,sans-serif}#cosmoPanel[hidden]{display:none!important}.cosmo-wrap{max-width:900px;margin:auto}.cosmo-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.cosmo-close{padding:10px 16px;border:1px solid #a4eaf8;background:#163955;color:white;border-radius:10px;font-weight:bold}.cosmo-cats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.cosmo-cat{border:1px solid #67bde0;border-radius:20px;padding:9px 13px;background:#153354;color:white}.cosmo-cat.active{background:#f3ce4c;color:#18213d;font-weight:800}.cosmo-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.cosmo-card{border:1px solid #41759d;border-radius:15px;padding:15px;background:#152848;color:#fff;text-align:left;cursor:pointer}.cosmo-card b{display:block;font-size:17px;margin:7px 0}.cosmo-scene{position:relative;overflow:hidden;border-radius:20px;min-height:235px;background:radial-gradient(circle at 70% 15%,#355fb0,#0b1639 65%);display:flex;align-items:center;justify-content:space-around;gap:15px;padding:24px;margin:14px 0;border:1px solid #4d7bb3}.cosmo-teacher{font-size:95px;filter:drop-shadow(0 0 15px #58dafa);animation:cosmoFloat 3s ease-in-out infinite}.cosmo-object{font-size:90px;filter:drop-shadow(0 0 18px #ffc45d);animation:cosmoFloat 4s ease-in-out infinite reverse}@keyframes cosmoFloat{50%{transform:translateY(-12px)}}.cosmo-player{width:100%;margin:12px 0}.cosmo-tip{padding:16px;background:#162e4c;border-left:4px solid #f3ce4c;border-radius:10px}.cosmo-option{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid #6484aa;background:#193758;color:white;border-radius:10px}.cosmo-option:disabled{opacity:.7}.cosmo-back{padding:12px 16px;background:#f3ce4c;border:0;border-radius:10px;font-weight:bold;color:#172241;margin:14px 0}.cosmo-sub{color:#bbd6e8;font-size:13px}.cosmo-unknown{margin-top:18px;border-top:1px solid #496888;padding-top:14px}#cosmoPanel h2{color:#fff}#cosmoPanel h3{color:#f3ce4c}#cosmoPanel button{cursor:pointer}.cosmo-video{display:block;width:100%;max-height:65vh;aspect-ratio:16/9;object-fit:contain;background:#020817;border:2px solid #54c9f5;border-radius:15px}.cosmo-audio-backup{padding:10px 15px;background:#14284a;border-radius:12px;margin-bottom:18px}.cosmo-audio-backup summary{cursor:pointer;font-weight:700}</style><script id="cosmo-learn-js">(function(){const lessons=[["Natural Sciences", "Earth’s Rotation and Revolution", "Earth's Rotation and Year.mp3", "🌍", "Earth spins once in about 24 hours, creating day and night. It orbits the Sun in about a year.", "Which movement causes day and night?", ["Rotation", "Revolution", "Reflection"], 0], ["Natural Sciences", "Moon Phases", "Moon Phases Explained.mp3", "🌙", "The Moon reflects sunlight. As it orbits Earth, we see different amounts of its sunlit half.", "What causes the normal phases of the Moon?", ["Earth’s shadow", "Our changing view of its sunlit half", "The Moon changing shape"], 1], ["Natural Sciences", "Water Purification", "Water Purification Steps.mp3", "💧", "Settling and filtering can remove solids, but clear water is not always safe to drink.", "Does filtering guarantee safe drinking water?", ["Yes", "No"], 1], ["Natural Sciences", "Natural Resources", "Natural Resources Overview.mp3", "🌱", "Natural resources include water, soil, sunlight, forests and minerals.", "Which resource is non-renewable?", ["Sunlight", "Coal", "Wind"], 1], ["Natural Sciences", "Conservation and Sustainability", "Earth Conservation and Sustainability.mp3", "🌳", "Reduce waste, save water, and care for the environment.", "Which action helps conserve resources?", ["Leaving taps running", "Refilling a reusable bottle", "Wasting electricity"], 1], ["Social Sciences", "Map Reading", "Learning Map Reading.mp3", "🗺️", "A map’s title, key, compass and scale help us understand it.", "If north is at the top, what direction is right?", ["West", "East", "South"], 1], ["Social Sciences", "Democracy", "South African Democracy.mp3", "🗳️", "South Africa held its first national democratic election with universal adult voting rights in 1994.", "In what year was that election?", ["1994", "1976", "2004"], 0], ["Social Sciences", "Rights and Responsibilities", "Rights And Responsibilities.mp3", "⚖️", "Respecting the rights of others helps democracy work.", "What should we do with different opinions?", ["Listen respectfully", "Shout others down"], 0], ["Social Sciences", "Historical People", "Why Historical People Matter.mp3", "🏛️", "Historical figures help us understand how society has changed.", "What helps us study a historical figure?", ["What they did and why it mattered", "Only their favourite food"], 0], ["English", "Reading Comprehension", "Reading Comprehension.mp3", "📚", "Read carefully, use clues, and return to the text to check your answers.", "What is an inference?", ["A random guess", "A conclusion using clues"], 1], ["Afrikaans", "Werkwoorde", "Werkwoorde Verken.mp3", "✍️", "Werkwoorde vertel wat iemand doen of wat gebeur.", "Wat is die werkwoord in “Die kinders lees boeke”?", ["Kinders", "Lees", "Boeke"], 1], ["Afrikaans", "Sinbou en Leesbegrip", "Sinbou Oefeninge.mp3", "📖", "Lees die teks aandagtig en let op woordorde.", "Wie lees in “Die kind lees ’n boek”?", ["Die kind", "Die boek"], 0]];const newAudioLessons=[
+["Mathematics","Addition","Maths_Addition.mp3","➕","Line up place values when adding.","What is 245 + 138?",["383","373","483"],0],
+["Mathematics","Subtraction","Maths_Subtraction.mp3","➖","Subtract by lining up place values.","What is 100 − 25?",["65","75","85"],1],
+["Mathematics","Multiplication","Maths_Multiplication.mp3","✖️","Multiplication is repeated addition of equal groups.","What is 8 × 7?",["54","56","64"],1],
+["Mathematics","Division","Maths_Division.mp3","➗","Division splits an amount into equal groups.","What is 48 ÷ 6?",["8","6","9"],0],
+["Mathematics","Order of Operations","Maths_Order_of_Operations.mp3","🧮","Multiplication and division come before addition and subtraction unless brackets change the order.","What is 6 + 4 × 3?",["30","18","24"],1],
+["Mathematics","Fractions","Maths_Fractions.mp3","🍕","A fraction shows parts of a whole.","What is half of 12?",["6","4","8"],0],
+["Mathematics","Equivalent Fractions","Maths_Equivalent_Fractions.mp3","🟰","Equivalent fractions have the same value.","Which equals 1/2?",["2/4","1/4","3/4"],0],
+["Mathematics","Decimals","Maths_Decimals.mp3","🔢","Digits after the decimal point show tenths, hundredths and smaller parts.","Which is five tenths?",["0.05","0.5","5.0"],1],
+["Mathematics","Percentages","Maths_Percentages.mp3","💯","Percent means out of one hundred.","What is 25% of 200?",["25","50","75"],1],
+["Mathematics","Geometry Lab","Maths_Geometry_Lab.mp3","📐","A square has four equal sides and four right angles.","How many sides does a triangle have?",["3","4","5"],0],
+["Mathematics","Perimeter and Area","Maths_Perimeter_and_Area.mp3","📏","Perimeter measures around a shape; area measures inside it.","What is the area of a 5 by 8 rectangle?",["26","40","13"],1],
+["Mathematics","Bar Graphs","Maths_Bar_Graphs.mp3","📊","Bar graphs compare amounts using bars and a labelled scale.","What should a graph have?",["A title and labelled axes","Only pictures"],0],
+["Natural Sciences","The Solar System","NS_Solar_System.mp3","🪐","The eight planets orbit the Sun.","Which is the largest planet?",["Earth","Jupiter","Mars"],1]
+];
+for(const l of newAudioLessons){const i=lessons.findIndex(x=>x[0]===l[0]&&x[1]===l[1]);if(i>=0)lessons[i]=l;else lessons.push(l)}
+const extras=[];let active='All';let current=null;const panel=document.createElement('section');panel.id='cosmoPanel';panel.hidden=true;panel.innerHTML=`<div class="cosmo-wrap"><div class="cosmo-head"><div><div style="font-size:13px;color:#9bd5ff">QUIZFORCE EDITION 12</div><h2 style="margin:2px 0">🚀 LEARN HOW · Captain Cosmo</h2></div><button class="cosmo-close" id="cosmoClose">✕ Close</button></div><div id="cosmoContent"></div></div>`;document.body.appendChild(panel);const content=panel.querySelector('#cosmoContent');const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function stop(){content.querySelectorAll('audio,video').forEach(a=>a.pause())}function list(){current=null;const cats=['All','Mathematics','Natural Sciences','Social Sciences','English','Afrikaans'];let filtered=lessons.filter(x=>active==='All'||x[0]===active);content.innerHTML=`<p class="cosmo-sub">🎬 ${lessons.length} cinematic Captain Cosmo video lessons · The five existing How-To videos remain in Tutorials.</p><div class="cosmo-cats">${cats.map(c=>`<button class="cosmo-cat ${active===c?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}</div><div class="cosmo-cards">${filtered.map(x=>`<button class="cosmo-card" data-file="${esc(x[2])}"><span style="font-size:37px">${x[3]}</span><b>${esc(x[1])}</b><small>${esc(x[0])} · ▶ Watch & practise</small></button>`).join('')}</div>`;content.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{stop();active=b.dataset.cat;list()});content.querySelectorAll('[data-file]').forEach(b=>b.onclick=()=>open(lessons.find(x=>x[2]===b.dataset.file)))}function open(x){stop();current=x;const file='learn-audio/'+encodeURIComponent(x[2]);const stem=x[2].replace(/\.mp3$/i,'').replace(/ /g,'_').replace(/'/g,'');const vid='learn-videos/'+encodeURIComponent(stem+'.mp4');const poster='learn-posters/'+encodeURIComponent(stem+'.jpg');content.innerHTML=`<button class="cosmo-back" id="cosmoBack">← All lessons</button><h2>${x[3]} ${esc(x[1])}</h2><p>🎬 <strong>Captain Cosmo's cinematic lesson</strong></p><video class="cosmo-player cosmo-video" controls playsinline preload="metadata" poster="${poster}" src="${vid}" aria-label="Captain Cosmo: ${esc(x[1])}"></video><details class="cosmo-audio-backup"><summary>🎧 Prefer audio only?</summary><audio controls preload="none" src="${file}" style="width:100%"></audio></details><div class="cosmo-tip">💡 <strong>Remember:</strong> ${esc(x[4])}</div><h3>⚡ Mission Check</h3><p>${esc(x[5])}</p><div id="cosmoAnswers">${x[6].map((o,i)=>`<button class="cosmo-option" data-answer="${i}">${esc(o)}</button>`).join('')}</div><p id="cosmoFeedback" role="status" aria-live="polite"></p><button class="cosmo-back" id="cosmoNext">← Choose another lesson</button>`;content.querySelector('#cosmoBack').onclick=list;content.querySelector('#cosmoNext').onclick=list;content.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const good=Number(b.dataset.answer)===x[7];content.querySelector('#cosmoFeedback').textContent=good?'🏆 Mission complete! Correct answer!':'💡 Not quite! Try another answer.';if(good)content.querySelectorAll('[data-answer]').forEach(t=>t.disabled=true)})}function launch(category,title){panel.hidden=false;document.body.style.overflow='hidden';active=category||'All';list();if(title){const match=lessons.find(x=>x[0]===category&&x[1]===title);if(match)open(match)}panel.scrollTop=0}function close(){stop();panel.hidden=true;document.body.style.overflow=''}panel.querySelector('#cosmoClose').onclick=close;const entry=document.createElement('button');entry.id='cosmoEntry';entry.textContent='🚀 LEARN HOW · Captain Cosmo';entry.onclick=launch;const old=document.getElementById('qfTutorialsEntry');if(old)old.insertAdjacentElement('beforebegin',entry);else{const home=document.getElementById('home')||document.getElementById('create');if(home)home.appendChild(entry);else document.body.prepend(entry)}window.openCosmoLearnHow=launch;})();</script></body>
 </html>
