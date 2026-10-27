@@ -2317,7 +2317,7 @@ Object.entries(QF_COUNTRIES).sort((a,b)=>a[1].localeCompare(b[1])).forEach(([cod
 countrySelect.value=localStorage.getItem("qf-country")||"ZA";
 countrySelect.onchange=()=>localStorage.setItem("qf-country",countrySelect.value);
 $("#qfPlayerName").value=localStorage.getItem("qf-nickname")||"";
-const QF_BOARD_URL="/.netlify/functions/leaderboard";
+}catch(e){el.textContent="Leaderboard error: "+e.message;console.error(e);}
 let qfLastResult=null;
 let qfScoreSubmissionState="ready";
 let qfResultSequence=0;
