@@ -197,7 +197,7 @@ a{color:#6fe5d8!important}
 <div id="qfTutPlayerArea" hidden><h3 id="qfTutTitle"></h3><video id="qfTutPlayer" controls playsinline preload="metadata" aria-label="QUIZFORCE tutorial video"></video><button type="button" class="secondary" id="qfTutClose">← Back to Tutorials</button></div>
 </div>
 
-<div id="qfLeaderboard" class="qf-leaderboard"><h2>🏆 QUIZFORCE LEADERBOARD</h2><p class="muted">Worldwide scores • Overall and by subject</p><div class="qf-lb-controls"><label for="qfBoardFilter">Rankings:</label><select id="qfBoardFilter"><option value="all">🌍 Overall</option><option value="Mathematics">Mathematics</option><option value="English">English</option><option value="Afrikaans">Afrikaans</option><option value="Natural Sciences">Natural Sciences</option><option value="Social Sciences">Social Sciences</option></select><button type="button" id="qfBoardRefresh" class="secondary">↻ Refresh</button></div><div id="qfLeaderboardRows" aria-live="polite"></div><p class="muted" style="font-size:12px">Worldwide scores are stored in QUIZFORCE’s Cloudflare leaderboard. Nicknames only; never enter your real name.</p></div>
+<div id="qfLeaderboard" class="qf-leaderboard"><h2>🏆 QUIZFORCE LEADERBOARD</h2><p class="muted">Worldwide scores • Overall and by subject</p><div class="qf-lb-controls"><label for="qfBoardFilter">Rankings:</label><select id="qfBoardFilter"><option value="all">🌍 Overall</option><option value="Mathematics">Mathematics</option><option value="English">English</option><option value="Afrikaans">Afrikaans</option><option value="Natural Sciences">Natural Sciences</option><option value="Social Sciences">Social Sciences</option></select><button type="button" id="qfBoardRefresh" class="secondary">↻ Refresh</button></div><div id="qfLeaderboardRows" aria-live="polite"></div><p class="muted" style="font-size:12px">Worldwide scores use nicknames only. Completed-test scores, XP and ranks are also recorded for private QUIZFORCE HQ statistics. Never enter your real name.</p></div>
 </section>
 <section class="card hidden" id="setup">
 <button class="secondary" id="toHome">← Home</button>
@@ -2753,6 +2753,7 @@ $("#qfSaveScore").onclick=async()=>{
   qfScoreSubmissionState="submitted";
   qfLastResult.__submitted=true;
   if(submissionSequence===qfResultSequence){$("#qfSaveMessage").textContent="✅ Score submitted worldwide!";btn.textContent="✅ Score submitted";}
+  if(typeof window.qfHQSyncSnapshot==="function")window.qfHQSyncSnapshot();
   await qfLoadBoard();
  }catch(e){if(submissionSequence===qfResultSequence && qfScoreSubmissionState!=="submitted"){qfScoreSubmissionState="ready";$("#qfSaveMessage").textContent="Score not sent: "+e.message+". Please try again.";btn.disabled=false;}}
 };
@@ -2813,6 +2814,12 @@ function finish(){if(qf11RunFinished)return;qf11RunFinished=true;qf11EndRun();sh
  $("#personalBest").textContent="Personal best: "+(reviewMode?old:Math.max(old,pct))+"%";
  $("#review").classList.toggle("hidden",missed.length===0);
  $("#review").textContent="🔁 Retry "+missed.length+" missed question"+(missed.length===1?"":"s");
+ // HQ tracking is separate from the public leaderboard and must never stop a quiz.
+ // Count completed original tests, even when no leaderboard score is submitted.
+ if(!reviewMode && typeof window.qfHQRecordCompletedRun==="function"){
+  try{window.qfHQRecordCompletedRun({subject:qfLastResult.subject,correct:score,total:test.length,difficulty:$("#difficulty").value})}
+  catch(error){console.warn("QUIZFORCE HQ tracking unavailable:",error)}
+ }
 }
 for(const subject of ["maths","afrikaans"]){
  $("#"+subject+"ExamToggle").onclick=()=>{
@@ -2859,6 +2866,9 @@ const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+
 function fresh(){return {xp:0,tests:0,streak:0,lastDay:'',badges:[],speedBest:0,day:today(),missions:{test:false,accuracy:false,speed:false},claimed:false,perfectRuns:0,accurateRuns:0,speedRuns:0,dailyWins:0,rankRewards:[],rankStats:{}}}
 function load(){try{const o=JSON.parse(localStorage.getItem(KEY));if(!o||typeof o!=='object')return fresh();return {...fresh(),...o,missions:{...fresh().missions,...o.missions},badges:Array.isArray(o.badges)?o.badges:[]}}catch(e){return fresh()}}
 let state=load(),runStarted=false,runFinished=false,speed=false,deadline=0,ticker=null,runReview=false;
+let qfHQLastRunXP=0,qfHQLastRunSpeed=false;
+window.qfHQGetProgress=()=>({xp:Math.max(0,Math.floor(Number(state.xp)||0)),tests:Math.max(0,Math.floor(Number(state.tests)||0)),perfectRuns:Math.max(0,Math.floor(Number(state.perfectRuns)||0)),rankIndex:rank()});
+window.qfHQGetLastRun=()=>({earnedXp:qfHQLastRunXP,speedrun:qfHQLastRunSpeed});
 function rollover(){if(state.day!==today()){state.day=today();state.missions={test:false,accuracy:false,speed:false};state.claimed=false;}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}renderDashboard()}
 function rank(){let n=0;for(let i=0;i<ranks.length;i++)if(state.xp>=ranks[i][1])n=i;return n}
@@ -2922,16 +2932,87 @@ window.qf11RunFinished=false;
 window.qf11BeginRun=function(){clearInterval(ticker);runFinished=false;window.qf11RunFinished=false;runReview=typeof reviewMode!=='undefined'&&reviewMode;speed=$('#qf11SpeedToggle').checked&&!runReview;runStarted=true;deadline=Date.now()+90000;
 const timer=$('#qf11Timer');timer.hidden=!speed;if(speed){function tick(){if(!runStarted||runFinished)return;const left=Math.max(0,Math.ceil((deadline-Date.now())/1000));timer.textContent='⏱️ SPEEDRUN · '+left+' seconds remaining';if(left===0){clearInterval(ticker);if(typeof finish==='function')finish()}}tick();ticker=setInterval(tick,250)}};
 window.qf11CancelRun=function(){clearInterval(ticker);runStarted=false;runFinished=true;window.qf11RunFinished=true;$('#qf11Timer').hidden=true};
-window.qf11EndRun=function(){if(runFinished)return;runFinished=true;runStarted=false;clearInterval(ticker);$('#qf11Timer').hidden=true;rollover();const n=test.length,correct=score,pct=n?Math.round(correct*100/n):0;let xp=0,newBadges=[];
+window.qf11EndRun=function(){if(runFinished)return;runFinished=true;runStarted=false;clearInterval(ticker);$('#qf11Timer').hidden=true;rollover();const qfHQXPBefore=state.xp;qfHQLastRunSpeed=speed;const n=test.length,correct=score,pct=n?Math.round(correct*100/n):0;let xp=0,newBadges=[];
 if(!runReview){state.tests++;if(n>=10&&!speed)xp+=50;if(speed){xp+=25;state.speedBest=Math.max(state.speedBest,correct)}if(n>=10&&pct===100){xp+=20;state.perfectRuns=(state.perfectRuns||0)+1;}if(n>=10&&pct>=80)state.accurateRuns=(state.accurateRuns||0)+1;if(speed)state.speedRuns=(state.speedRuns||0)+1;
 if(n>=10)state.missions.test=true;if(n>=10&&pct>=80)state.missions.accuracy=true;if(speed&&correct>=5)state.missions.speed=true;
 const badge=(id)=>{if(!state.badges.includes(id)){state.badges.push(id);newBadges.push(badgeDefs.find(x=>x[0]===id)[1])}};
 badge('first');if(n>=10&&pct===100)badge('perfect');if(state.tests>=10)badge('ten');if(state.tests>=50)badge('fifty');if(speed)badge('speed');if(speed&&correct>=10)badge('speed10');
 if(Object.values(state.missions).every(Boolean)&&!state.claimed){xp+=30;state.claimed=true;state.dailyWins=(state.dailyWins||0)+1;badge('daily')}
 state.xp+=xp;updateRankChallenges();if(state.xp>=10000)badge('master');save();}
+qfHQLastRunXP=runReview?0:Math.max(0,Math.floor(state.xp-qfHQXPBefore));
 const rewards=$('#qf11Rewards');rewards.innerHTML=`<strong>🌌 ${runReview?'Mistake review — no XP':'+'+xp+' XP earned!'}</strong><br>${speed?'⏱️ Speedrun score: '+correct+' correct<br>':''}${newBadges.map(b=>'🏆 NEW ACHIEVEMENT: '+b+'<br>').join('')}${!runReview?'⭐ Total: '+state.xp.toLocaleString()+' XP · '+ranks[rank()][0]:''}`;
 };
 renderDashboard();
+})();
+</script><script id="qfhq-track-script">
+(function(){
+'use strict';
+// QUIZFORCE HQ: anonymous completed-game tracking (not the public leaderboard).
+// Only completed original tests are sent. No questions, answers, emails, IPs or locations.
+const ENDPOINT='/api/hq-track';
+const PLAYER_KEY='qfhq-player-id-v1';
+const QUEUE_KEY='qfhq-pending-events-v1';
+const storageMemory=Object.create(null);
+function get(key){try{return localStorage.getItem(key)}catch(e){return storageMemory[key]||null}}
+function put(key,value){storageMemory[key]=String(value);try{localStorage.setItem(key,String(value))}catch(e){}}
+function uuid(){
+ if(globalThis.crypto&&typeof crypto.randomUUID==='function')return crypto.randomUUID();
+ const a=new Uint8Array(16);
+ if(globalThis.crypto&&typeof crypto.getRandomValues==='function')crypto.getRandomValues(a);
+ else for(let i=0;i<a.length;i++)a[i]=Math.floor(Math.random()*256);
+ a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;
+ const h=[...a].map(v=>v.toString(16).padStart(2,'0')).join('');
+ return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);
+}
+let playerId=get(PLAYER_KEY);
+if(!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(playerId||'')){
+ playerId=uuid();put(PLAYER_KEY,playerId);
+}
+function nickname(){const n=String(get('qf-nickname')||'').trim();return /^[\p{L}\p{N}_ .-]{2,18}$/u.test(n)?n:null}
+function progress(){
+ const raw=typeof window.qfHQGetProgress==='function'?window.qfHQGetProgress():{};
+ const safe=(x)=>Math.max(0,Math.min(100000000,Math.floor(Number(x)||0)));
+ return {xp:safe(raw.xp),tests:safe(raw.tests),perfectRuns:safe(raw.perfectRuns)};
+}
+function readQueue(){try{const a=JSON.parse(get(QUEUE_KEY)||'[]');return Array.isArray(a)?a.filter(x=>x&&['sync','complete'].includes(x.type)).slice(-500):[]}catch(e){return []}}
+let queue=readQueue(),sending=false;
+function persist(){put(QUEUE_KEY,JSON.stringify(queue))}
+function isLive(){return location.protocol==='https:'||['localhost','127.0.0.1'].includes(location.hostname)}
+async function flush(){
+ if(sending||!isLive()||!queue.length)return;
+ sending=true;
+ try{
+  while(queue.length){
+   const event=queue[0];
+   const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',cache:'no-store',keepalive:true,body:JSON.stringify(event)});
+   if(r.status===400){queue=queue.filter(x=>x!==event);persist();continue}
+   if(!r.ok)break; // Missing function or temporary network error: retry next visit.
+   queue=queue.filter(x=>x!==event);persist();
+  }
+ }catch(e){/* Offline: events remain in local storage for later delivery. */}
+ finally{sending=false}
+}
+function enqueue(data){
+ if(!isLive())return;
+ if(data.type==='sync')queue=queue.filter(x=>x.type!=='sync');
+ queue.push(data);
+ queue=queue.slice(-500);
+ persist();void flush();
+}
+window.qfHQRecordCompletedRun=function(result){
+ if(!result||!Number.isInteger(result.total)||result.total<1)return;
+ const last=typeof window.qfHQGetLastRun==='function'?window.qfHQGetLastRun():{};
+ enqueue({version:1,type:'complete',playerId,runId:uuid(),nickname:nickname(),
+  subject:result.subject,difficulty:result.difficulty,correct:result.correct,total:result.total,
+  speedrun:Boolean(last.speedrun),earnedXp:Math.max(0,Math.floor(Number(last.earnedXp)||0)),progress:progress()});
+};
+window.qfHQSyncSnapshot=function(){
+ const p=progress();if(!p.tests&&!p.xp&&!nickname())return;
+ enqueue({version:1,type:'sync',playerId,nickname:nickname(),progress:p});
+};
+window.addEventListener('online',()=>void flush());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)void flush()});
+setTimeout(()=>{window.qfHQSyncSnapshot();void flush()},350);
 })();
 </script><style id="cosmo-learn-css">#cosmoEntry{display:block;margin:12px auto;width:min(100%,440px);padding:16px;border:2px solid #6beaff;border-radius:16px;background:linear-gradient(110deg,#13384b,#392269);color:white;font-size:20px;font-weight:900;cursor:pointer}#cosmoPanel{position:fixed;z-index:999999;inset:0;overflow:auto;background:radial-gradient(ellipse at top,#203b71,#080f25 65%);color:#eefaff;padding:18px;font-family:system-ui,sans-serif}#cosmoPanel[hidden]{display:none!important}.cosmo-wrap{max-width:900px;margin:auto}.cosmo-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.cosmo-close{padding:10px 16px;border:1px solid #a4eaf8;background:#163955;color:white;border-radius:10px;font-weight:bold}.cosmo-cats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.cosmo-cat{border:1px solid #67bde0;border-radius:20px;padding:9px 13px;background:#153354;color:white}.cosmo-cat.active{background:#f3ce4c;color:#18213d;font-weight:800}.cosmo-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.cosmo-card{border:1px solid #41759d;border-radius:15px;padding:15px;background:#152848;color:#fff;text-align:left;cursor:pointer}.cosmo-card b{display:block;font-size:17px;margin:7px 0}.cosmo-scene{position:relative;overflow:hidden;border-radius:20px;min-height:235px;background:radial-gradient(circle at 70% 15%,#355fb0,#0b1639 65%);display:flex;align-items:center;justify-content:space-around;gap:15px;padding:24px;margin:14px 0;border:1px solid #4d7bb3}.cosmo-teacher{font-size:95px;filter:drop-shadow(0 0 15px #58dafa);animation:cosmoFloat 3s ease-in-out infinite}.cosmo-object{font-size:90px;filter:drop-shadow(0 0 18px #ffc45d);animation:cosmoFloat 4s ease-in-out infinite reverse}@keyframes cosmoFloat{50%{transform:translateY(-12px)}}.cosmo-player{width:100%;margin:12px 0}.cosmo-tip{padding:16px;background:#162e4c;border-left:4px solid #f3ce4c;border-radius:10px}.cosmo-option{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid #6484aa;background:#193758;color:white;border-radius:10px}.cosmo-option:disabled{opacity:.7}.cosmo-back{padding:12px 16px;background:#f3ce4c;border:0;border-radius:10px;font-weight:bold;color:#172241;margin:14px 0}.cosmo-sub{color:#bbd6e8;font-size:13px}.cosmo-unknown{margin-top:18px;border-top:1px solid #496888;padding-top:14px}#cosmoPanel h2{color:#fff}#cosmoPanel h3{color:#f3ce4c}#cosmoPanel button{cursor:pointer}.cosmo-video{display:block;width:100%;max-height:65vh;aspect-ratio:16/9;object-fit:contain;background:#020817;border:2px solid #54c9f5;border-radius:15px}.cosmo-audio-backup{padding:10px 15px;background:#14284a;border-radius:12px;margin-bottom:18px}.cosmo-audio-backup summary{cursor:pointer;font-weight:700}</style><script id="cosmo-learn-js">(function(){const lessons=[["Natural Sciences", "Earth’s Rotation and Revolution", "Earth's Rotation and Year.mp3", "🌍", "Earth spins once in about 24 hours, creating day and night. It orbits the Sun in about a year.", "Which movement causes day and night?", ["Rotation", "Revolution", "Reflection"], 0], ["Natural Sciences", "Moon Phases", "Moon Phases Explained.mp3", "🌙", "The Moon reflects sunlight. As it orbits Earth, we see different amounts of its sunlit half.", "What causes the normal phases of the Moon?", ["Earth’s shadow", "Our changing view of its sunlit half", "The Moon changing shape"], 1], ["Natural Sciences", "Water Purification", "Water Purification Steps.mp3", "💧", "Settling and filtering can remove solids, but clear water is not always safe to drink.", "Does filtering guarantee safe drinking water?", ["Yes", "No"], 1], ["Natural Sciences", "Natural Resources", "Natural Resources Overview.mp3", "🌱", "Natural resources include water, soil, sunlight, forests and minerals.", "Which resource is non-renewable?", ["Sunlight", "Coal", "Wind"], 1], ["Natural Sciences", "Conservation and Sustainability", "Earth Conservation and Sustainability.mp3", "🌳", "Reduce waste, save water, and care for the environment.", "Which action helps conserve resources?", ["Leaving taps running", "Refilling a reusable bottle", "Wasting electricity"], 1], ["Social Sciences", "Map Reading", "Learning Map Reading.mp3", "🗺️", "A map’s title, key, compass and scale help us understand it.", "If north is at the top, what direction is right?", ["West", "East", "South"], 1], ["Social Sciences", "Democracy", "South African Democracy.mp3", "🗳️", "South Africa held its first national democratic election with universal adult voting rights in 1994.", "In what year was that election?", ["1994", "1976", "2004"], 0], ["Social Sciences", "Rights and Responsibilities", "Rights And Responsibilities.mp3", "⚖️", "Respecting the rights of others helps democracy work.", "What should we do with different opinions?", ["Listen respectfully", "Shout others down"], 0], ["Social Sciences", "Historical People", "Why Historical People Matter.mp3", "🏛️", "Historical figures help us understand how society has changed.", "What helps us study a historical figure?", ["What they did and why it mattered", "Only their favourite food"], 0], ["English", "Reading Comprehension", "Reading Comprehension.mp3", "📚", "Read carefully, use clues, and return to the text to check your answers.", "What is an inference?", ["A random guess", "A conclusion using clues"], 1], ["Afrikaans", "Werkwoorde", "Werkwoorde Verken.mp3", "✍️", "Werkwoorde vertel wat iemand doen of wat gebeur.", "Wat is die werkwoord in “Die kinders lees boeke”?", ["Kinders", "Lees", "Boeke"], 1], ["Afrikaans", "Sinbou en Leesbegrip", "Sinbou Oefeninge.mp3", "📖", "Lees die teks aandagtig en let op woordorde.", "Wie lees in “Die kind lees ’n boek”?", ["Die kind", "Die boek"], 0]];const newAudioLessons=[
 ["Mathematics","Addition","Maths_Addition.mp3","➕","Line up place values when adding.","What is 245 + 138?",["383","373","483"],0],
