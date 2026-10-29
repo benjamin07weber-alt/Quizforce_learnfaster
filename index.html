@@ -179,7 +179,7 @@ a{color:#6fe5d8!important}
 <div aria-label="Quizforce new logo" class="logo"><svg aria-label="Quizforce lightning Q logo" class="qf-emblem" role="img" viewbox="0 0 120 120"><defs><lineargradient id="qfGrad" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#2dd4bf"></stop><stop offset="1" stop-color="#0f766e"></stop></lineargradient></defs><rect fill="#082f35" height="114" rx="29" width="114" x="3" y="3"></rect><rect fill="none" height="104" opacity=".55" rx="25" stroke="#5eead4" stroke-width="2" width="104" x="8" y="8"></rect><path d="M83 80 A36 36 0 1 0 61 95" fill="none" stroke="url(#qfGrad)" stroke-linecap="round" stroke-width="15"></path><path d="M67 53 49 79h15l-5 24 29-37H71l9-13Z" fill="#fbbf24" stroke="#fff0b0" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="89" cy="24" fill="#fbbf24" r="4"></circle><circle cx="28" cy="91" fill="#5eead4" r="3"></circle></svg></div>
 <h1>QUIZFORCE</h1>
 <div class="tag">Learn faster. Master your subjects.</div>
-<div class="note" style="text-align:center;font-size:12px;margin:0 0 12px">⚡ Edition 12 • Afrikaans PDF added • Cloudflare build 28 Oct</div>
+<div class="note" style="text-align:center;font-size:12px;margin:0 0 12px">⚡ Edition 12 • NS answer fixes • Cloudflare build 29 Oct</div>
 <div class="note">Five subjects • English 360 + Afrikaans PDF 70 + revision banks • 3 levels • Personal bests</div>
 <div id="qf11Dashboard" class="qf11-dashboard" aria-live="polite"></div>
 <button class="primary" id="create">Create a Test →</button>
@@ -227,6 +227,15 @@ a{color:#6fe5d8!important}
 <option value="science20">Topic 20 — Systems to explore the Moon and Mars</option>
 </select>
 <div class="note">Choose a topic, or choose EXAM to mix questions from exam Topics 11, 15, 16, 17 and 18.</div>
+<div style="margin-top:12px">
+<label for="scienceQuestionType">Answer format</label>
+<select id="scienceQuestionType">
+<option value="mixed">Mixed — multiple choice + type your own</option>
+<option value="mc">Multiple choice only</option>
+<option value="typed">Type your own answers only</option>
+</select>
+<div class="note">Topics 11 and 15 include typed-answer practice. Mixed uses both types. Typed answers are checked for enough correct information, not just one matching word. Questions that need visible choices stay multiple-choice. If Exact Words is ticked, you get a definitions test instead.</div>
+</div>
 </div>
 <div class="hidden" id="mathsChooser">
 <label>Choose what you want to learn</label>
@@ -263,11 +272,11 @@ a{color:#6fe5d8!important}
 <div class="note">The 2026 exam bank covers punctuation, collective nouns, abstract nouns, plurals, contractions, apostrophes, adjectives and figures of speech. Choose a difficulty above. Questions asking you to choose a sentence keep their visible multiple-choice options.</div>
 </div>
 <div class="hidden" id="afrikaansChooser">
-<label>Choose what you want to learn</label>
+<label>Choose your Afrikaans practice</label>
 <div class="afr-grid">
-<label class="afr-choice"><input type="checkbox" value="afrikaans_pdf_2026" checked/> 📄 Afrikaans Exams 2026 — Original EAT Oefentoets PDF (70 questions · 22 Easy / 24 Medium / 24 Hard)</label>
-<label class="afr-choice"><input type="checkbox" value="afrikaans_2026"/> 📝 Afrikaans Exams 2026 — Additional Grade 6 revision practice (264 questions)</label>
-<label class="afr-choice"><input type="checkbox" value="afrikaans_exam"/> 📚 All additional Afrikaans exam topics</label>
+<label class="afr-choice"><input type="checkbox" value="afrikaans_pdf_2026" checked/> 📄 Practice paper — 70 questions from your PDF</label>
+<label class="afr-choice"><input type="checkbox" value="afrikaans_2026"/> 📝 Extra Afrikaans practice — 264 questions</label>
+<label class="afr-choice"><input type="checkbox" value="afrikaans_exam"/> 📚 All other Afrikaans topics</label>
 <label class="afr-choice"><input type="checkbox" value="afr_meervoude"/> Meervoude</label>
 <label class="afr-choice"><input type="checkbox" value="afr_verkleinwoorde"/> Verkleinwoorde</label>
 <label class="afr-choice"><input type="checkbox" value="afr_verlede"/> Verlede tyd</label>
@@ -277,7 +286,7 @@ a{color:#6fe5d8!important}
 <label class="afr-choice"><input type="checkbox" value="afr_woordeskat"/> Woordeskat</label>
 </div>
 <div style="margin-top:12px">
-<label for="afrikaansQuestionType">Question type</label>
+<label for="afrikaansQuestionType">Answer format for extra practice</label>
 <select id="afrikaansQuestionType">
 <option value="mixed">Mixed — Multiple choice + typed answers</option>
 <option value="mc">Multiple choice only</option>
@@ -285,11 +294,11 @@ a{color:#6fe5d8!important}
 </select>
 </div>
 <button class="secondary" id="afrikaansExamToggle" style="margin-top:10px;width:100%" type="button">📝 TEST MODE — Everything</button>
-<div class="note">📄 The PDF section uses the exact 70 questions and answers from your Afrikaans EAT Oefentoets, including the original multiple-choice options and written answers. Easy has 22 questions; Medium and Hard have 24 each. Choose only the PDF section to practise the original test; selecting 40 will give all 22 or 24 questions for that level. Tick more sections to mix topics. PDF questions keep their original question type, even if you select a different answer format above.</div>
+<div class="note">Your PDF questions keep their original answer format. Choose Easy, Medium or Hard above.</div>
 </div>
 <label for="difficulty">Difficulty level</label>
 <select id="difficulty"><option value="easy">🟢 Easy — Build confidence</option><option selected="" value="medium">🟡 Medium — Standard practice</option><option value="hard">🔴 Hard — Challenge yourself</option></select>
-<div class="hidden" id="exactBox"><label class="exactChoice"><input id="exactWords" type="checkbox"/> ✍️ Exact Words — definitions</label><div class="note">Write your answer in your own words. For definitions, practise the exact textbook words. In normal practice, written answers need at least one relevant keyword. Short answers and calculations still need to be correct. Topic 11 definitions are based on your textbook pages. Other definitions are app reference wording.</div></div>
+<div class="hidden" id="exactBox"><label class="exactChoice"><input id="exactWords" type="checkbox"/> ✍️ Exact Words — definitions</label><div class="note">Write your answer in your own words. For definitions, practise the exact textbook words. In normal practice, written answers need at least one relevant keyword. Short answers and calculations still need to be correct. Topic 11 definitions are based on your textbook pages. Topic 15 has electricity definitions. Other definitions are app reference wording. Exact Words mode overrides the answer-format choice.</div></div>
 <div class="note" id="bankStats"></div>
 <label for="qf11Slider">🎚️ Number of questions: <strong id="qf11CountText">15</strong></label>
 <input id="qf11Slider" type="range" min="5" max="40" step="1" value="15" aria-label="Number of questions"/>
@@ -311,7 +320,7 @@ a{color:#6fe5d8!important}
 <div class="actions" style="justify-content:flex-end"><button class="secondary" id="quit">← Quit Test</button></div>
 <div id="qf11Timer" class="qf11-timer" hidden></div><div class="progress"><div class="bar" id="bar"></div></div>
 <div class="muted" id="qType"></div>
-<h2 id="qText"></h2>
+<h2 id="qText" style="white-space:pre-line;overflow-wrap:anywhere;line-height:1.45"></h2>
 <div id="answers"></div>
 <div class="feedback" id="feedback"></div>
 <div class="actions">
@@ -1586,6 +1595,39 @@ const definitions={
  ["Crater","a bowl-shaped hollow on the surface of a planet or moon"]
  ]
 };
+// Natural Sciences definitions follow the selected topic, rather than showing
+// Solar System terms when the learner selected Mains Electricity.
+const scienceElectricityDefinitions=[
+ ["Mains electricity","electricity supplied to homes and buildings through the electricity grid"],
+ ["Electric circuit","a complete path through which electric current can flow"],
+ ["Electric current","the flow of electric charge through a circuit"],
+ ["Conductor","a material that allows electric current to pass through it"],
+ ["Insulator","a material that does not allow electric current to pass through it easily"],
+ ["Switch","a device that opens or closes a circuit"],
+ ["Open circuit","a circuit with a gap so electric current cannot flow"],
+ ["Closed circuit","a complete circuit through which electric current can flow"],
+ ["Series circuit","a circuit with only one path for electric current"],
+ ["Parallel circuit","a circuit with more than one path for electric current"],
+ ["Fuse","a safety device that breaks a circuit when the current is too high"],
+ ["Electric shock","an injury that can occur when electric current passes through the body"],
+ ["Electrical safety","keeping water away from electrical appliances and avoiding damaged wires"]
+];
+const scienceTopicDefinitionTerms={
+ science16:["Solar System","Star","Planet","Orbit","Gravity","Asteroid","Comet"],
+ science17:["Revolution","Rotation","Axis","Orbit","Day and night","Year"],
+ science18:["Moon","Natural satellite","Phase of the Moon","New Moon","Full Moon","Waxing","Waning","Crescent Moon","Gibbous Moon","Lunar eclipse","Solar eclipse"],
+ science19:["Telescope","Optical telescope","Radio telescope","Observatory","Light-year"],
+ science20:["Space probe","Rover","Spacecraft","Astronaut","Lunar","Crater"]
+};
+function selectedScienceDefinitions(){
+ const topic=$("#scienceTopic").value;
+ if(topic==="science11")return waterDefinitions;
+ if(topic==="science15")return scienceElectricityDefinitions;
+ if(topic==="scienceExam")return [...waterDefinitions,...scienceElectricityDefinitions,...definitions.science];
+ const chosen=new Set(scienceTopicDefinitionTerms[topic]||[]);
+ return definitions.science.filter(([term])=>chosen.has(term));
+}
+
 // Definitions are organised by the actual selected Social Sciences module.
 // Previously the same mixed list appeared regardless of the module chosen.
 const socialModuleTerms={
@@ -1654,6 +1696,68 @@ function levelQuestion(q,level){
  if(level==="hard")return toTyped(q);
  return q;
 }
+// Natural Sciences MC banks previously had no typed answers in Medium.
+// A direct knowledge question can be answered without options; prompts that
+// explicitly refer to a list of choices must retain those choices.
+function scienceNeedsVisibleChoices(q){
+ const prompt=String(q.q||"");
+ return /\b(of the following|from the options|from these options|which (statement|sentence|option|choice) (is|best|correct)|choose (the|from) (following|options)|select (the|from) (following|options))\b/i.test(prompt);
+}
+function toScienceTyped(q){
+ if(q.type==="shape"||q.type==="graph"||scienceNeedsVisibleChoices(q))return q;
+ if(q.type==="text")return {...q,scienceTyped:true};
+ const alternatives=SCIENCE_TYPED_ALTERNATIVES[q.q]||[];
+ return {...TX(q.q,[...new Set([String(getAnswer(q)),...(q.accept||q.answers||[]),...alternatives])],getExplanation(q)),
+   scienceTyped:true,fromMultipleChoice:true,bankKey:q.bankKey};
+}
+// Some multiple-choice science questions have more than one scientifically correct
+// answer when the options are hidden. Accept those examples in typed mode.
+const SCIENCE_TYPED_ALTERNATIVES={
+ "Why do we purify water?":["to make water safe to drink","to make drinking water safe","to remove dirt and germs from water"],
+ "Which method removes large visible particles from water?":["filtration","using a filter"],
+ "Which process allows dirt to settle to the bottom?":["settling"],
+ "What does boiling water help destroy?":["germs","bacteria","harmful microbes","harmful microorganisms"],
+ "Which material can be used in a simple water filter?":["sand","gravel","pebbles","cotton","charcoal","cloth"],
+ "What is potable water?":["drinking water","water that is safe to drink"],
+ "What does disinfect mean?":["kill germs","kill bacteria","destroy harmful microorganisms"],
+ "Which material is a good conductor?":["copper","aluminium","aluminum","silver","iron","metal","graphite"],
+ "Which is an electrical insulator?":["plastic","rubber","glass","dry wood"],
+ "What does a cell supply in a simple circuit?":["electricity","electric power","energy"],
+ "What happens when a simple circuit is open?":["no electricity flows","electricity cannot flow","the current stops","the bulb will not light"],
+ "In a parallel circuit, current can travel through how many branches?":["multiple branches","two or more","several branches","more than one branch"],
+ "Which device changes electrical energy into light?":["lamp","light bulb","bulb","led"],
+ "What is the purpose of a fuse?":["stop too much current","prevent too much current from flowing","break the circuit when current is too high"],
+ "Why should you not touch electrical appliances with wet hands?":["you could get an electric shock","water conducts electricity","risk of electrocution"],
+ "What should you do with damaged electrical wires?":["tell an adult and stay away","do not touch them and tell an adult","report the damaged wires and keep away"],
+ "What is an electrical circuit?":["a closed path that lets electricity flow","a complete path for electricity to flow"],
+ "What is a conductor?":["a material that lets electricity flow through it","something electricity can pass through"],
+ "What is a filter used for?":["remove solid dirt from water","separate solid particles from water"],
+ "What is distillation?":["evaporating and then condensing water","evaporation and condensation"],
+ "What is decanting?":["pouring clear water off settled dirt","carefully pouring liquid away from sediment"]
+};
+// A typed science answer must demonstrate the answer, not just contain one
+// lucky keyword (previously typing 'make' could get full marks for purification).
+function scienceAnswerMatch(q,value){
+ const v=normalExact(value);if(!v)return false;
+ const accepts=[...(q.accept||q.answers||[]),String(getAnswer(q))];
+ if(accepts.some(a=>normalExact(a)===v))return true;
+ // An accepted answer may be embedded in a complete natural sentence.
+ if(accepts.some(a=>{const n=normalExact(a);return n.length>=5 && (" "+v+" ").includes(" "+n+" ");}))return true;
+ const canonical=normalExact(getAnswer(q));
+ const filler=new Set(['to','the','a','an','and','or','of','for','from','it','its','in','on','at','by','with','is','are','was','were','be','been','as','this','that','these','those','can','could','may','might','should','will','would','do','does','did','have','has','had','if','when','what','why','how','which','who','there','their','they','them','you','your','we','our','more','than','one','two','many','much','very','too','also','into','through','above','below','before','after','up','off','over','under','only','used','use','using','help','helps','make','makes','making','something','thing','things','some','such']);
+ const words=canonical.split(' ').filter(w=>w.length>2&&!filler.has(w));
+ if(!words.length)return false;
+ // If a reference answer includes a negative, a positive opposite is not correct.
+ if(/\b(cannot|not|never|without|no)\b/.test(canonical) && !/\b(cannot|not|never|without|no|doesnt|dont|wont|stops|stop|off|away)\b/.test(v))return false;
+ const normWord=w=>w.replace(/(ing|ed|es|s)$/,'');
+ const synonymGroups=[['safe','safer','safety'],['drink','drinking'],['electric','electrical','electricity'],['germ','germs','bacteria','microorganism','microorganisms','microbe','microbes'],['flow','flows','flowing','pass','passes','travel'],['filter','filtering','filtration'],['settle','settling','sedimentation','sink','sinks'],['destroy','kill','kills','killing'],['remove','removes','removing'],['current','electricity'],['water','waters'],['light','lighting']];
+ const equivalent=(a,b)=>a===b || (a.length>4&&b.length>4&&normWord(a)===normWord(b)) || synonymGroups.some(g=>g.includes(a)&&g.includes(b));
+ const userWords=v.split(' ');
+ const matched=words.filter(w=>userWords.some(t=>equivalent(w,t))).length;
+ const required=words.length===1?1:Math.max(2,Math.ceil(words.length*0.65));
+ return matched>=required;
+}
+
 function normalExact(s){return String(s).toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ")}
 const stopWords=new Set('a an the and or but to of for from by with in on at is are was were be been being it its this that these those which who whom when where why how what as into through across around between about their his her our your they them we you i can will would should could may might have has had do does did not no one two three person people thing things someone something means meaning called known used use'.split(' '));
 function keywordsFor(q){
@@ -1848,6 +1952,7 @@ function keywordMatch(q,s){
    return literal===expected;
  }
  const v=normalExact(s);if(!v)return false;
+ if(q.scienceTyped)return scienceAnswerMatch(q,s);
  // For exam transformations, the whole correct sentence or word is required.
  // This prevents nonsense partial answers being marked correct.
  if(q.strictAnswer || (selected==="afrikaans" && /^(skryf|verander na|voltooi die sin|gee die (verlede|toekomende|meervoud|verkleinwoord))/i.test(String(q.q).trim()))){
@@ -1931,7 +2036,12 @@ function chosenKeys(){
  return sectionKeys[selected];
 }
 function qfQuestionPool(key,level){
- return (banks[key]||[]).filter(q=>!q.difficultyTag||q.difficultyTag===level);
+ let pool=(banks[key]||[]).filter(q=>!q.difficultyTag||q.difficultyTag===level);
+ // An MC-only Natural Sciences test must not accidentally contain typed items.
+ if(selected==="science" && $("#scienceQuestionType")?.value==="mc" && !$("#exactWords").checked){
+   pool=pool.filter(q=>q.type==="mc");
+ }
+ return pool;
 }
 function qfQuestionSignature(q){
  return q.type==="shape"?normalExact(q.q)+"|"+q.shape:normalExact(q.q);
@@ -1969,7 +2079,7 @@ function buildTest(){
  const exact=(selected==="social"||selected==="science")&&$("#exactWords").checked;
  let source;
  if(exact){
- source=shuffle(selected==="science" && $("#scienceTopic").value==="science11" ? waterDefinitions : selected==="social" ? selectedSocialDefinitions() : definitions[selected]).slice(0,n).map(([term,definition])=>({...TX("Define: "+term,[definition],"Reference wording: "+definition),exact:true}));
+ source=shuffle(selected==="science" ? selectedScienceDefinitions() : selected==="social" ? selectedSocialDefinitions() : definitions[selected]).slice(0,n).map(([term,definition])=>({...TX("Define: "+term,[definition],"Reference wording: "+definition),exact:true}));
  }else{
  const keys=chosenKeys();source=takeBalanced(keys,Math.max(n,40),level);
  source.forEach(q=>{if(!q.bankKey)q.bankKey=keys.find(k=>(banks[k]||[]).includes(q))||keys[0]});
@@ -1977,7 +2087,31 @@ function buildTest(){
  // than requested (e.g. the 22/24-question Afrikaans PDF), use all available.
  // takeBalanced already includes every unique question from the selected keys.
  // A shorter test is better than unexpectedly adding unrelated topics.
- source=source.slice(0,n).map(q=>{const x=levelQuestion(q,level);if(selected==="social"||selected==="science"){x.isDefinition=false;x.exact=false;}return x;});
+ // Mixed Natural Sciences must really contain both answer types. In the old
+ // code, random selection could produce ALL typed questions even in Mixed mode.
+ let scienceMCSet=new Set();
+ if(selected==="science" && $("#scienceQuestionType").value==="mixed"){
+   const wanted=Math.min(n,source.length);
+   const typedRatio=level==="easy"?.25:level==="hard"?.75:.5;
+   const mcWanted=Math.floor(wanted*(1-typedRatio));
+   const mcPool=source.filter(q=>q.type==="mc");
+   const writtenPool=source.filter(q=>q.type!=="mc");
+   const keptMC=mcPool.slice(0,Math.min(mcWanted,mcPool.length));
+   scienceMCSet=new Set(keptMC);
+   const forTyping=shuffle([...writtenPool,...mcPool.slice(keptMC.length)]).slice(0,wanted-keptMC.length);
+   source=shuffle([...keptMC,...forTyping]);
+ }else source=source.slice(0,n);
+ source=source.map((q,i)=>{
+   let x;
+   if(selected==="science"){
+     const mode=$("#scienceQuestionType").value;
+     if(mode==="mc")x=q;
+     else if(mode==="typed")x=toScienceTyped(q);
+     else x=scienceMCSet.has(q)?q:toScienceTyped(q);
+   }else x=levelQuestion(q,level);
+   if(selected==="social"||selected==="science"){x.isDefinition=false;x.exact=false;}
+   return x;
+ });
  const qtype=selected==="maths"?$("#mathsQuestionType").value:selected==="afrikaans"?$("#afrikaansQuestionType").value:"mixed";
  if((selected==="maths"||selected==="afrikaans")&&level==="medium")source=source.map((q,i)=>qtype==="mc"?toMultiple(q):qtype==="typed"?toTyped(q):i%2===0?toMultiple(q):toTyped(q));
  }
@@ -2005,21 +2139,77 @@ function startTest(){
 function runTest(){qf11BeginRun();idx=0;score=0;missed=[];$("#score").textContent=0;$("#done").textContent=0;
  $("#subjectName").textContent=meta[selected][0]+" • "+$("#difficulty").selectedOptions[0].text+(reviewMode?" • Mistake review":"");
  $("#qTotal").textContent=test.length;show("quiz");renderQ();}
+// Keep the question itself easy to read. The PDF source, level and question
+// number are already tracked separately; they do not belong in the prompt.
+// This is display-only: the original questions and correct answers are untouched.
+function qfReadableAfrikaansQuestion(q){
+ let prompt=String(q.q||"");
+ if(selected!=="afrikaans")return prompt;
+ if(q.pdfSource){
+  prompt=prompt.replace(/^📄 Oefentoets 2026 · (?:Maklik|Medium|Moeilik) Q\d+ · [^:]+:\s*/,"");
+  const rewrite=prompt.match(/^Skryf oor\. Begin met “([^”]+)”(?: \(verlede tyd\))?\.\s*(.+)$/);
+  if(rewrite){
+   const past=/^(Gister|Destyds)$/.test(rewrite[1]);
+   const tense=past?"verlede tyd":"toekomende tyd";
+   const action=q.type==="mc"?"Kies die korrekte sin":"Skryf die sin";
+   prompt=action+" in die "+tense+". Begin met “"+rewrite[1]+"”:\n"+rewrite[2];
+  }
+  prompt=prompt.replace(/^Skryf in die negatiewe vorm\.\s*/,q.type==="mc"?"Kies die korrekte ontkennende sin:\n":"Skryf in die ontkennende vorm:\n");
+  prompt=prompt.replace(/^Verbind die sinne met (want|omdat|daarom|aangesien|dus)\.\s*/,(_,word)=>(q.type==="mc"?"Kies die korrekte sin met ":"Verbind die sinne met ")+"“"+word+"”:\n");
+  const directions=[
+   /^(Gee die (?:meervoud|verkleinwoord|intensiewe vorm)\.)\s+/,
+   /^(Skryf die getal in woorde\.)\s+/,
+   /^(Skryf oor\. Begin met “[^”]+”(?: \(verlede tyd\))?\.)\s+/,
+   /^(Skryf in die negatiewe vorm\.)\s+/,
+   /^(Skryf die bevel in die negatiewe vorm\.)\s+/,
+   /^(Verbind die sinne met (?:want|omdat|daarom|aangesien|dus)\.)\s+/,
+   /^(Vul die regte (?:vorm in \(verlede tyd\)|woord in|hulpwerkwoord in)\.)\s+/,
+   /^(Antwoord in die negatief\. Begin met “Nee,”\.)\s+/,
+   /^(Antwoord in die negatief\.)\s+/,
+   /^(Watter soort sin is dit\?)\s+/,
+   /^(Begin met “Nou” \(TSOMPI\)\.)\s+/,
+   /^(Skryf in die korrekte woordorde\. Begin met “In die verlede”\.)\s+/,
+   /^(Kies die regte voegwoord\.)\s+/
+  ];
+  for(const rule of directions){
+   if(rule.test(prompt)){prompt=prompt.replace(rule,"$1\n");break;}
+  }
+  // Short, distinct lines make the two sentences easy to follow on phones.
+  if(/^(Verbind die sinne met|Skryf oor\.|Skryf in die negatiewe vorm\.)/.test(prompt)){
+   prompt=prompt.replace(/(\.)(\s+)(?=[A-Z][a-z]+\s)/g,"$1\n");
+  }
+ }else if(q.difficultyTag && q.examTopic){
+  prompt=prompt.replace(/Kies die korrekte meervoud van ('[^']+') in 'Daar is baie \.\.\.'\./,"Kies die korrekte meervoud van $1.");
+  prompt=prompt.replace(/^Die skrywer verwys na meer as een (.+)\. Watter meervoud is korrek\?$/,"Wat is die meervoud van '$1'?");
+  prompt=prompt.replace(/^'n Klein ([^ ]+) word 'n \.\.\. genoem\. Kies die korrekte woord\.$/,"Kies die verkleinwoord van '$1'.");
+  prompt=prompt.replace(/^Voltooi die sin met die regte verkleinwoord: 'Die klein ([^ ]+) staan daar\.'$/, "Kies die verkleinwoord van '$1'.");
+  prompt=prompt.replace(/^'Die taak is ([^']+)\.' Kies die antoniem wat die betekenis omkeer\.$/,"Wat is die antoniem van '$1'?");
+  prompt=prompt.replace(/^Watter woord gebruik jy in 'n eksamensin as jy die intensiewe vorm van '([^']+)' moet skryf\?$/,"Wat is die intensiewe vorm van '$1'?");
+  prompt=prompt.replace(/^Lees: '([^']+)'\s*/,"Lees die teks:\n“$1”\n\n");
+  if(prompt.startsWith("Lees die teks:")){
+   prompt=prompt.replace(/\n\n(?:Beantwoord: |Kies die antwoord wat direk deur die teks ondersteun word: )/,"\n\n");
+  }
+ }
+ return prompt;
+}
+function qfAfrikaansTopicLabel(q){
+ return selected==="afrikaans"&&q.examTopic ? " · "+q.examTopic : "";
+}
 function renderQ(){
  answered=false;$("#check").disabled=false;$("#next").disabled=true;$("#feedback").textContent="";
  $("#check").textContent="Check Answer";const q=test[idx];$("#qNo").textContent=idx+1;
- $("#bar").style.width=((idx+1)/test.length*100)+"%";$("#qText").textContent=q.q;
+ $("#bar").style.width=((idx+1)/test.length*100)+"%";$("#qText").textContent=qfReadableAfrikaansQuestion(q);
  const a=$("#answers");a.innerHTML="";
  if(q.type==="graph"){$("#qType").textContent="INTERACTIVE GRAPH STUDIO";renderGraphLab(q,a);return}
  if(q.type==="shape"){$("#qType").textContent="INTERACTIVE GEOMETRY LAB";renderShapeLab(q,a);return}
  if(q.type==="mc"){
- $("#qType").textContent="MULTIPLE CHOICE";
+ $("#qType").textContent="MULTIPLE CHOICE"+qfAfrikaansTopicLabel(q);
  q.options.forEach((o,j)=>{const l=document.createElement("label");l.className="option";l.dataset.i=j;
  const radio=document.createElement("input");radio.type="radio";radio.name="ans";radio.value=j;
  const span=document.createElement("span");span.textContent=String.fromCharCode(65+j)+". "+o;
  l.append(radio,span);a.appendChild(l)});
  }else{
- $("#qType").textContent=(q.exact||q.isDefinition)?"DEFINITIONS • KEY IDEAS":"TYPED ANSWER";
+ $("#qType").textContent=((q.exact||q.isDefinition)?"DEFINITIONS • KEY IDEAS":"TYPED ANSWER")+qfAfrikaansTopicLabel(q);
  const t=document.createElement("textarea");t.id="typed";t.placeholder=(q.exact||q.isDefinition)?"Write the definition using the key ideas (or type IDK for help)…":"Type your answer (or IDK for help)…";a.appendChild(t);
  }
 }
@@ -2474,7 +2664,7 @@ function checkAnswer(){
    learn.onclick=()=>startDefinitionTeach(true);
    skip.onclick=()=>actions.remove();
    actions.append(learn,skip);$("#feedback").appendChild(actions);
- }else $("#feedback").textContent=q.type==="graph"?"❌ Review the highlighted graph and the correct values below.":q.type==="shape"?"❌ Review the highlighted boxes and the correct answers below.":("❌ Not quite. "+getExplanation(q)+(q.pdfSource?" • Correct answer: "+getAnswer(q):q.type==="text"?" • Key words: "+keywordsFor(q).join(", "):""));
+ }else $("#feedback").textContent=q.type==="graph"?"❌ Review the highlighted graph and the correct values below.":q.type==="shape"?"❌ Review the highlighted boxes and the correct answers below.":("❌ Not quite. "+getExplanation(q)+(q.pdfSource || q.scienceTyped?" • Correct answer: "+getAnswer(q):q.type==="text"?" • Key words: "+keywordsFor(q).join(", "):""));
 }
  $("#check").disabled=true;$("#next").disabled=false;$("#next").textContent=idx===test.length-1?"See My Score":"Next →";
 }
