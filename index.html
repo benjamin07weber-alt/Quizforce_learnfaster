@@ -375,7 +375,7 @@ a{color:#6fe5d8!important}
 <div class="muted">TEST COMPLETE</div>
 <div class="bigscore" id="finalScore"></div>
 <div id="finalMsg"></div><div id="qfRecommendedTutorial" class="note" style="margin:14px auto;padding:14px;border:1px solid #4ebec6;border-radius:12px;max-width:550px" hidden></div><div id="qf11Rewards" class="qf11-rewards"></div><div class="note" id="personalBest"></div>
-<div class="qf-save-score"><label for="qfPlayerName">Your leaderboard name (nickname only)</label><input id="qfPlayerName" maxlength="18" placeholder="Enter a nickname" autocomplete="nickname"><label for="qfPlayerCountry">Country</label><select id="qfPlayerCountry" style="width:100%;margin-bottom:10px"></select><button class="primary" id="qfSaveScore" type="button">🏆 Submit Worldwide Score</button><div id="qfSaveMessage" aria-live="polite"></div></div><button class="secondary hidden" id="review">🔁 Retry missed questions</button>
+<div class="qf-save-score"><label for="qfPlayerName">Your leaderboard name (nickname only)</label><input id="qfPlayerName" maxlength="18" placeholder="Enter a nickname" autocomplete="nickname"><small style="display:block;margin:-4px 0 12px;opacity:.8">Sharing a device? Each different submitted nickname gets a separate HQ player. Without a submission, the last saved nickname is used.</small><label for="qfPlayerCountry">Country</label><select id="qfPlayerCountry" style="width:100%;margin-bottom:10px"></select><button class="primary" id="qfSaveScore" type="button">🏆 Submit Worldwide Score</button><div id="qfSaveMessage" aria-live="polite"></div></div><button class="secondary hidden" id="review">🔁 Retry missed questions</button>
 <div class="actions" style="justify-content:center">
 <button class="primary" id="fresh" style="width:auto">Fresh Test</button>
 <button class="secondary" id="choose">Choose Subject</button>
@@ -2751,16 +2751,19 @@ $("#qfSaveScore").onclick=async()=>{
  const name=$("#qfPlayerName").value.trim();
  if(qfLastResult.__submitted){$("#qfSaveMessage").textContent="This test score has already been submitted.";return;}
  if(!/^[\p{L}\p{N}_ .-]{2,18}$/u.test(name)){$("#qfSaveMessage").textContent="Use a nickname of 2–18 letters or numbers (no real name).";return;}
- qfStorageSet("qf-nickname",name);qfStorageSet("qf-country",countrySelect.value);
+ const submittedPlayerId=window.qfHQPrepareSubmittedName?.(name)||window.qfHQGetPlayerId?.()||null;
+ qfStorageSet("qf-country",countrySelect.value);
  const btn=$("#qfSaveScore");btn.disabled=true;
  qfScoreSubmissionState="sending";
  const submissionSequence=qfResultSequence;
  $("#qfSaveMessage").textContent="Sending score…";
  try{
-  const r=await fetch(QF_BOARD_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...qfLastResult,name,country:countrySelect.value,playerId:window.qfHQGetPlayerId?.()||null,runId:qfLastResult.runId||null})});
+  const r=await fetch(QF_BOARD_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...qfLastResult,name,country:countrySelect.value,playerId:submittedPlayerId,runId:qfLastResult.runId||null})});
   const data=await r.json();if(!r.ok)throw Error(data.error||"Could not submit score");
   qfScoreSubmissionState="submitted";
   qfLastResult.__submitted=true;
+  window.qfHQConfirmSubmittedName?.(name,submittedPlayerId,qfLastResult.runId||null);
+  qfStorageSet("qf-nickname",name);
   if(submissionSequence===qfResultSequence){$("#qfSaveMessage").textContent="✅ Score submitted worldwide!";btn.textContent="✅ Score submitted";}
   if(typeof window.qfHQSyncSnapshot==="function")window.qfHQSyncSnapshot();
   await qfLoadBoard();
@@ -2944,7 +2947,7 @@ function sync(v){v=Math.max(5,Math.min(40,Number(v)||15));slider.value=v;$('#qf1
 slider.addEventListener('input',()=>sync(slider.value));sync(15);
 $('#qf11SpeedHome').addEventListener('click',()=>{window.qf11CancelRun();$('#create').click();$('#qf11SpeedToggle').checked=true;$('#qf11Slider').value=20;sync(20);$('#qf11SpeedToggle').scrollIntoView({behavior:'smooth',block:'center'})});
 window.qf11RunFinished=false;
-window.qf11BeginRun=function(){clearInterval(ticker);runFinished=false;window.qf11RunFinished=false;runReview=typeof reviewMode!=='undefined'&&reviewMode;speed=$('#qf11SpeedToggle').checked&&!runReview;runStarted=true;deadline=Date.now()+90000;
+window.qf11BeginRun=function(){window.qfHQFinalizePendingRun?.();clearInterval(ticker);runFinished=false;window.qf11RunFinished=false;runReview=typeof reviewMode!=='undefined'&&reviewMode;speed=$('#qf11SpeedToggle').checked&&!runReview;runStarted=true;deadline=Date.now()+90000;
 const timer=$('#qf11Timer');timer.hidden=!speed;if(speed){function tick(){if(!runStarted||runFinished)return;const left=Math.max(0,Math.ceil((deadline-Date.now())/1000));timer.textContent='⏱️ SPEEDRUN · '+left+' seconds remaining';if(left===0){clearInterval(ticker);if(typeof finish==='function')finish()}}tick();ticker=setInterval(tick,250)}};
 window.qf11CancelRun=function(){clearInterval(ticker);runStarted=false;runFinished=true;window.qf11RunFinished=true;$('#qf11Timer').hidden=true};
 window.qf11EndRun=function(){if(runFinished)return;runFinished=true;runStarted=false;clearInterval(ticker);$('#qf11Timer').hidden=true;rollover();const qfHQXPBefore=state.xp;qfHQLastRunSpeed=speed;const n=test.length,correct=score,pct=n?Math.round(correct*100/n):0;let xp=0,newBadges=[];
@@ -2962,15 +2965,25 @@ renderDashboard();
 </script><script id="qfhq-track-script">
 (function(){
 'use strict';
-// QUIZFORCE HQ: anonymous completed-game tracking (not the public leaderboard).
-// Only completed original tests are sent. No questions, answers, emails, IPs or locations.
+// QUIZFORCE HQ v3 — a nickname is a player's identity ON THIS DEVICE.
+// A submitted nickname takes priority; otherwise use the last saved nickname.
+// Different nicknames get different anonymous player IDs and separate HQ XP.
+// The IDs are only disambiguators: they are not accounts or authentication.
 const ENDPOINT='/api/hq-track';
-const PLAYER_KEY='qfhq-player-id-v1';
+const LEGACY_ID_KEY='qfhq-player-id-v1';
+const LEGACY_REV_KEY='qfhq-sync-revision-v1';
+const REGISTRY_KEY='qfhq-nickname-profiles-v3';
+const STATS_KEY='qfhq-nickname-stats-v3';
+const REVISIONS_KEY='qfhq-nickname-revisions-v3';
+const PENDING_KEY='qfhq-unsubmitted-runs-v3';
 const QUEUE_KEY='qfhq-pending-events-v1';
-const REV_KEY='qfhq-sync-revision-v1';
-const storageMemory=Object.create(null);
-function get(key){try{return localStorage.getItem(key)}catch(e){return storageMemory[key]||null}}
-function put(key,value){storageMemory[key]=String(value);try{localStorage.setItem(key,String(value))}catch(e){}}
+const NAME_KEY='qf-nickname';
+const UUID_RE=/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+const NAME_RE=/^[\p{L}\p{N}_ .-]{2,18}$/u;
+const memory=Object.create(null);
+function get(key){try{const x=localStorage.getItem(key);return x===null?(memory[key]??null):x}catch(_){return memory[key]??null}}
+function put(key,value){memory[key]=String(value);try{localStorage.setItem(key,String(value))}catch(_){}}
+function json(key,fallback){try{const x=JSON.parse(get(key)||'null');return x&&typeof x==='object'&&!Array.isArray(x)?x:fallback}catch(_){return fallback}}
 function uuid(){
  if(globalThis.crypto&&typeof crypto.randomUUID==='function')return crypto.randomUUID();
  const a=new Uint8Array(16);
@@ -2980,22 +2993,54 @@ function uuid(){
  const h=[...a].map(v=>v.toString(16).padStart(2,'0')).join('');
  return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);
 }
-let playerId=get(PLAYER_KEY);
-if(!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(playerId||'')){
- playerId=uuid();put(PLAYER_KEY,playerId);
+const cleanName=value=>{const name=String(value||'').normalize('NFC').trim().replace(/\s+/g,' ');return NAME_RE.test(name)?name:null};
+const nameKey=value=>cleanName(value)?.toLocaleLowerCase('en')||'';
+const safe=(v,max=100000000)=>Math.max(0,Math.min(max,Math.floor(Number(v)||0)));
+const zero=()=>({xp:0,tests:0,perfectRuns:0});
+function cleanStats(s){return {xp:safe(s?.xp),tests:safe(s?.tests),perfectRuns:Math.min(safe(s?.perfectRuns),safe(s?.tests))}}
+const registry=Object.assign(Object.create(null),json(REGISTRY_KEY,{}));
+const stats=Object.assign(Object.create(null),json(STATS_KEY,{}));
+const revisions=Object.assign(Object.create(null),json(REVISIONS_KEY,{}));
+function persistProfiles(){put(REGISTRY_KEY,JSON.stringify(registry));put(STATS_KEY,JSON.stringify(stats));put(REVISIONS_KEY,JSON.stringify(revisions))}
+function existingProfile(name){
+ const key=nameKey(name),p=key&&Object.prototype.hasOwnProperty.call(registry,key)?registry[key]:null;
+ return p&&UUID_RE.test(p.id||'')?p:null;
 }
-window.qfHQGetPlayerId=()=>playerId;
-window.qfHQGetAppliedRevision=()=>Math.max(0,Math.floor(Number(get(REV_KEY))||0));
-window.qfHQSetAppliedRevision=(rev)=>{if(Number.isInteger(rev)&&rev>=0&&rev<=1000000000)put(REV_KEY,String(rev))};
-function nickname(){const n=String(get('qf-nickname')||'').trim();return /^[\p{L}\p{N}_ .-]{2,18}$/u.test(n)?n:null}
-function progress(){
- const raw=typeof window.qfHQGetProgress==='function'?window.qfHQGetProgress():{};
- const safe=(x)=>Math.max(0,Math.min(100000000,Math.floor(Number(x)||0)));
- return {xp:safe(raw.xp),tests:safe(raw.tests),perfectRuns:safe(raw.perfectRuns)};
+const legacyId=get(LEGACY_ID_KEY);
+let legacyClaimed=false;
+for(const p of Object.values(registry))if(p&&p.id===legacyId)legacyClaimed=true;
+function profile(name){
+ const clean=cleanName(name);if(!clean)return null;
+ const key=nameKey(clean);
+ let p=existingProfile(clean);
+ if(!p){
+  // Preserve the existing HQ player and all old stats for the device's last
+  // remembered nickname. Every NEW nickname thereafter gets a fresh ID.
+  const useLegacy=UUID_RE.test(legacyId||'')&&!legacyClaimed;
+  const id=useLegacy?legacyId:uuid();
+  if(useLegacy)legacyClaimed=true;
+  p={id,name:clean};registry[key]=p;
+  if(useLegacy){
+   const old=typeof window.qfHQGetProgress==='function'?window.qfHQGetProgress():zero();
+   stats[id]=cleanStats(old);
+   revisions[id]=safe(get(LEGACY_REV_KEY),1000000000);
+  }else{stats[id]=zero();revisions[id]=0}
+ }else if(p.name!==clean){p.name=clean}
+ if(!stats[p.id])stats[p.id]=zero();
+ if(!Number.isInteger(revisions[p.id]))revisions[p.id]=safe(revisions[p.id],1000000000);
+ persistProfiles();return p;
 }
-function readQueue(){try{const a=JSON.parse(get(QUEUE_KEY)||'[]');return Array.isArray(a)?a.filter(x=>x&&['sync','complete'].includes(x.type)).slice(-500):[]}catch(e){return []}}
+let activeName=cleanName(get(NAME_KEY));
+if(activeName)profile(activeName);
+function active(){return activeName?profile(activeName):null}
+function progressFor(p){return p?cleanStats(stats[p.id]):zero()}
+window.qfHQGetPlayerId=()=>active()?.id||'';
+window.qfHQGetAppliedRevision=()=>{const p=active();return p?safe(revisions[p.id],1000000000):0};
+window.qfHQSetAppliedRevision=rev=>{const p=active();if(p&&Number.isInteger(rev)&&rev>=0&&rev<=1000000000){revisions[p.id]=rev;persistProfiles()}};
+window.qfHQSetPlayerXP=value=>{const p=active();if(p&&Number.isInteger(Number(value))&&Number(value)>=0&&Number(value)<=100000000){stats[p.id]=progressFor(p);stats[p.id].xp=Number(value);persistProfiles()}};
+function readQueue(){try{const x=JSON.parse(get(QUEUE_KEY)||'[]');return Array.isArray(x)?x.filter(v=>v&&['sync','complete'].includes(v.type)).slice(-500):[]}catch(_){return []}}
 let queue=readQueue(),sending=false;
-function persist(){put(QUEUE_KEY,JSON.stringify(queue))}
+function persistQueue(){put(QUEUE_KEY,JSON.stringify(queue))}
 function isLive(){return location.protocol==='https:'||['localhost','127.0.0.1'].includes(location.hostname)}
 async function flush(){
  if(sending||!isLive()||!queue.length)return;
@@ -3004,36 +3049,87 @@ async function flush(){
   while(queue.length){
    const event=queue[0];
    const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',cache:'no-store',keepalive:true,body:JSON.stringify(event)});
-   if(r.status===400){queue=queue.filter(x=>x!==event);persist();continue}
-   if(!r.ok)break; // Missing function or temporary network error: retry next visit.
-   queue=queue.filter(x=>x!==event);persist();
+   if(r.status===400||r.status===409){queue.shift();persistQueue();continue}
+   if(!r.ok)break;
+   queue.shift();persistQueue();
   }
- }catch(e){/* Offline: events remain in local storage for later delivery. */}
+ }catch(_){/* Offline: retain the queue for next time. */}
  finally{sending=false}
 }
-function enqueue(data){
+function enqueue(event){
  if(!isLive())return;
- if(data.type==='sync')queue=queue.filter(x=>x.type!=='sync');
- queue.push(data);
- queue=queue.slice(-500);
- persist();void flush();
+ if(event.type==='sync')queue=queue.filter(x=>!(x.type==='sync'&&x.playerId===event.playerId));
+ queue.push(event);queue=queue.slice(-500);persistQueue();void flush();
 }
+function readPending(){
+ try{const x=JSON.parse(get(PENDING_KEY)||'[]');return Array.isArray(x)?x.filter(r=>r&&UUID_RE.test(r.runId||'')).slice(-100):[]}catch(_){return []}
+}
+let pending=readPending();
+function persistPending(){put(PENDING_KEY,JSON.stringify(pending))}
+function recordFor(name,run){
+ const p=profile(name);if(!p)return false;
+ const s=progressFor(p);
+ s.tests=safe(s.tests+1);
+ s.xp=safe(s.xp+safe(run.earnedXp,1000));
+ if(run.total>=10&&run.correct===run.total)s.perfectRuns=Math.min(s.tests,s.perfectRuns+1);
+ stats[p.id]=s;persistProfiles();
+ enqueue({version:1,type:'complete',playerId:p.id,runId:run.runId,nickname:p.name,
+  syncRevision:safe(revisions[p.id],1000000000),subject:run.subject,difficulty:run.difficulty,
+  correct:run.correct,total:run.total,speedrun:Boolean(run.speedrun),earnedXp:safe(run.earnedXp,1000),progress:s});
+ return true;
+}
+function finalizePending(name,onlyRunId=null,excludeRunId=null){
+ const valid=cleanName(name);if(!valid)return;
+ const keep=[];
+ for(const run of pending){
+  const should=(onlyRunId===null||run.runId===onlyRunId)&&(excludeRunId===null||run.runId!==excludeRunId);
+  if(!should||!recordFor(valid,run))keep.push(run);
+ }
+ pending=keep;persistPending();
+}
+// When a test is not submitted, its owner is the most recently saved nickname.
+// Delay ownership until the next test/page visit so a NEW submitted nickname
+// can take priority for the test that was just completed.
+window.qfHQFinalizePendingRun=()=>finalizePending(activeName);
 window.qfHQRecordCompletedRun=function(result){
  if(!result||!Number.isInteger(result.total)||result.total<1)return;
  const last=typeof window.qfHQGetLastRun==='function'?window.qfHQGetLastRun():{};
  const runId=uuid();
- enqueue({version:1,type:'complete',playerId,runId,nickname:nickname(),syncRevision:window.qfHQGetAppliedRevision(),
-  subject:result.subject,difficulty:result.difficulty,correct:result.correct,total:result.total,
-  speedrun:Boolean(last.speedrun),earnedXp:Math.max(0,Math.floor(Number(last.earnedXp)||0)),progress:progress()});
+ pending.push({runId,subject:result.subject,difficulty:result.difficulty,
+  correct:result.correct,total:result.total,speedrun:Boolean(last.speedrun),earnedXp:safe(last.earnedXp,1000)});
+ pending=pending.slice(-100);persistPending();
  return runId;
 };
+// Preview the identity for a submission WITHOUT changing the remembered name.
+window.qfHQPrepareSubmittedName=name=>profile(name)?.id||null;
+window.qfHQConfirmSubmittedName=function(name,id,runId){
+ const clean=cleanName(name),p=profile(clean);
+ if(!p||p.id!==id)return false;
+ const previous=activeName;
+ // Older unsubmitted tests stay with the previous remembered player.
+ if(previous)finalizePending(previous,null,runId||null);
+ activeName=clean;put(NAME_KEY,clean);
+ // The explicitly submitted test belongs to its SUBMITTED nickname.
+ if(runId)finalizePending(clean,runId);
+ // No previously remembered nickname? First submit claims pending tests.
+ if(!previous)finalizePending(clean);
+ // Show the correct XP for the selected nickname instead of another player's.
+ if(nameKey(previous)!==nameKey(clean)){
+  const s=progressFor(p);
+  window.qfHQApplyRemoteXP?.(s.xp);
+ }
+ window.qfHQSyncSnapshot?.();
+ window.qfHQRefreshLive?.();
+ return true;
+};
 window.qfHQSyncSnapshot=function(){
- const p=progress();if(!p.tests&&!p.xp&&!nickname())return;
- enqueue({version:1,type:'sync',playerId,nickname:nickname(),syncRevision:window.qfHQGetAppliedRevision(),progress:p});
+ const p=active();if(!p)return;
+ enqueue({version:1,type:'sync',playerId:p.id,nickname:p.name,
+  syncRevision:safe(revisions[p.id],1000000000),progress:progressFor(p)});
 };
 window.addEventListener('online',()=>void flush());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)void flush()});
-setTimeout(()=>{window.qfHQSyncSnapshot();void flush()},350);
+setTimeout(()=>{if(activeName)finalizePending(activeName);window.qfHQSyncSnapshot();void flush()},350);
 })();
 </script><script id="qfhq-live-sync-v2">
 (function(){
@@ -3045,7 +3141,7 @@ const panel=document.createElement('section');
 panel.id='qfhqLivePanel';
 panel.setAttribute('aria-label','QUIZFORCE worldwide XP rankings');
 panel.style.cssText='margin:18px auto;max-width:540px;background:#102b42;color:#f0fbff;border:1px solid #4d8fb4;border-radius:16px;padding:15px;text-align:center';
-const heading=document.createElement('h3');heading.textContent='⚡ HQ LIVE SYNC v2.1 • Galactic XP Champions';heading.style.cssText='margin:0 0 10px;color:#61ebdc;font-size:18px';
+const heading=document.createElement('h3');heading.textContent='⚡ HQ LIVE SYNC v3 • Galactic XP Champions';heading.style.cssText='margin:0 0 10px;color:#61ebdc;font-size:18px';
 const featured=document.createElement('p');featured.textContent='Connecting to worldwide HQ…';featured.style.cssText='font-weight:800;margin:10px 0';
 const list=document.createElement('div');list.style.cssText='display:grid;gap:7px;text-align:left';
 const note=document.createElement('small');note.textContent='XP rankings sync from HQ. Only nicknames are shown.';note.style.cssText='display:block;margin-top:12px;opacity:.75';
@@ -3056,21 +3152,21 @@ async function refresh(){
  if(busy||!navigator.onLine)return;
  busy=true;
  try{
-  const url='/api/hq-sync?playerId='+encodeURIComponent(getId());
+  const requestedId=getId();
+  const url=requestedId?'/api/hq-sync?playerId='+encodeURIComponent(requestedId):'/api/hq-sync';
   const r=await fetch(url,{cache:'no-store',credentials:'same-origin'});
   if(!r.ok)throw Error('HQ sync '+r.status);
   const data=await r.json();if(!data?.ok)throw Error('Invalid HQ response');
+  if(requestedId!==getId())return; // Player switched while this request was in flight.
   const player=data.player;
   if(player && Number.isInteger(player.revision) && player.revision>0){
    const applied=typeof window.qfHQGetAppliedRevision==='function'?window.qfHQGetAppliedRevision():0;
    if(player.revision>applied){
     const ok=typeof window.qfHQApplyRemoteXP==='function'&&window.qfHQApplyRemoteXP(player.xp);
     if(ok){
-     // Use HQ nickname if one was set; reset actions restore the saved game nickname.
-     if(player.nickname && /^[\p{L}\p{N}_ .-]{2,18}$/u.test(player.nickname)){
-      try{localStorage.setItem('qf-nickname',player.nickname)}catch(_){}
-      const name=document.getElementById('qfPlayerName');if(name)name.value=player.nickname;
-     }
+     // An HQ display-name edit must NOT switch the submitted-name identity.
+     // Only a real score submission can change the active nickname profile.
+     window.qfHQSetPlayerXP?.(player.xp);
      window.qfHQSetAppliedRevision?.(player.revision);
      window.qfHQSyncSnapshot?.();
     }
@@ -3084,7 +3180,7 @@ async function refresh(){
    const xp=document.createElement('strong');xp.textContent=Number(p.xp).toLocaleString()+' XP';
    row.append(name,xp);list.appendChild(row);
   });
-  note.textContent='Updated from HQ • '+new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
+  note.textContent='Connected to HQ • '+new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'})+(player?.nicknameOverridden?' • HQ display name: '+player.nickname:'');
  }catch(error){
   console.warn('HQ live sync is temporarily unavailable:',error);
   if(!list.childElementCount)featured.textContent='HQ rankings temporarily unavailable • your quiz still works!';
