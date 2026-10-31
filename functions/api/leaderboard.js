@@ -17,6 +17,15 @@ const HEADERS = {
 const reply = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: HEADERS });
 
+async function ensureLinks(db) {
+  await db.prepare(`CREATE TABLE IF NOT EXISTS qfhq_public_score_links (
+    score_id INTEGER PRIMARY KEY,
+    player_id TEXT NOT NULL,
+    run_id TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`).run();
+}
+const UUID = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 function getDB(context) {
   const db = context.env?.DB;
   if (!db || typeof db.prepare !== 'function') {
@@ -28,13 +37,20 @@ function getDB(context) {
 export async function onRequestGet(context) {
   try {
     const db = getDB(context);
-    // The last 1,000 submissions match the previous Netlify leaderboard cap.
+    await ensureLinks(db);
+    // Only submissions made with Live Sync v2 have player/run IDs.
+    // Older unlinked scores remain exactly as they were.
     const result = await db.prepare(`
-      SELECT id, player_name AS name, subject, correct, total,
-             country, created_at AS at
-      FROM scores
-      WHERE total > 0
-      ORDER BY id DESC
+      SELECT s.id, COALESCE(o.nickname_override,s.player_name) AS name,
+        s.subject, COALESCE(c.correct_override,s.correct) AS correct,
+        COALESCE(c.total_override,s.total) AS total,
+        s.country, s.created_at AS at
+      FROM scores s
+      LEFT JOIN qfhq_public_score_links l ON l.score_id=s.id
+      LEFT JOIN qfhq_hq_overrides o ON o.player_id=l.player_id
+      LEFT JOIN qfhq_hq_run_corrections c ON c.run_id=l.run_id
+      WHERE s.total > 0 AND COALESCE(o.hidden,0)=0
+      ORDER BY s.id DESC
       LIMIT 1000
     `).all();
 
@@ -107,12 +123,25 @@ export async function onRequestPost(context) {
       return reply({ error: 'Invalid score or nickname' }, 400);
     }
 
-    await db.prepare(`
+    // Optional tracking link is created only for new QUIZFORCE submissions.
+    const linked = x.playerId != null && x.runId != null;
+    if (linked && (!UUID.test(x.playerId) || !UUID.test(x.runId))) {
+      return reply({ error: 'Invalid HQ tracking reference' }, 400);
+    }
+    await ensureLinks(db);
+    const inserted = await db.prepare(`
       INSERT INTO scores (player_name, subject, correct, total, country)
       VALUES (?, ?, ?, ?, ?)
     `).bind(name, subject, correct, total, country || null).run();
-
-    return reply({ ok: true }, 201);
+    const scoreId = inserted.meta?.last_row_id;
+    if (linked && Number.isInteger(scoreId) && scoreId > 0) {
+      // The run can still be queued locally when the player submits a score.
+      // Link first; the HQ run correction joins when the run later arrives.
+      await db.prepare(`INSERT OR IGNORE INTO qfhq_public_score_links
+        (score_id,player_id,run_id) VALUES (?,?,?)`)
+        .bind(scoreId,x.playerId,x.runId).run();
+    }
+    return reply({ ok: true, linked: Boolean(linked && scoreId) }, 201);
   } catch (error) {
     console.error('QUIZFORCE leaderboard POST:', error);
     return reply({ error: 'Leaderboard temporarily unavailable' }, 503);
