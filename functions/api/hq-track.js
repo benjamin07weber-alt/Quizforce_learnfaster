@@ -21,6 +21,10 @@ export async function onRequestPost({request,env}){
   let x;
   try{x=JSON.parse(raw)}catch{return respond({error:'Invalid JSON'},400)}
   if(!x||typeof x!=='object'||Array.isArray(x)||x.version!==1||!['sync','complete'].includes(x.type)||!uuid.test(x.playerId||''))return respond({error:'Invalid tracking event'},400);
+  // An edit revision is assigned by HQ and applied locally before a player
+  // reports it. A stale queued test must not undo a newer HQ correction.
+  const syncRevision=x.syncRevision===undefined?0:x.syncRevision;
+  if(!int(syncRevision,0,1000000000))return respond({error:'Invalid sync revision'},400);
   const p=x.progress;
   if(!p||typeof p!=='object'||!int(p.xp,0,100000000)||!int(p.tests,0,100000000)||!int(p.perfectRuns,0,100000000)||p.perfectRuns>p.tests)return respond({error:'Invalid progress'},400);
   const nick=x.nickname==null?null:String(x.nickname).trim();
@@ -31,6 +35,25 @@ export async function onRequestPost({request,env}){
   // Distinct run IDs prevent double counting on retries, and SQL counts actual rows.
   const priorTests=Math.max(0,p.tests-(isRun?1:0));
   const db=env.DB;
+  // A player ID is permanently associated with its first submitted nickname.
+  // A different nickname must use a NEW player ID, even on the same device.
+  // This prevents old clients or queued events from silently merging players.
+  if(nick){
+   await db.prepare(`CREATE TABLE IF NOT EXISTS qfhq_hq_overrides (
+     player_id TEXT PRIMARY KEY, nickname_override TEXT, xp_override INTEGER,
+     hidden INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+   )`).run();
+   const prior=await db.prepare(`SELECT p.nickname, o.nickname_override FROM qfhq_players p
+     LEFT JOIN qfhq_hq_overrides o ON o.player_id=p.player_id
+     WHERE p.player_id=?`).bind(x.playerId).first();
+   const canonical=n=>String(n||'').normalize('NFC').trim().replace(/\s+/g,' ').toLocaleLowerCase('en');
+   if(prior?.nickname&&canonical(prior.nickname)!==canonical(nick)&&canonical(prior.nickname_override)!==canonical(nick))
+    return respond({error:'A different nickname needs a separate player profile'},409);
+  }
+  await db.prepare(`CREATE TABLE IF NOT EXISTS qfhq_hq_game_revisions (
+    player_id TEXT PRIMARY KEY, revision INTEGER NOT NULL DEFAULT 1,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`).run();
   await db.prepare(`
     INSERT INTO qfhq_players (player_id,nickname,xp,legacy_tests,perfect_runs,rank_index)
     VALUES (?,?,?,?,?,?)
@@ -42,6 +65,17 @@ export async function onRequestPost({request,env}){
       rank_index=MAX(qfhq_players.rank_index,excluded.rank_index),
       updated_at=CURRENT_TIMESTAMP
   `).bind(x.playerId,nick,p.xp,priorTests,p.perfectRuns,rank(p.xp)).run();
+  // If the client has actually applied the current HQ XP edit, let new XP
+  // earned in the game increase the edited total (without bumping revision).
+  // Older queued events and clients without the edit cannot overwrite it.
+  if(syncRevision>0){
+   await db.prepare(`UPDATE qfhq_hq_overrides SET
+      xp_override=MAX(xp_override,?), updated_at=CURRENT_TIMESTAMP
+      WHERE player_id=? AND xp_override IS NOT NULL
+      AND EXISTS (SELECT 1 FROM qfhq_hq_game_revisions v
+                  WHERE v.player_id=? AND v.revision=?)`)
+     .bind(p.xp,x.playerId,x.playerId,syncRevision).run();
+  }
   if(isRun){
    await db.prepare(`INSERT OR IGNORE INTO qfhq_runs
      (run_id,player_id,subject,difficulty,correct,total,speedrun,earned_xp)
