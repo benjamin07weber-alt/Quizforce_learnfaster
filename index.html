@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>QUIZFORCE — Edition 12 • Exams 2026 • Cloudflare</title>
-<meta name="quizforce-build" content="2026-10-31-v5.1-multi-profile-switcher"/>
+<meta name="quizforce-build" content="2026-10-31-v5.3-hq-style-tabs"/>
 <style>
   :root{
     --bg:#f6f7fb;--card:#ffffff;--text:#134e4a;--muted:#6b7280;--accent:#1682d4;
@@ -217,6 +217,92 @@ a{color:#6fe5d8!important}
 #qfIdeasName[readonly],#qfPlayerName[readonly]{opacity:.9;background:#1a3744;cursor:default}
 @media(max-width:440px){#qf51Switch .qf51-row>select{width:100%}#qf51Switch .qf51-row>button{flex:1}}
 </style>
+<style id="qf6-hq-tabs-style">
+/* QUIZFORCE v5.3 • HQ-style tabs. Existing game, API and player logic unchanged. */
+body:has(#home:not(.hidden)) .wrap{max-width:1220px}
+#home.qf6-tabbed{padding:24px;background:radial-gradient(ellipse at 15% 0%,#174b5d 0%,#102d38 57%)!important}
+#qf6Brand{display:flex;align-items:center;gap:16px;text-align:left;padding:5px 3px 18px;border-bottom:1px solid #35616b;margin-bottom:18px}
+#qf6Brand .logo,#home.qf6-tabbed .logo{width:64px!important;height:64px!important;min-width:64px;margin:0!important;border-radius:17px!important;box-shadow:0 7px 20px #0005!important}
+#qf6Brand h1,#home.qf6-tabbed #qf6Brand h1{font-size:clamp(24px,4vw,34px)!important;text-align:left;letter-spacing:1.2px!important;margin:0}
+#qf6Brand .tag{margin:4px 0 0!important;text-align:left;font-size:13px}
+#qf6Brand .qf6-brand-text{min-width:0;flex:1}
+#qf6Brand .qf6-version{font-size:10px;letter-spacing:1.4px;font-weight:900;color:#ffdd80;margin-bottom:3px}
+#qf6Active{border:1px solid #41777d;border-radius:999px;background:#153f4b;color:#bff8ec;padding:9px 12px;font-size:12px;font-weight:850;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#qf6Shell{display:grid;grid-template-columns:218px minmax(0,1fr);gap:19px;align-items:start;text-align:left}
+#qf6Nav{position:sticky;top:12px;display:flex;flex-direction:column;gap:5px;padding:16px 11px;background:linear-gradient(165deg,#0a2438,#123e4d);border:1px solid #386b7a;border-radius:18px;box-shadow:0 10px 30px #0003;z-index:5}
+#qf6Nav .qf6-nav-label{font-size:10px;letter-spacing:1.7px;font-weight:900;color:#9bbdc5;padding:4px 12px 10px}
+#qf6Nav button{border:1px solid transparent;border-radius:12px;background:transparent;color:#d4eaf0;padding:12px 13px;display:flex;align-items:center;gap:10px;text-align:left;font-size:14px;font-weight:850;white-space:nowrap;min-height:48px;box-shadow:none;cursor:pointer}
+#qf6Nav button:hover{background:#1a5362;border-color:#4c8492}
+#qf6Nav button[aria-selected="true"]{background:linear-gradient(110deg,#166c74,#2a526d);border-color:#5ce9d5;color:#fff;box-shadow:inset 3px 0 0 #ffda74,0 3px 12px #0002}
+#qf6Nav button .qf6-emoji{font-size:21px;line-height:1}
+#qf6Nav .qf6-nav-foot{margin:10px 9px 0;padding:13px 7px 2px;border-top:1px solid #42616f;color:#a4cbd0;font-size:11px;line-height:1.5}
+#qf6Views{min-width:0;min-height:430px}
+#qf6Views .qf6-view{background:linear-gradient(150deg,#112f43,#123941)!important;border:1px solid #3d687a;border-radius:18px;padding:clamp(15px,3vw,26px);box-shadow:0 12px 30px #0002!important;text-align:left;min-width:0;animation:qf6Fade .17s ease-out}
+#qf6Views .qf6-view[hidden]{display:none!important}
+@keyframes qf6Fade{from{opacity:.75;transform:translateY(3px)}to{opacity:1;transform:none}}
+#qf6Views h2.qf6-title{margin:0 0 6px;font-size:clamp(22px,3vw,29px);color:#f6ffff!important}
+#qf6Views p.qf6-subtitle{margin:0 0 20px;font-size:13px;line-height:1.55;color:#b4d6dc}
+#qf6Views .qf6-hero{padding:20px;border-radius:16px;border:1px solid #3a7e80;background:linear-gradient(120deg,#125b5b,#1c365c);margin:0 0 17px}
+#qf6Views .qf6-hero .qf6-kicker{font-size:11px;letter-spacing:1.8px;font-weight:900;color:#ffdb80;margin-bottom:8px}
+#qf6Views .qf6-hero h2{margin:0 0 7px;font-size:clamp(22px,4vw,31px);color:#fff!important}
+#qf6Views .qf6-hero p{color:#c5e6e8;font-size:14px;line-height:1.5;margin:0}
+#qf6Views .qf6-actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px}
+#qf6Views .qf6-actions button{flex:1 1 160px;min-height:49px;border-radius:11px;font-weight:900;padding:12px}
+#qf6Views .qf6-panel{background:#143c4c;border:1px solid #3d6e7e;border-radius:15px;padding:16px;margin:14px 0}
+#qf6Views .qf6-panel p{color:#b6d7dd;font-size:13px;line-height:1.55}
+#qf6Views #qf51Switch{margin:0 0 18px}
+#qf6Views #qfLeaderboard{margin:0;max-width:none}
+#qf6Views #qfhqLivePanel{max-width:none!important;margin:16px 0!important}
+#qf6Views #qfIdeasWidget{margin:0;max-width:none}
+#qf6Views #qfTutorialsEntry,#qf6Views #cosmoEntry{max-width:none;width:100%}
+#qf6Views #qfTutorialsPanel{margin-top:15px}
+#qf6Views #qf5News{width:100%;max-width:none;margin:12px 0}
+#qf6Views #qf11Dashboard{margin:15px 0}
+#qf6Views #qf5Open.qf6-legacy-open{display:none!important}
+#qf6-shop #qf5Overlay{position:static!important;inset:auto!important;z-index:auto!important;overflow:visible!important;min-height:0;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
+#qf6-shop #qf5Overlay[hidden]{display:none!important}
+#qf6-shop #qf5Overlay .qf5-wrap{max-width:none}
+#qf6-shop #qf5Overlay .qf5-head{display:none}
+#qf6-shop #qf5Overlay .qf5-panel{box-shadow:none}
+#qf6-shop #qf5Overlay .qf5-login{margin-top:0}
+#qf6-shop #qf5Overlay .qf5-public{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+#qf6-shop #qf5Overlay .qf5-public>.qf5-panel{margin:0}
+#qf6-shop #qf5Overlay .qf5-profile{flex-wrap:wrap}
+#qf6-shop #qf5Overlay .qf5-footer{margin-bottom:0}
+body:has(#home:not(.hidden)) #qfGlobalHome{display:none!important}
+@media(max-width:860px){
+ #home.qf6-tabbed{padding:15px}
+ #qf6Shell{display:block}
+ #qf6Nav{position:sticky;top:0;flex-direction:row;align-items:stretch;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;padding:8px;border-radius:14px;margin-bottom:13px;scrollbar-width:thin}
+ #qf6Nav .qf6-nav-label,#qf6Nav .qf6-nav-foot{display:none}
+ #qf6Nav button{min-width:100px;flex:0 0 auto;justify-content:center;padding:10px 12px;min-height:48px;font-size:12px;gap:6px}
+ #qf6Nav button .qf6-emoji{font-size:19px}
+ #qf6Nav button[aria-selected="true"]{box-shadow:inset 0 -3px 0 #ffda74}
+ #qf6Views{min-height:300px}
+}
+@media(max-width:540px){
+ #qf6Brand{gap:10px;padding:0 0 13px;margin-bottom:13px;flex-wrap:wrap}
+ #qf6Brand .logo,#home.qf6-tabbed .logo{width:52px!important;height:52px!important;min-width:52px}
+ #qf6Brand h1,#home.qf6-tabbed #qf6Brand h1{font-size:24px!important}
+ #qf6Brand .tag{font-size:11px}
+ #qf6Active{width:100%;max-width:none;text-align:center}
+ #qf6Nav button{min-width:92px;padding:10px 9px}
+ #qf6Views .qf6-view{padding:14px}
+ #qf6Views .qf6-hero{padding:15px}
+ #qf6Views .qf6-actions button{flex-basis:100%}
+ #qf6-shop #qf5Overlay .qf5-panel{padding:13px}
+}
+@media(prefers-reduced-motion:reduce){#qf6Views .qf6-view{animation:none}}
+/* Keep all seven tabs visible on portrait iPads; allow swipe on narrow phones. */
+@media(min-width:620px) and (max-width:860px){
+ #qf6Nav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;overflow:visible}
+ #qf6Nav button{min-width:0;max-width:none;width:100%;flex-direction:column;gap:4px;padding:9px 3px;font-size:10px;line-height:1.2;white-space:normal;text-align:center}
+ #qf6Nav button .qf6-emoji{font-size:20px}
+}
+#qf6SwipeHint{display:none;text-align:center;font-size:11px;color:#a4d3d5;margin:-5px 0 11px}
+@media(max-width:619px){#qf6SwipeHint{display:block}}
+
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -224,7 +310,7 @@ a{color:#6fe5d8!important}
 <div aria-label="Quizforce new logo" class="logo"><svg aria-label="Quizforce lightning Q logo" class="qf-emblem" role="img" viewbox="0 0 120 120"><defs><lineargradient id="qfGrad" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#2dd4bf"></stop><stop offset="1" stop-color="#0f766e"></stop></lineargradient></defs><rect fill="#082f35" height="114" rx="29" width="114" x="3" y="3"></rect><rect fill="none" height="104" opacity=".55" rx="25" stroke="#5eead4" stroke-width="2" width="104" x="8" y="8"></rect><path d="M83 80 A36 36 0 1 0 61 95" fill="none" stroke="url(#qfGrad)" stroke-linecap="round" stroke-width="15"></path><path d="M67 53 49 79h15l-5 24 29-37H71l9-13Z" fill="#fbbf24" stroke="#fff0b0" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="89" cy="24" fill="#fbbf24" r="4"></circle><circle cx="28" cy="91" fill="#5eead4" r="3"></circle></svg></div>
 <h1>QUIZFORCE</h1>
 <div class="tag">Learn faster. Master your subjects.</div>
-<div class="note" style="text-align:center;font-size:12px;margin:0 0 12px">⚡ Edition 12 • NS answer fixes • Cloudflare build 29 Oct</div>
+<div class="note" style="text-align:center;font-size:12px;margin:0 0 12px">⚡ v5.3 • HQ-style tabs • Protected nicknames • Cloudflare</div>
 <div class="note">Five subjects • English 360 + Afrikaans PDF 70 + revision banks • 3 levels • Personal bests</div>
 <div id="qf51Switch" aria-label="Choose your QUIZFORCE player">
   <h2>👤 Who's playing?</h2>
@@ -3718,6 +3804,146 @@ document.addEventListener('qf:active-profile-changed',update);
 document.addEventListener('qf:nickname-warning',e=>{notice.textContent='⚠️ '+(e.detail?.message||'Nickname could not be verified.');update()});
 update();
 })();
+</script>
+<script id="qf6-hq-tabs-script">
+/* QUIZFORCE v5.3 • HQ-style navigation, no backend changes. */
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const home=$('home');
+if(!home||$('qf6Nav'))return;
+const oldLogo=home.querySelector(':scope > .logo');
+const oldTitle=home.querySelector(':scope > h1');
+const oldTag=home.querySelector(':scope > .tag');
+if(!oldLogo||!oldTitle||!oldTag)return;
+const brand=document.createElement('header');brand.id='qf6Brand';
+const brandText=document.createElement('div');brandText.className='qf6-brand-text';
+const version=document.createElement('div');version.className='qf6-version';version.textContent='⚡ QUIZFORCE v5.3 • MISSION CONTROL';
+brandText.append(version,oldTitle,oldTag);
+const activePill=document.createElement('div');activePill.id='qf6Active';activePill.setAttribute('aria-live','polite');
+brand.append(oldLogo,brandText,activePill);
+const shell=document.createElement('div');shell.id='qf6Shell';
+const nav=document.createElement('nav');nav.id='qf6Nav';nav.setAttribute('role','tablist');nav.setAttribute('aria-label','QUIZFORCE sections');
+const navLabel=document.createElement('div');navLabel.className='qf6-nav-label';navLabel.textContent='YOUR QUIZFORCE';nav.append(navLabel);
+const views=document.createElement('div');views.id='qf6Views';
+const sections=[
+ ['home','🏠','Home'],['play','🎮','Play'],['profiles','👤','Profiles'],
+ ['shop','🛒','XP Shop'],['leaderboard','🏆','Leaderboard'],
+ ['messages','💬','Messages'],['learn','📚','Learn']
+];
+const buttons=new Map(),panels=new Map();
+for(const [id,emoji,label] of sections){
+ const button=document.createElement('button');button.type='button';button.id='qf6-tab-'+id;
+ button.setAttribute('role','tab');button.setAttribute('aria-controls','qf6-'+id);
+ button.innerHTML='<span class="qf6-emoji" aria-hidden="true">'+emoji+'</span><span>'+label+'</span>';
+ nav.append(button);buttons.set(id,button);
+ const panel=document.createElement('section');panel.id='qf6-'+id;panel.className='qf6-view';
+ panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',button.id);
+ panel.hidden=true;views.append(panel);panels.set(id,panel);
+}
+const navFoot=document.createElement('div');navFoot.className='qf6-nav-foot';
+navFoot.textContent='⚡ Learn faster • Level up • Be awesome';nav.append(navFoot);
+const navCol=document.createElement('div');navCol.id='qf6NavCol';navCol.append(nav);
+const swipeHint=document.createElement('div');swipeHint.id='qf6SwipeHint';swipeHint.textContent='← Swipe the tabs to see more →';navCol.append(swipeHint);
+shell.append(navCol,views);
+home.prepend(brand,shell);home.classList.add('qf6-tabbed');
+const addTitle=(id,title,subtitle)=>{
+ const panel=panels.get(id);const h=document.createElement('h2');h.className='qf6-title';h.textContent=title;
+ const p=document.createElement('p');p.className='qf6-subtitle';p.textContent=subtitle;panel.append(h,p);
+};
+const addPanel=(id,html)=>{const box=document.createElement('div');box.className='qf6-panel';box.innerHTML=html;panels.get(id).append(box);return box};
+const move=(id,elementId)=>{const el=$(elementId);if(el)panels.get(id).append(el);return el};
+const actions=(id,defs)=>{
+ const box=document.createElement('div');box.className='qf6-actions';
+ for(const [label,tab,primary] of defs){
+  const b=document.createElement('button');b.type='button';b.textContent=label;b.className=primary?'primary':'secondary';
+  b.addEventListener('click',()=>activate(tab));box.append(b);
+ }
+ panels.get(id).append(box);
+};
+const homeView=panels.get('home');
+const hero=document.createElement('div');hero.className='qf6-hero';
+hero.innerHTML='<div class="qf6-kicker">🛰️ MISSION OVERVIEW</div><h2>Ready to level up?</h2><p>Choose your mission, earn XP and climb the worldwide rankings. Your QUIZFORCE universe is one tap away.</p>';
+homeView.append(hero);
+actions('home',[['🎮 Create a test','play',true],['👤 Switch player','profiles',false],['🏆 Rankings','leaderboard',false]]);
+const notes=Array.from(home.querySelectorAll(':scope > .note'));
+notes.forEach(el=>homeView.append(el));
+move('home','qf11Dashboard');
+move('home','qf5News');
+addTitle('play','🎮 Choose your mission','Create a quiz or try the 90-second Speedrun Challenge.');
+move('play','create');move('play','qf11SpeedHome');
+addPanel('play','<strong>⚡ Study smart!</strong><p>Pick a subject, difficulty and question count. Pressing IDK teaches you, but that question stays worth 0 marks and 0 XP.</p>');
+addTitle('profiles','👤 Who’s playing?','Create a new nickname or switch between saved players. Your chosen name is used for messages and finished tests.');
+move('profiles','qf51Switch');
+const profileShortcut=document.createElement('button');profileShortcut.className='primary';profileShortcut.type='button';profileShortcut.textContent='🎭 Customise my avatar & open XP Shop →';
+profileShortcut.addEventListener('click',()=>activate('shop'));panels.get('profiles').append(profileShortcut);
+addTitle('shop','🛒 My Profile & XP Shop','Customise your astronaut, buy cosmetic upgrades and see announcements from HQ. Shopping never lowers lifetime XP.');
+const shopOpen=move('shop','qf5Open');if(shopOpen)shopOpen.classList.add('qf6-legacy-open');
+const shopOverlay=move('shop','qf5Overlay');
+if(!shopOverlay)addPanel('shop','<p>Profile shop is temporarily unavailable. Refresh QUIZFORCE and try again.</p>');
+addTitle('leaderboard','🏆 Worldwide Leaderboard','See the best scores and Galactic XP Champions from QUIZFORCE HQ.');
+move('leaderboard','qfLeaderboard');move('leaderboard','qfhqLivePanel');
+addTitle('messages','💬 Questions & Ideas','Send a question, suggest an update or report a bug. Check here for private replies from HQ.');
+move('messages','qfIdeasWidget');
+addTitle('learn','📚 Learn & Tutorials','Watch tutorials and explore Captain Cosmo lessons to practise tricky topics.');
+move('learn','cosmoEntry');move('learn','qfTutorialsEntry');move('learn','qfTutorialsPanel');
+// Preserve any unknown home-screen extensions added by earlier editions.
+for(const el of Array.from(home.children)){
+ if(el!==brand&&el!==shell)homeView.append(el);
+}
+let current='home';
+function updatePlayer(){
+ const name=window.qfHQGetActiveName?.()||'';
+ activePill.textContent=name?'🟢 '+name:'👤 Choose a player';
+ activePill.title=name?'Currently playing as '+name:'Open Profiles to create a nickname';
+}
+function activate(id){
+ if(!panels.has(id))id='home';
+ current=id;
+ for(const [key,panel] of panels){
+  const isActive=key===id;panel.hidden=!isActive;
+  buttons.get(key).setAttribute('aria-selected',String(isActive));
+  buttons.get(key).tabIndex=isActive?0:-1;
+ }
+ if(id==='shop'&&shopOverlay?.hidden&&shopOpen)shopOpen.click();
+ if(id==='messages'){
+  const ideas=$('qfIdeasContent');if(ideas?.hidden)$('qfIdeasToggle')?.click();
+ }
+ if(id==='learn'){
+  const tutorials=$('qfTutorialsPanel');if(tutorials?.hidden)$('qfTutorialsEntry')?.click();
+ }
+ if(id==='leaderboard'){
+  window.qfHQRefreshLive?.();
+  $('qfBoardRefresh')?.click();
+ }
+ if(id==='profiles')updatePlayer();
+ if(id!=='shop')document.body.style.overflow='';
+ window.scrollTo({top:0,behavior:'instant'});
+}
+for(const [id,button] of buttons){
+ button.addEventListener('click',()=>activate(id));
+ button.addEventListener('keydown',e=>{
+  if(!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp','Home','End'].includes(e.key))return;
+  e.preventDefault();const ids=sections.map(x=>x[0]);let index=ids.indexOf(id);
+  if(e.key==='Home')index=0;else if(e.key==='End')index=ids.length-1;
+  else index=(index+(e.key==='ArrowRight'||e.key==='ArrowDown'?1:-1)+ids.length)%ids.length;
+  buttons.get(ids[index]).focus();activate(ids[index]);
+ });
+}
+// The v5 profile shop used to be a fullscreen overlay. It now lives in its own tab.
+shopOpen?.addEventListener('click',()=>{
+ if(current!=='shop')activate('shop');
+ document.body.style.overflow='';
+});
+$('qf5Close')?.addEventListener('click',()=>activate('profiles'));
+for(const id of ['qfGlobalHome','rhome','toHome']){
+ $(id)?.addEventListener('click',()=>activate('home'));
+}
+document.addEventListener('qf:active-profile-changed',updatePlayer);
+updatePlayer();activate('home');
+window.qf6OpenTab=activate;
+})();
+
 </script>
 </body>
 </html>
