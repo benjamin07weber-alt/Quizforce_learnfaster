@@ -1,6 +1,6 @@
 /* QUIZFORCE PWA: cache the public quiz shell for offline practice.
    All API requests remain network-only. Navigation is network-first for updates. */
-const CACHE = 'quizforce-game-pwa-2026-10-31-v4-idk-private-questions';
+const CACHE = 'quizforce-game-pwa-2026-10-31-v5-hq-shop-profiles';
 const SHELL = ['/index.html','/manifest.webmanifest','/icon-192.png','/icon-512.png','/icon-maskable-512.png','/apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
