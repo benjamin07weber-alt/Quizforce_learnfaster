@@ -3304,7 +3304,7 @@ const panel=document.createElement('section');
 panel.id='qfhqLivePanel';
 panel.setAttribute('aria-label','QUIZFORCE worldwide XP rankings');
 panel.style.cssText='margin:18px auto;max-width:540px;background:#102b42;color:#f0fbff;border:1px solid #4d8fb4;border-radius:16px;padding:15px;text-align:center';
-const heading=document.createElement('h3');heading.textContent='⚡ HQ LIVE SYNC v3 • Galactic XP Champions';heading.style.cssText='margin:0 0 10px;color:#61ebdc;font-size:18px';
+const heading=document.createElement('h3');heading.textContent='⚡ HQ LIVE SYNC v5 • Galactic XP Champions';heading.style.cssText='margin:0 0 10px;color:#61ebdc;font-size:18px';
 const featured=document.createElement('p');featured.textContent='Connecting to worldwide HQ…';featured.style.cssText='font-weight:800;margin:10px 0';
 const list=document.createElement('div');list.style.cssText='display:grid;gap:7px;text-align:left';
 const note=document.createElement('small');note.textContent='XP rankings sync from HQ. Only nicknames are shown.';note.style.cssText='display:block;margin-top:12px;opacity:.75';
@@ -3335,11 +3335,11 @@ async function refresh(){
     }
    }
   }
-  featured.textContent=data.champion?('👑 '+data.champion.nickname+' • '+Number(data.champion.xp).toLocaleString()+' XP'+(data.champion.featured?' • HQ PICK':'')):'👑 No champions yet';
+  featured.textContent=data.champion?('👑 '+(data.champion.avatar||'')+' '+data.champion.nickname+' • '+Number(data.champion.xp).toLocaleString()+' XP'+(data.champion.featured?' • HQ PICK':'')):'👑 No champions yet';
   list.replaceChildren();
   (data.leaders||[]).forEach((p,i)=>{
    const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #4d7180;padding:7px 4px';
-   const name=document.createElement('span');name.textContent=(['🥇','🥈','🥉'][i]||'⭐')+' '+p.nickname;
+   const name=document.createElement('span');name.textContent=(['🥇','🥈','🥉'][i]||'⭐')+' '+(p.avatar||'')+' '+p.nickname;
    const xp=document.createElement('strong');xp.textContent=Number(p.xp).toLocaleString()+' XP';
    row.append(name,xp);list.appendChild(row);
   });
@@ -3380,6 +3380,148 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+</script>
+<style id="qf5-profile-style">/* QUIZFORCE v5 • standalone Profile & Shop UI */
+#qf5Open,#qf5News{display:block;width:min(100%,540px);margin:13px auto;padding:16px 18px;border:2px solid #66f5e0;border-radius:17px;background:linear-gradient(115deg,#174b59,#343075);color:#fff;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 9px 25px #02091c66}#qf5News{font-size:13px;border-color:#f9d86b;background:#28344e;text-align:left}#qf5News[hidden]{display:none!important}
+#qf5Overlay{position:fixed;inset:0;z-index:999997;overflow-y:auto;background:radial-gradient(ellipse at top,#193a6a,#060e23 70%);color:#eefaff;font-family:system-ui,-apple-system,sans-serif;padding:22px 14px}#qf5Overlay[hidden],#qf5Private[hidden]{display:none!important}#qf5Overlay *{box-sizing:border-box}#qf5Overlay button,#qf5Overlay input{font:inherit}#qf5Overlay button{cursor:pointer}#qf5Overlay button:disabled{opacity:.55;cursor:not-allowed}
+.qf5-wrap{max-width:1000px;margin:auto}.qf5-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:16px}.qf5-head h2{color:#fff;font-size:clamp(22px,4vw,32px);margin:4px 0}.qf5-head p{margin:0;color:#b6d5e7}.qf5-overline{color:#72f5dd;font-size:12px;letter-spacing:2px;font-weight:900}.qf5-panel{padding:19px;margin:13px 0;background:#122746;border:1px solid #42638e;border-radius:18px;box-shadow:0 8px 26px #0003}.qf5-panel h3{color:#a7f6e7;margin:0 0 12px}.qf5-panel p,.qf5-panel small{color:#c2d8ed}.qf5-panel label{display:block;font-weight:850;margin-bottom:8px}.qf5-line{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:8px}.qf5-line input{flex:1;min-width:175px;padding:13px;background:#09172c;color:white;border:1px solid #6484a4;border-radius:10px}.qf5-line button,.qf5-choice,.qf5-secondary{border:1px solid #74d9d4;border-radius:11px;background:#173c55;color:white;padding:11px 14px;font-weight:800}.qf5-secondary{white-space:nowrap}.qf5-status{padding:13px;border-radius:12px;background:#143d39;border:1px solid #397a76;margin:10px 0}.qf5-status.qf5-error{background:#472a40;border-color:#b45e6c}.qf5-public{display:grid;grid-template-columns:1fr 1fr;gap:14px}.qf5-public>.qf5-panel{margin:0}.qf5-profile{display:flex;align-items:center;gap:20px}.qf5-avatar{font-size:70px;min-width:125px;min-height:125px;display:grid;place-items:center;border:5px solid #54e9ec;border-radius:30px;background:#0b1931}.qf5-avatar[data-frame=fire_frame]{box-shadow:0 0 30px #ff762a}.qf5-avatar[data-frame=galaxy_frame]{box-shadow:0 0 28px #b594ff,0 0 45px #51b3ff}.qf5-avatar[data-frame=blue_frame]{box-shadow:0 0 25px #2e9fff}.qf5-player h3{font-size:26px;margin:0 0 6px!important}.qf5-player p{margin:8px 0}.qf5-options{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 22px}.qf5-choice{min-width:52px;min-height:47px}.qf5-choice.selected{background:#f1d46c;color:#1c2947;border-color:#f1d46c;box-shadow:0 0 0 2px #f1d46c44}.qf5-shop{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.qf5-item{display:grid;gap:10px;border:1px solid #476c9c;background:#10203a;border-radius:14px;padding:15px}.qf5-item strong{font-size:18px}.qf5-item span{color:#ffdf83;font-weight:800}.qf5-standing{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #ffffff22;padding:8px 0}.qf5-footer{text-align:center;color:#a9c6dc;font-size:12px;margin:20px auto 45px;max-width:720px}@media(max-width:620px){.qf5-public{grid-template-columns:1fr}.qf5-profile{align-items:flex-start}.qf5-avatar{min-width:88px;min-height:88px;font-size:50px}.qf5-head{align-items:center}.qf5-head h2{font-size:20px}.qf5-secondary{padding:10px}}
+</style>
+<script id="qf5-profile-script">(function(){
+'use strict';
+// QUIZFORCE v5: a private, nickname-specific cosmetics wallet and profile.
+// This uses the SAME random inbox key as v4 messages. It is never sent to HQ.
+const $=id=>document.getElementById(id);
+const NAME=/^[\p{L}\p{N}_ .-]{2,18}$/u;
+const colors={cyan:'#54e9ec',violet:'#b69aff',blue:'#71b8ff',green:'#8df2b6',orange:'#ffc274',pink:'#ff9dd0'};
+const AVATARS=['🦁','🚀','🦊','🐯','🦄','🤖','🐼','🦉','🐬','🐉'];
+const COLOR_NAMES=Object.keys(colors);
+const host=$('qfLeaderboard')||document.body;
+const openBtn=document.createElement('button');openBtn.id='qf5Open';openBtn.type='button';openBtn.textContent='👤 MY PROFILE & 🛒 XP SHOP';
+host.insertAdjacentElement('afterend',openBtn);
+const news=document.createElement('button');news.id='qf5News';news.type='button';news.hidden=true;
+openBtn.insertAdjacentElement('afterend',news);
+const overlay=document.createElement('section');overlay.id='qf5Overlay';overlay.hidden=true;
+overlay.innerHTML=`<div class="qf5-wrap">
+  <header class="qf5-head"><div><div class="qf5-overline">⚡ QUIZFORCE v5.0</div><h2>👤 PROFILE & 🛒 XP SHOP</h2><p>Customise your astronaut. Shop items are cosmetic only!</p></div><button type="button" id="qf5Close" class="qf5-secondary">✕ Close</button></header>
+  <div class="qf5-panel qf5-login"><label for="qf5Name">Nickname on this device</label><div class="qf5-line"><input id="qf5Name" maxlength="18" placeholder="Your submitted nickname" autocomplete="off"><button id="qf5Load" type="button">🚀 Open profile</button></div><small>Different nicknames on the same iPad have separate XP wallets and items. Your score submissions decide which nickname owns a test.</small></div>
+  <div id="qf5Status" role="status" class="qf5-status">Open your profile to see your items.</div>
+  <div id="qf5Public" class="qf5-public"><div class="qf5-panel"><h3>📡 HQ announcements</h3><p id="qf5Announcement">No announcement right now.</p></div><div class="qf5-panel"><h3>🏆 HQ competition</h3><p id="qf5Competition">No competition right now.</p><div id="qf5CompetitionBoard"></div></div></div>
+  <div id="qf5Private" hidden>
+    <div class="qf5-profile qf5-panel"><div id="qf5AvatarBig" class="qf5-avatar">🚀</div><div class="qf5-player"><h3 id="qf5DisplayName">Player</h3><div id="qf5Title">🚀 Space Cadet</div><p id="qf5Stats">0 XP • 0 games</p><p id="qf5Balance">🛒 0 spendable XP</p><div id="qf5Fav">🏅 No favourite badge</div></div></div>
+    <div class="qf5-panel"><h3>🎭 Choose your avatar — FREE</h3><div id="qf5Avatars" class="qf5-options"></div><h3>🎨 Profile colour — FREE</h3><div id="qf5Colors" class="qf5-options"></div></div>
+    <div class="qf5-panel"><h3>🛒 XP SHOP</h3><p>Buying an item uses <strong>spendable XP</strong>, not your lifetime XP or rank. Every item can be bought once.</p><div id="qf5Shop" class="qf5-shop"></div></div>
+    <div class="qf5-panel"><h3>🎖️ Favourite earned badge</h3><div id="qf5Badges" class="qf5-options"></div><small>HQ can also award you special badges!</small></div>
+  </div>
+  <p class="qf5-footer">🔐 Your profile key stays on this device. No real names, addresses or contact details needed. Internet required for the shop.</p>
+</div>`;
+document.body.append(overlay);
+let data=null,active=null,busy=false,publicState=null;
+const status=(message,bad=false)=>{const el=$('qf5Status');el.textContent=message;el.classList.toggle('qf5-error',bad)};
+const get=k=>{try{return localStorage.getItem(k)||''}catch{return ''}};
+const put=(k,v)=>{try{localStorage.setItem(k,v);return true}catch{return false}};
+function credentials(){
+ const nickname=$('qf5Name').value.normalize('NFC').trim().replace(/\s+/g,' ');
+ if(!NAME.test(nickname))throw Error('Enter a nickname of 2–18 letters or numbers.');
+ const playerId=window.qfHQPrepareSubmittedName?.(nickname);
+ if(!playerId)throw Error('Player tracking is still loading. Reload QUIZFORCE.');
+ const keyName='qf-feedback-inbox-key-v4:'+playerId;
+ let inboxKey=get(keyName);
+ if(!/^[0-9a-f]{64}$/i.test(inboxKey)){
+  if(!crypto?.getRandomValues)throw Error('Open QUIZFORCE using HTTPS.');
+  inboxKey=[...crypto.getRandomValues(new Uint8Array(32))].map(v=>v.toString(16).padStart(2,'0')).join('');
+  if(!put(keyName,inboxKey))throw Error('Enable browser storage to keep your profile.');
+ }
+ return {playerId,nickname,inboxKey};
+}
+async function request(body){
+ const r=await fetch('/api/profile',{method:'POST',credentials:'same-origin',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ let result;try{result=await r.json()}catch{throw Error('Profile server returned invalid data.');}
+ if(!r.ok||!result.ok)throw Error(result.error||'Profile is temporarily unavailable.');
+ return result.data;
+}
+function button(text,action,value,selected=false,disabled=false){
+ const b=document.createElement('button');b.type='button';b.className='qf5-choice'+(selected?' selected':'');b.textContent=text;b.disabled=disabled;
+ b.dataset.action=action;b.dataset.value=value;return b;
+}
+function paint(){
+ if(!data)return;
+ $('qf5Private').hidden=false;
+ $('qf5AvatarBig').textContent=data.avatar;
+ $('qf5AvatarBig').style.borderColor=colors[data.color]||colors.cyan;
+ $('qf5AvatarBig').dataset.frame=data.frame;
+ $('qf5DisplayName').textContent=data.nickname;
+ $('qf5DisplayName').style.color=data.title==='gold_name'?'#ffdf62':colors[data.color]||colors.cyan;
+ $('qf5Title').textContent=data.title==='gold_name'?'👑 Golden Name':data.frame==='galaxy_frame'?'🌌 Galactic Profile':data.frame==='fire_frame'?'🔥 Fire Frame':'🚀 Quizforce Explorer';
+ $('qf5Stats').textContent=`⚡ ${data.xp.toLocaleString()} lifetime XP · 🎮 ${data.games} games · 💯 ${data.perfect} perfect scores`;
+ $('qf5Balance').textContent=`🛒 ${data.balance.toLocaleString()} spendable XP (${data.spent.toLocaleString()} spent)`;
+ $('qf5Fav').textContent=data.favoriteBadge==='none'?'🏅 No favourite badge':'🏅 '+(data.badgeNames[data.favoriteBadge]||data.favoriteBadge);
+ $('qf5Avatars').replaceChildren(...AVATARS.map(a=>button(a,'avatar',a,data.avatar===a)));
+ $('qf5Colors').replaceChildren(...COLOR_NAMES.map(c=>{const b=button('● '+c,'color',c,data.color===c);b.style.borderColor=colors[c];return b}));
+ const shop=$('qf5Shop');shop.replaceChildren();
+ Object.entries(data.shop||{}).forEach(([id,item])=>{
+  const owned=data.owned.includes(id),equipped=data[item.field]===id;
+  const card=document.createElement('div');card.className='qf5-item';
+  const title=document.createElement('strong');title.textContent=item.name;
+  const price=document.createElement('span');price.textContent=owned?'✅ Owned':item.cost+' XP';
+  const b=button(equipped?'✓ Equipped':owned?'Equip':`Buy • ${item.cost} XP`,owned?'equip':'buy',id,equipped,equipped||!owned&&data.balance<item.cost);
+  card.append(title,price,b);shop.append(card);
+ });
+ const badges=$('qf5Badges');badges.replaceChildren(button('No badge','favoriteBadge','none',data.favoriteBadge==='none'));
+ (data.badges||[]).forEach(id=>badges.append(button(data.badgeNames[id]||id,'favoriteBadge',id,data.favoriteBadge===id)));
+}
+async function openProfile(){
+ if(busy)return;busy=true;$('qf5Load').disabled=true;
+ try{
+  const who=credentials();status('📡 Opening '+who.nickname+'…');
+  const result=await request({action:'load',...who});
+  active=who;data=result;paint();status('✅ '+who.nickname+' profile connected to HQ!');
+ }catch(e){status('⚠️ '+e.message,true)}finally{busy=false;$('qf5Load').disabled=false}
+}
+async function change(action,value){
+ if(busy||!active||!data)return;
+ busy=true;status('📡 Saving to HQ…');
+ try{
+  let payload;
+  if(action==='buy'){
+   if(!confirm('Buy '+data.shop[value]?.name+' for '+data.shop[value]?.cost+' spendable XP?')){busy=false;status('Purchase cancelled.');return;}
+   payload={action:'buy',itemId:value};
+  }else if(action==='equip'){
+   payload={action:'set',field:data.shop[value]?.field,value};
+  }else{
+   payload={action:'set',field:action,value};
+  }
+  data=await request({...payload,...active});paint();status('✅ Saved! Your lifetime XP and Galactic Rank stay the same.');
+ }catch(e){status('⚠️ '+e.message,true)}finally{busy=false}
+}
+async function refreshPublic(){
+ try{
+  const r=await fetch('/api/profile',{cache:'no-store'});if(!r.ok)throw Error('No public updates');
+  const response=await r.json();if(!response.ok)return;
+  publicState=response.data;const a=publicState.announcement,c=publicState.competition;
+  $('qf5Announcement').textContent=a?.text||'No announcement right now.';
+  $('qf5Competition').textContent=c?.title?`${c.title} • ${c.subject} • Ends ${new Date(c.end).toLocaleString('en-ZA')}. First 10+ question attempt counts!`:'No competition right now.';
+  const board=$('qf5CompetitionBoard');board.replaceChildren();
+  (publicState.leaderboard||[]).slice(0,5).forEach((p,i)=>{
+   const row=document.createElement('div');row.className='qf5-standing';
+   const left=document.createElement('span');left.textContent=(['🥇','🥈','🥉'][i]||'⭐')+' '+p.nickname;
+   const right=document.createElement('strong');right.textContent=p.correct+'/'+p.total;
+   row.append(left,right);board.append(row);
+  });
+  if(a?.text||c?.title){news.hidden=false;news.textContent=a?.text?'📣 HQ NEWS: '+a.text.slice(0,100):'🏆 COMPETITION: '+c.title;}
+  else news.hidden=true;
+ }catch(e){/* No internet: quiz questions still work offline. */}
+}
+openBtn.addEventListener('click',()=>{overlay.hidden=false;document.body.style.overflow='hidden';$('qf5Name').value=get('qf-nickname')||'';void refreshPublic();if($('qf5Name').value)void openProfile();});
+news.addEventListener('click',()=>openBtn.click());
+$('qf5Close').addEventListener('click',()=>{overlay.hidden=true;document.body.style.overflow=''});
+$('qf5Load').addEventListener('click',()=>void openProfile());
+$('qf5Name').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();void openProfile()}});
+$('qf5Name').addEventListener('change',()=>{$('qf5Private').hidden=true;active=null;data=null;status('Tap Open profile for this nickname.')});
+overlay.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(b)void change(b.dataset.action,b.dataset.value)});
+window.qf5Refresh=()=>{void refreshPublic();if(!overlay.hidden&&active)void openProfile()};
+setTimeout(refreshPublic,1700);
+setInterval(()=>{if(!document.hidden)void refreshPublic()},120000);
+})();
 </script>
 </body>
 </html>
