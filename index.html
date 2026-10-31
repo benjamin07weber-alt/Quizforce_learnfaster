@@ -2757,7 +2757,7 @@ $("#qfSaveScore").onclick=async()=>{
  const submissionSequence=qfResultSequence;
  $("#qfSaveMessage").textContent="Sending score…";
  try{
-  const r=await fetch(QF_BOARD_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...qfLastResult,name,country:countrySelect.value})});
+  const r=await fetch(QF_BOARD_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...qfLastResult,name,country:countrySelect.value,playerId:window.qfHQGetPlayerId?.()||null,runId:qfLastResult.runId||null})});
   const data=await r.json();if(!r.ok)throw Error(data.error||"Could not submit score");
   qfScoreSubmissionState="submitted";
   qfLastResult.__submitted=true;
@@ -2826,7 +2826,7 @@ function finish(){if(qf11RunFinished)return;qf11RunFinished=true;qf11EndRun();sh
  // HQ tracking is separate from the public leaderboard and must never stop a quiz.
  // Count completed original tests, even when no leaderboard score is submitted.
  if(!reviewMode && typeof window.qfHQRecordCompletedRun==="function"){
-  try{window.qfHQRecordCompletedRun({subject:qfLastResult.subject,correct:score,total:test.length,difficulty:$("#difficulty").value})}
+  try{qfLastResult.runId=window.qfHQRecordCompletedRun({subject:qfLastResult.subject,correct:score,total:test.length,difficulty:$("#difficulty").value})}
   catch(error){console.warn("QUIZFORCE HQ tracking unavailable:",error)}
  }
 }
@@ -2878,6 +2878,12 @@ let state=load(),runStarted=false,runFinished=false,speed=false,deadline=0,ticke
 let qfHQLastRunXP=0,qfHQLastRunSpeed=false;
 window.qfHQGetProgress=()=>({xp:Math.max(0,Math.floor(Number(state.xp)||0)),tests:Math.max(0,Math.floor(Number(state.tests)||0)),perfectRuns:Math.max(0,Math.floor(Number(state.perfectRuns)||0)),rankIndex:rank()});
 window.qfHQGetLastRun=()=>({earnedXp:qfHQLastRunXP,speedrun:qfHQLastRunSpeed});
+// HQ admin XP changes are applied to the player's actual local game progress.
+window.qfHQApplyRemoteXP=function(value){
+ const xp=Number(value);
+ if(!Number.isInteger(xp)||xp<0||xp>100000000)return false;
+ state.xp=xp;save();return true;
+};
 function rollover(){if(state.day!==today()){state.day=today();state.missions={test:false,accuracy:false,speed:false};state.claimed=false;}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}renderDashboard()}
 function rank(){let n=0;for(let i=0;i<ranks.length;i++)if(state.xp>=ranks[i][1])n=i;return n}
@@ -2961,6 +2967,7 @@ renderDashboard();
 const ENDPOINT='/api/hq-track';
 const PLAYER_KEY='qfhq-player-id-v1';
 const QUEUE_KEY='qfhq-pending-events-v1';
+const REV_KEY='qfhq-sync-revision-v1';
 const storageMemory=Object.create(null);
 function get(key){try{return localStorage.getItem(key)}catch(e){return storageMemory[key]||null}}
 function put(key,value){storageMemory[key]=String(value);try{localStorage.setItem(key,String(value))}catch(e){}}
@@ -2977,6 +2984,9 @@ let playerId=get(PLAYER_KEY);
 if(!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(playerId||'')){
  playerId=uuid();put(PLAYER_KEY,playerId);
 }
+window.qfHQGetPlayerId=()=>playerId;
+window.qfHQGetAppliedRevision=()=>Math.max(0,Math.floor(Number(get(REV_KEY))||0));
+window.qfHQSetAppliedRevision=(rev)=>{if(Number.isInteger(rev)&&rev>=0&&rev<=1000000000)put(REV_KEY,String(rev))};
 function nickname(){const n=String(get('qf-nickname')||'').trim();return /^[\p{L}\p{N}_ .-]{2,18}$/u.test(n)?n:null}
 function progress(){
  const raw=typeof window.qfHQGetProgress==='function'?window.qfHQGetProgress():{};
@@ -3011,17 +3021,80 @@ function enqueue(data){
 window.qfHQRecordCompletedRun=function(result){
  if(!result||!Number.isInteger(result.total)||result.total<1)return;
  const last=typeof window.qfHQGetLastRun==='function'?window.qfHQGetLastRun():{};
- enqueue({version:1,type:'complete',playerId,runId:uuid(),nickname:nickname(),
+ const runId=uuid();
+ enqueue({version:1,type:'complete',playerId,runId,nickname:nickname(),syncRevision:window.qfHQGetAppliedRevision(),
   subject:result.subject,difficulty:result.difficulty,correct:result.correct,total:result.total,
   speedrun:Boolean(last.speedrun),earnedXp:Math.max(0,Math.floor(Number(last.earnedXp)||0)),progress:progress()});
+ return runId;
 };
 window.qfHQSyncSnapshot=function(){
  const p=progress();if(!p.tests&&!p.xp&&!nickname())return;
- enqueue({version:1,type:'sync',playerId,nickname:nickname(),progress:p});
+ enqueue({version:1,type:'sync',playerId,nickname:nickname(),syncRevision:window.qfHQGetAppliedRevision(),progress:p});
 };
 window.addEventListener('online',()=>void flush());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)void flush()});
 setTimeout(()=>{window.qfHQSyncSnapshot();void flush()},350);
+})();
+</script><script id="qfhq-live-sync-v2">
+(function(){
+'use strict';
+// Live, read-only HQ edits. HQ admin credentials are NEVER used by the game.
+const host=document.getElementById('qfLeaderboard');
+if(!host)return;
+const panel=document.createElement('section');
+panel.id='qfhqLivePanel';
+panel.setAttribute('aria-label','QUIZFORCE worldwide XP rankings');
+panel.style.cssText='margin:18px auto;max-width:540px;background:#102b42;color:#f0fbff;border:1px solid #4d8fb4;border-radius:16px;padding:15px;text-align:center';
+const heading=document.createElement('h3');heading.textContent='⚡ HQ LIVE SYNC v2.1 • Galactic XP Champions';heading.style.cssText='margin:0 0 10px;color:#61ebdc;font-size:18px';
+const featured=document.createElement('p');featured.textContent='Connecting to worldwide HQ…';featured.style.cssText='font-weight:800;margin:10px 0';
+const list=document.createElement('div');list.style.cssText='display:grid;gap:7px;text-align:left';
+const note=document.createElement('small');note.textContent='XP rankings sync from HQ. Only nicknames are shown.';note.style.cssText='display:block;margin-top:12px;opacity:.75';
+panel.append(heading,featured,list,note);host.insertAdjacentElement('afterend',panel);
+const getId=()=>typeof window.qfHQGetPlayerId==='function'?window.qfHQGetPlayerId():'';
+let busy=false;
+async function refresh(){
+ if(busy||!navigator.onLine)return;
+ busy=true;
+ try{
+  const url='/api/hq-sync?playerId='+encodeURIComponent(getId());
+  const r=await fetch(url,{cache:'no-store',credentials:'same-origin'});
+  if(!r.ok)throw Error('HQ sync '+r.status);
+  const data=await r.json();if(!data?.ok)throw Error('Invalid HQ response');
+  const player=data.player;
+  if(player && Number.isInteger(player.revision) && player.revision>0){
+   const applied=typeof window.qfHQGetAppliedRevision==='function'?window.qfHQGetAppliedRevision():0;
+   if(player.revision>applied){
+    const ok=typeof window.qfHQApplyRemoteXP==='function'&&window.qfHQApplyRemoteXP(player.xp);
+    if(ok){
+     // Use HQ nickname if one was set; reset actions restore the saved game nickname.
+     if(player.nickname && /^[\p{L}\p{N}_ .-]{2,18}$/u.test(player.nickname)){
+      try{localStorage.setItem('qf-nickname',player.nickname)}catch(_){}
+      const name=document.getElementById('qfPlayerName');if(name)name.value=player.nickname;
+     }
+     window.qfHQSetAppliedRevision?.(player.revision);
+     window.qfHQSyncSnapshot?.();
+    }
+   }
+  }
+  featured.textContent=data.champion?('👑 '+data.champion.nickname+' • '+Number(data.champion.xp).toLocaleString()+' XP'+(data.champion.featured?' • HQ PICK':'')):'👑 No champions yet';
+  list.replaceChildren();
+  (data.leaders||[]).forEach((p,i)=>{
+   const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #4d7180;padding:7px 4px';
+   const name=document.createElement('span');name.textContent=(['🥇','🥈','🥉'][i]||'⭐')+' '+p.nickname;
+   const xp=document.createElement('strong');xp.textContent=Number(p.xp).toLocaleString()+' XP';
+   row.append(name,xp);list.appendChild(row);
+  });
+  note.textContent='Updated from HQ • '+new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
+ }catch(error){
+  console.warn('HQ live sync is temporarily unavailable:',error);
+  if(!list.childElementCount)featured.textContent='HQ rankings temporarily unavailable • your quiz still works!';
+ }finally{busy=false}
+}
+setTimeout(refresh,1100);
+setInterval(()=>{if(!document.hidden)void refresh()},60000);
+window.addEventListener('online',()=>void refresh());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh()});
+window.qfHQRefreshLive=refresh;
 })();
 </script><style id="cosmo-learn-css">#cosmoEntry{display:block;margin:12px auto;width:min(100%,440px);padding:16px;border:2px solid #6beaff;border-radius:16px;background:linear-gradient(110deg,#13384b,#392269);color:white;font-size:20px;font-weight:900;cursor:pointer}#cosmoPanel{position:fixed;z-index:999999;inset:0;overflow:auto;background:radial-gradient(ellipse at top,#203b71,#080f25 65%);color:#eefaff;padding:18px;font-family:system-ui,sans-serif}#cosmoPanel[hidden]{display:none!important}.cosmo-wrap{max-width:900px;margin:auto}.cosmo-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.cosmo-close{padding:10px 16px;border:1px solid #a4eaf8;background:#163955;color:white;border-radius:10px;font-weight:bold}.cosmo-cats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.cosmo-cat{border:1px solid #67bde0;border-radius:20px;padding:9px 13px;background:#153354;color:white}.cosmo-cat.active{background:#f3ce4c;color:#18213d;font-weight:800}.cosmo-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.cosmo-card{border:1px solid #41759d;border-radius:15px;padding:15px;background:#152848;color:#fff;text-align:left;cursor:pointer}.cosmo-card b{display:block;font-size:17px;margin:7px 0}.cosmo-scene{position:relative;overflow:hidden;border-radius:20px;min-height:235px;background:radial-gradient(circle at 70% 15%,#355fb0,#0b1639 65%);display:flex;align-items:center;justify-content:space-around;gap:15px;padding:24px;margin:14px 0;border:1px solid #4d7bb3}.cosmo-teacher{font-size:95px;filter:drop-shadow(0 0 15px #58dafa);animation:cosmoFloat 3s ease-in-out infinite}.cosmo-object{font-size:90px;filter:drop-shadow(0 0 18px #ffc45d);animation:cosmoFloat 4s ease-in-out infinite reverse}@keyframes cosmoFloat{50%{transform:translateY(-12px)}}.cosmo-player{width:100%;margin:12px 0}.cosmo-tip{padding:16px;background:#162e4c;border-left:4px solid #f3ce4c;border-radius:10px}.cosmo-option{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid #6484aa;background:#193758;color:white;border-radius:10px}.cosmo-option:disabled{opacity:.7}.cosmo-back{padding:12px 16px;background:#f3ce4c;border:0;border-radius:10px;font-weight:bold;color:#172241;margin:14px 0}.cosmo-sub{color:#bbd6e8;font-size:13px}.cosmo-unknown{margin-top:18px;border-top:1px solid #496888;padding-top:14px}#cosmoPanel h2{color:#fff}#cosmoPanel h3{color:#f3ce4c}#cosmoPanel button{cursor:pointer}.cosmo-video{display:block;width:100%;max-height:65vh;aspect-ratio:16/9;object-fit:contain;background:#020817;border:2px solid #54c9f5;border-radius:15px}.cosmo-audio-backup{padding:10px 15px;background:#14284a;border-radius:12px;margin-bottom:18px}.cosmo-audio-backup summary{cursor:pointer;font-weight:700}</style><script id="cosmo-learn-js">(function(){const lessons=[["Natural Sciences", "Earth’s Rotation and Revolution", "Earth's Rotation and Year.mp3", "🌍", "Earth spins once in about 24 hours, creating day and night. It orbits the Sun in about a year.", "Which movement causes day and night?", ["Rotation", "Revolution", "Reflection"], 0], ["Natural Sciences", "Moon Phases", "Moon Phases Explained.mp3", "🌙", "The Moon reflects sunlight. As it orbits Earth, we see different amounts of its sunlit half.", "What causes the normal phases of the Moon?", ["Earth’s shadow", "Our changing view of its sunlit half", "The Moon changing shape"], 1], ["Natural Sciences", "Water Purification", "Water Purification Steps.mp3", "💧", "Settling and filtering can remove solids, but clear water is not always safe to drink.", "Does filtering guarantee safe drinking water?", ["Yes", "No"], 1], ["Natural Sciences", "Natural Resources", "Natural Resources Overview.mp3", "🌱", "Natural resources include water, soil, sunlight, forests and minerals.", "Which resource is non-renewable?", ["Sunlight", "Coal", "Wind"], 1], ["Natural Sciences", "Conservation and Sustainability", "Earth Conservation and Sustainability.mp3", "🌳", "Reduce waste, save water, and care for the environment.", "Which action helps conserve resources?", ["Leaving taps running", "Refilling a reusable bottle", "Wasting electricity"], 1], ["Social Sciences", "Map Reading", "Learning Map Reading.mp3", "🗺️", "A map’s title, key, compass and scale help us understand it.", "If north is at the top, what direction is right?", ["West", "East", "South"], 1], ["Social Sciences", "Democracy", "South African Democracy.mp3", "🗳️", "South Africa held its first national democratic election with universal adult voting rights in 1994.", "In what year was that election?", ["1994", "1976", "2004"], 0], ["Social Sciences", "Rights and Responsibilities", "Rights And Responsibilities.mp3", "⚖️", "Respecting the rights of others helps democracy work.", "What should we do with different opinions?", ["Listen respectfully", "Shout others down"], 0], ["Social Sciences", "Historical People", "Why Historical People Matter.mp3", "🏛️", "Historical figures help us understand how society has changed.", "What helps us study a historical figure?", ["What they did and why it mattered", "Only their favourite food"], 0], ["English", "Reading Comprehension", "Reading Comprehension.mp3", "📚", "Read carefully, use clues, and return to the text to check your answers.", "What is an inference?", ["A random guess", "A conclusion using clues"], 1], ["Afrikaans", "Werkwoorde", "Werkwoorde Verken.mp3", "✍️", "Werkwoorde vertel wat iemand doen of wat gebeur.", "Wat is die werkwoord in “Die kinders lees boeke”?", ["Kinders", "Lees", "Boeke"], 1], ["Afrikaans", "Sinbou en Leesbegrip", "Sinbou Oefeninge.mp3", "📖", "Lees die teks aandagtig en let op woordorde.", "Wie lees in “Die kind lees ’n boek”?", ["Die kind", "Die boek"], 0]];const newAudioLessons=[
 ["Mathematics","Addition","Maths_Addition.mp3","➕","Line up place values when adding.","What is 245 + 138?",["383","373","483"],0],
@@ -3039,8 +3112,7 @@ setTimeout(()=>{window.qfHQSyncSnapshot();void flush()},350);
 ["Natural Sciences","The Solar System","NS_Solar_System.mp3","🪐","The eight planets orbit the Sun.","Which is the largest planet?",["Earth","Jupiter","Mars"],1]
 ];
 for(const l of newAudioLessons){const i=lessons.findIndex(x=>x[0]===l[0]&&x[1]===l[1]);if(i>=0)lessons[i]=l;else lessons.push(l)}
-const extras=[];let active='All';let current=null;const panel=document.createElement('section');panel.id='cosmoPanel';panel.hidden=true;panel.innerHTML=`<div class="cosmo-wrap"><div class="cosmo-head"><div><div style="font-size:13px;color:#9bd5ff">QUIZFORCE EDITION 12</div><h2 style="margin:2px 0">🚀 LEARN HOW · Captain Cosmo</h2></div><button class="cosmo-close" id="cosmoClose">✕ Close</button></div><div id="cosmoContent"></div></div>`;document.body.appendChild(panel);const content=panel.querySelector('#cosmoContent');const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function stop(){content.querySelectorAll('audio,video').forEach(a=>a.pause())}function list(){current=null;const cats=['All','Mathematics','Natural Sciences','Social Sciences','English','Afrikaans'];let filtered=lessons.filter(x=>active==='All'||x[0]===active);content.innerHTML=`<p class="cosmo-sub">🎬 ${lessons.length} cinematic Captain Cosmo video lessons · The five existing How-To videos remain in Tutorials.</p><div class="cosmo-cats">${cats.map(c=>`<button class="cosmo-cat ${active===c?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}</div><div class="cosmo-cards">${filtered.map(x=>`<button class="cosmo-card" data-file="${esc(x[2])}"><span style="font-size:37px">${x[3]}</span><b>${esc(x[1])}</b><small>${esc(x[0])} · ▶ Watch & practise</small></button>`).join('')}</div>`;content.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{stop();active=b.dataset.cat;list()});content.querySelectorAll('[data-file]').forEach(b=>b.onclick=()=>open(lessons.find(x=>x[2]===b.dataset.file)))}function open(x){stop();current=x;const file='learn-audio/'+encodeURIComponent(x[2]);const stem=x[2].replace(/\.mp3$/i,'').replace(/ /g,'_').replace(/'/g,'');const vid='learn-videos/'+encodeURIComponent(stem+'.mp4');const poster='learn-posters/'+encodeURIComponent(stem+'.jpg');content.innerHTML=`<button class="cosmo-back" id="cosmoBack">← All lessons</button><h2>${x[3]} ${esc(x[1])}</h2><p>🎬 <strong>Captain Cosmo's cinematic lesson</strong></p><video class="cosmo-player cosmo-video" controls playsinline preload="metadata" poster="${poster}" src="${vid}" aria-label="Captain Cosmo: ${esc(x[1])}"></video><details class="cosmo-audio-backup"><summary>🎧 Prefer audio only?</summary><audio controls preload="none" src="${file}" style="width:100%"></audio></details><div class="cosmo-tip">💡 <strong>Remember:</strong> ${esc(x[4])}</div><h3>⚡ Mission Check</h3><p>${esc(x[5])}</p><div id="cosmoAnswers">${x[6].map((o,i)=>`<button class="cosmo-option" data-answer="${i}">${esc(o)}</button>`).join('')}</div><p id="cosmoFeedback" role="status" aria-live="polite"></p><button class="cosmo-back" id="cosmoNext">← Choose another lesson</button>`;content.querySelector('#cosmoBack').onclick=list;content.querySelector('#cosmoNext').onclick=list;content.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const good=Number(b.dataset.answer)===x[7];content.querySelector('#cosmoFeedback').textContent=good?'🏆 Mission complete! Correct answer!':'💡 Not quite! Try another answer.';if(good)content.querySelectorAll('[data-answer]').forEach(t=>t.disabled=true)})}function launch(category,title){panel.hidden=false;document.body.style.overflow='hidden';active=category||'All';list();if(title){const match=lessons.find(x=>x[0]===category&&x[1]===title);if(match)open(match)}panel.scrollTop=0}function close(){stop();panel.hidden=true;document.body.style.overflow=''}panel.querySelector('#cosmoClose').onclick=close;const entry=document.createElement('button');entry.id='cosmoEntry';entry.textContent='🚀 LEARN HOW · Captain Cosmo';entry.onclick=launch;const old=document.getElementById('qfTutorialsEntry');if(old)old.insertAdjacentElement('beforebegin',entry);else{const home=document.getElementById('home')||document.getElementById('create');if(home)home.appendChild(entry);else document.body.prepend(entry)}window.openCosmoLearnHow=launch;})();</script>
-<script>
+const extras=[];let active='All';let current=null;const panel=document.createElement('section');panel.id='cosmoPanel';panel.hidden=true;panel.innerHTML=`<div class="cosmo-wrap"><div class="cosmo-head"><div><div style="font-size:13px;color:#9bd5ff">QUIZFORCE EDITION 12</div><h2 style="margin:2px 0">🚀 LEARN HOW · Captain Cosmo</h2></div><button class="cosmo-close" id="cosmoClose">✕ Close</button></div><div id="cosmoContent"></div></div>`;document.body.appendChild(panel);const content=panel.querySelector('#cosmoContent');const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function stop(){content.querySelectorAll('audio,video').forEach(a=>a.pause())}function list(){current=null;const cats=['All','Mathematics','Natural Sciences','Social Sciences','English','Afrikaans'];let filtered=lessons.filter(x=>active==='All'||x[0]===active);content.innerHTML=`<p class="cosmo-sub">🎬 ${lessons.length} cinematic Captain Cosmo video lessons · The five existing How-To videos remain in Tutorials.</p><div class="cosmo-cats">${cats.map(c=>`<button class="cosmo-cat ${active===c?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}</div><div class="cosmo-cards">${filtered.map(x=>`<button class="cosmo-card" data-file="${esc(x[2])}"><span style="font-size:37px">${x[3]}</span><b>${esc(x[1])}</b><small>${esc(x[0])} · ▶ Watch & practise</small></button>`).join('')}</div>`;content.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{stop();active=b.dataset.cat;list()});content.querySelectorAll('[data-file]').forEach(b=>b.onclick=()=>open(lessons.find(x=>x[2]===b.dataset.file)))}function open(x){stop();current=x;const file='learn-audio/'+encodeURIComponent(x[2]);const stem=x[2].replace(/\.mp3$/i,'').replace(/ /g,'_').replace(/'/g,'');const vid='learn-videos/'+encodeURIComponent(stem+'.mp4');const poster='learn-posters/'+encodeURIComponent(stem+'.jpg');content.innerHTML=`<button class="cosmo-back" id="cosmoBack">← All lessons</button><h2>${x[3]} ${esc(x[1])}</h2><p>🎬 <strong>Captain Cosmo's cinematic lesson</strong></p><video class="cosmo-player cosmo-video" controls playsinline preload="metadata" poster="${poster}" src="${vid}" aria-label="Captain Cosmo: ${esc(x[1])}"></video><details class="cosmo-audio-backup"><summary>🎧 Prefer audio only?</summary><audio controls preload="none" src="${file}" style="width:100%"></audio></details><div class="cosmo-tip">💡 <strong>Remember:</strong> ${esc(x[4])}</div><h3>⚡ Mission Check</h3><p>${esc(x[5])}</p><div id="cosmoAnswers">${x[6].map((o,i)=>`<button class="cosmo-option" data-answer="${i}">${esc(o)}</button>`).join('')}</div><p id="cosmoFeedback" role="status" aria-live="polite"></p><button class="cosmo-back" id="cosmoNext">← Choose another lesson</button>`;content.querySelector('#cosmoBack').onclick=list;content.querySelector('#cosmoNext').onclick=list;content.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const good=Number(b.dataset.answer)===x[7];content.querySelector('#cosmoFeedback').textContent=good?'🏆 Mission complete! Correct answer!':'💡 Not quite! Try another answer.';if(good)content.querySelectorAll('[data-answer]').forEach(t=>t.disabled=true)})}function launch(category,title){panel.hidden=false;document.body.style.overflow='hidden';active=category||'All';list();if(title){const match=lessons.find(x=>x[0]===category&&x[1]===title);if(match)open(match)}panel.scrollTop=0}function close(){stop();panel.hidden=true;document.body.style.overflow=''}panel.querySelector('#cosmoClose').onclick=close;const entry=document.createElement('button');entry.id='cosmoEntry';entry.textContent='🚀 LEARN HOW · Captain Cosmo';entry.onclick=launch;const old=document.getElementById('qfTutorialsEntry');if(old)old.insertAdjacentElement('beforebegin',entry);else{const home=document.getElementById('home')||document.getElementById('create');if(home)home.appendChild(entry);else document.body.prepend(entry)}window.openCosmoLearnHow=launch;})();</script><script>
 /* Installable PWA support. API and authentication continue to work online. */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
