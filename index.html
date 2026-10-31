@@ -231,6 +231,7 @@ a{color:#6fe5d8!important}
   <label for="qf51Profiles">Choose your saved profile</label>
   <div class="qf51-row"><select id="qf51Profiles" aria-label="Choose active profile"><option value="">Choose a player…</option></select><button id="qf51Create" type="button">➕ Create another profile</button></div>
   <div id="qf51New" hidden><label for="qf51NewName">New nickname (not your real name)</label><div class="qf51-row"><input id="qf51NewName" maxlength="18" autocomplete="off" placeholder="e.g. SpaceAce"><button id="qf51SaveNew" type="button">⚡ Create & use</button><button id="qf51Cancel" type="button">Cancel</button></div></div>
+  <p style="font-size:12px">🔐 Nicknames are reserved worldwide. You need internet to create a new profile. Keep this app's data to keep your nickname.</p>
   <p id="qf51Current" role="status" aria-live="polite">No profile selected yet.</p>
   <p id="qf51Notice" role="status" aria-live="polite"></p>
   <p>⚡ Your selected nickname automatically appears in messages and when you finish a test. Switch here before starting a different player's test.</p>
@@ -2846,14 +2847,17 @@ $("#qfSaveScore").onclick=async()=>{
  const name=$("#qfPlayerName").value.trim();
  if(qfLastResult.__submitted){$("#qfSaveMessage").textContent="This test score has already been submitted.";return;}
  if(!/^[\p{L}\p{N}_ .-]{2,18}$/u.test(name)){$("#qfSaveMessage").textContent="Use a nickname of 2–18 letters or numbers (no real name).";return;}
- const submittedPlayerId=window.qfHQPrepareSubmittedName?.(name)||window.qfHQGetPlayerId?.()||null;
  qfStorageSet("qf-country",countrySelect.value);
  const btn=$("#qfSaveScore");btn.disabled=true;
  qfScoreSubmissionState="sending";
  const submissionSequence=qfResultSequence;
  $("#qfSaveMessage").textContent="Sending score…";
  try{
-  const r=await fetch(QF_BOARD_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...qfLastResult,name,country:countrySelect.value,playerId:submittedPlayerId,runId:qfLastResult.runId||null})});
+  await window.qfHQRegisterName(name);
+  const submittedPlayerId=window.qfHQPrepareSubmittedName?.(name);
+  const inboxKey=window.qfHQGetInboxKey?.(submittedPlayerId);
+  if(!submittedPlayerId||!inboxKey)throw Error('Choose a registered nickname on Home first.');
+  const r=await fetch(QF_BOARD_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...qfLastResult,name,country:countrySelect.value,playerId:submittedPlayerId,inboxKey,runId:qfLastResult.runId||null})});
   const data=await r.json();if(!r.ok)throw Error(data.error||"Could not submit score");
   qfScoreSubmissionState="submitted";
   qfLastResult.__submitted=true;
@@ -3131,16 +3135,68 @@ function profile(name){
  if(!Number.isInteger(revisions[p.id]))revisions[p.id]=safe(revisions[p.id],1000000000);
  persistProfiles();return p;
 }
+// v5.2: Cloudflare reserves nicknames across devices. The private key is
+// shared with the existing message inbox and cosmetic profile on THIS device.
+const claimInFlight=new Map();
+function keyForPlayer(p){
+ const storageKey='qf-feedback-inbox-key-v4:'+p.id;
+ let key=get(storageKey);
+ if(!/^[0-9a-f]{64}$/i.test(key||'')){
+  if(!crypto?.getRandomValues)throw Error('Secure profiles require HTTPS.');
+  key=[...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  try{localStorage.setItem(storageKey,key);if(localStorage.getItem(storageKey)!==key)throw Error('Storage failed')}
+  catch(_){throw Error('Enable browser storage to keep your nickname protected.');}
+ }
+ return key;
+}
+async function registerName(name){
+ const clean=cleanName(name);
+ if(!clean)throw Error('Choose a nickname of 2–18 letters or numbers.');
+ const key=nameKey(clean);
+ if(claimInFlight.has(key))return claimInFlight.get(key);
+ const job=(async()=>{
+  const wasHere=Boolean(existingProfile(clean));
+  const p=profile(clean);
+  if(p.claimed&&!navigator.onLine)return p;
+  const inboxKey=keyForPlayer(p);
+  let response,data;
+  try{
+   response=await fetch('/api/nickname',{method:'POST',credentials:'same-origin',cache:'no-store',
+    headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'register',nickname:clean,playerId:p.id,inboxKey})});
+   data=await response.json();
+  }catch(_){throw Error('Connect to the internet to register your nickname.');}
+  if(!response.ok||!data?.ok){
+   if(response.status===403||response.status===409){
+    if(!wasHere){delete registry[key];delete stats[p.id];delete revisions[p.id];}
+    else{p.blocked=true;p.claimed=false;}
+    if(nameKey(activeName)===key){activeName=null;put(NAME_KEY,'');}
+    persistProfiles();
+    document.dispatchEvent(new CustomEvent('qf:active-profile-changed',{detail:{name:'',previousName:clean}}));
+   }
+   const e=Error(data?.error||'Nickname registration failed.');e.status=response.status;throw e;
+  }
+  p.claimed=true;p.blocked=false;p.name=data.nickname||clean;
+  registry[key]=p;persistProfiles();
+  return p;
+ })();
+ claimInFlight.set(key,job);
+ try{return await job}finally{claimInFlight.delete(key)}
+}
+window.qfHQRegisterName=registerName;
+window.qfHQGetInboxKey=playerId=>{
+ const p=Object.values(registry).find(x=>x?.id===playerId&&x.claimed&&!x.blocked);
+ return p?keyForPlayer(p):null;
+};
 let activeName=cleanName(get(NAME_KEY));
 if(activeName)profile(activeName);
 function active(){return activeName?profile(activeName):null}
 function progressFor(p){return p?cleanStats(stats[p.id]):zero()}
 // v5.1: one chosen profile at a time on this device. Switching never merges IDs.
 window.qfHQGetActiveName=()=>activeName||'';
-window.qfHQListProfiles=()=>Object.values(registry).filter(p=>p&&UUID_RE.test(p.id||'')&&cleanName(p.name)).map(p=>({name:p.name,id:p.id})).sort((a,b)=>a.name.localeCompare(b.name));
+window.qfHQListProfiles=()=>Object.values(registry).filter(p=>p&&!p.blocked&&UUID_RE.test(p.id||'')&&cleanName(p.name)).map(p=>({name:p.name,id:p.id})).sort((a,b)=>a.name.localeCompare(b.name));
 window.qfHQSelectProfile=function(name){
  const clean=cleanName(name),p=clean&&profile(clean);
- if(!p)return false;
+ if(!p||!p.claimed||p.blocked)return false;
  const previous=activeName;
  const changed=nameKey(previous)!==nameKey(clean);
  // Any old unsubmitted test belongs to the previous player, never the new one.
@@ -3166,8 +3222,16 @@ async function flush(){
  try{
   while(queue.length){
    const event=queue[0];
+   try{
+    const owner=await registerName(event.nickname);
+    if(owner.id!==event.playerId){queue.shift();persistQueue();continue;}
+    event.inboxKey=keyForPlayer(owner);
+   }catch(e){
+    if(e.status===403||e.status===409){queue.shift();persistQueue();continue;}
+    break;
+   }
    const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',cache:'no-store',keepalive:true,body:JSON.stringify(event)});
-   if(r.status===400||r.status===409){queue.shift();persistQueue();continue}
+   if(r.status===400||r.status===403||r.status===409){queue.shift();persistQueue();continue}
    if(!r.ok)break;
    queue.shift();persistQueue();
   }
@@ -3219,7 +3283,7 @@ window.qfHQRecordCompletedRun=function(result){
  return runId;
 };
 // Preview the identity for a submission WITHOUT changing the remembered name.
-window.qfHQPrepareSubmittedName=name=>profile(name)?.id||null;
+window.qfHQPrepareSubmittedName=name=>{const p=existingProfile(name);return p?.claimed&&!p.blocked?p.id:null};
 window.qfHQConfirmSubmittedName=function(name,id,runId){
  const clean=cleanName(name),p=profile(clean);
  if(!p||p.id!==id)return false;
@@ -3242,13 +3306,19 @@ window.qfHQConfirmSubmittedName=function(name,id,runId){
  return true;
 };
 window.qfHQSyncSnapshot=function(){
- const p=active();if(!p)return;
+ const p=active();if(!p||!p.claimed||p.blocked)return;
  enqueue({version:1,type:'sync',playerId:p.id,nickname:p.name,
   syncRevision:safe(revisions[p.id],1000000000),progress:progressFor(p)});
 };
 window.addEventListener('online',()=>void flush());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)void flush()});
-setTimeout(()=>{if(activeName)finalizePending(activeName);window.qfHQSyncSnapshot();void flush()},350);
+setTimeout(async()=>{
+ if(activeName){
+  try{await registerName(activeName);finalizePending(activeName);window.qfHQSyncSnapshot()}
+  catch(e){console.warn('QUIZFORCE nickname check:',e.message);document.dispatchEvent(new CustomEvent('qf:nickname-warning',{detail:{message:e.message}}))}
+ }
+ void flush();
+},350);
 })();
 </script><script id="qf-private-feedback-v4">
 (function(){
@@ -3309,8 +3379,9 @@ async function refresh(){
  const startedName=nameInput.value.normalize('NFC').trim().replace(/\s+/g,' ');
  loading=true;$('qfIdeasRefresh').disabled=true;
  try{
+  await window.qfHQRegisterName(nameInput.value);
   const p=profile();inbox.textContent='📡 Checking HQ…';
-  const data=await request({action:'inbox',playerId:p.playerId,inboxKey:p.inboxKey});
+  const data=await request({action:'inbox',nickname:p.nickname,playerId:p.playerId,inboxKey:p.inboxKey});
   // Never display a reply from the previous selected player.
   if(nameInput.value.normalize('NFC').trim().replace(/\s+/g,' ')!==p.nickname)return;
   render(data.messages||[]);
@@ -3340,6 +3411,7 @@ $('qfIdeasSend').addEventListener('click',async()=>{
  const button=$('qfIdeasSend');
  if(button.disabled)return;
  try{
+  await window.qfHQRegisterName(nameInput.value);
   const p=profile();const message=messageInput.value.trim();
   if(message.length<5||message.length>600)throw Error('Write between 5 and 600 characters.');
   button.disabled=true;status.textContent='📡 Sending your message to HQ…';
@@ -3462,7 +3534,7 @@ const news=document.createElement('button');news.id='qf5News';news.type='button'
 openBtn.insertAdjacentElement('afterend',news);
 const overlay=document.createElement('section');overlay.id='qf5Overlay';overlay.hidden=true;
 overlay.innerHTML=`<div class="qf5-wrap">
-  <header class="qf5-head"><div><div class="qf5-overline">⚡ QUIZFORCE v5.1</div><h2>👤 PROFILE & 🛒 XP SHOP</h2><p>Customise your astronaut. Shop items are cosmetic only!</p></div><button type="button" id="qf5Close" class="qf5-secondary">✕ Close</button></header>
+  <header class="qf5-head"><div><div class="qf5-overline">⚡ QUIZFORCE v5.2</div><h2>👤 PROFILE & 🛒 XP SHOP</h2><p>Customise your astronaut. Shop items are cosmetic only!</p></div><button type="button" id="qf5Close" class="qf5-secondary">✕ Close</button></header>
   <div class="qf5-panel qf5-login"><label for="qf5Name">Open or switch to a profile</label><div class="qf5-line"><input id="qf5Name" maxlength="18" placeholder="Your submitted nickname" autocomplete="off"><button id="qf5Load" type="button">🚀 Open profile</button></div><small>Opening a profile makes it the active player for quizzes and messages. Create another player using “Who's playing?” on Home. Each nickname has its own HQ wallet.</small></div>
   <div id="qf5Status" role="status" class="qf5-status">Open your profile to see your items.</div>
   <div id="qf5Public" class="qf5-public"><div class="qf5-panel"><h3>📡 HQ announcements</h3><p id="qf5Announcement">No announcement right now.</p></div><div class="qf5-panel"><h3>🏆 HQ competition</h3><p id="qf5Competition">No competition right now.</p><div id="qf5CompetitionBoard"></div></div></div>
@@ -3532,6 +3604,9 @@ function paint(){
 async function openProfile(){
  if(busy)return;busy=true;$('qf5Load').disabled=true;
  try{
+  const nickname=$('qf5Name').value.normalize('NFC').trim().replace(/\s+/g,' ');
+  status('🔐 Checking nickname availability…');
+  await window.qfHQRegisterName(nickname);
   const who=credentials();status('📡 Opening '+who.nickname+'…');
   const result=await request({action:'load',...who});
   if(!window.qfHQSelectProfile?.(who.nickname))throw Error('Could not activate this player.');
@@ -3612,27 +3687,35 @@ function update(){
  const overlay=$('qf5Overlay'),profileInput=$('qf5Name');
  if(profileInput&&(!overlay||overlay.hidden))profileInput.value=chosen;
 }
-select.addEventListener('change',()=>{
+select.addEventListener('change',async()=>{
  if(!select.value){update();return}
- if(window.qfHQSelectProfile?.(select.value))notice.textContent='⚡ Switched to '+select.value+'!';
- else notice.textContent='⚠️ Could not switch profiles. Please try again.';
- update();
+ const name=select.value;select.disabled=true;notice.textContent='🔐 Checking '+name+'…';
+ try{
+  await window.qfHQRegisterName(name);
+  if(!window.qfHQSelectProfile?.(name))throw Error('Could not activate this profile.');
+  notice.textContent='⚡ Switched to '+name+'!';
+ }catch(e){notice.textContent='❌ '+e.message}
+ finally{select.disabled=false;update()}
 });
 $('qf51Create').addEventListener('click',()=>{form.hidden=false;newName.value='';notice.textContent='';newName.focus()});
 $('qf51Cancel').addEventListener('click',()=>{form.hidden=true;notice.textContent=''});
-function create(){
+async function create(){
  const name=norm(newName.value);
  if(!NAME.test(name)){notice.textContent='⚠️ Choose a nickname with 2–18 letters or numbers (not your real name).';newName.focus();return}
  const existing=names().find(p=>p.name.toLocaleLowerCase('en')===name.toLocaleLowerCase('en'));
- if(window.qfHQSelectProfile?.(existing?.name||name)){
+ const button=$('qf51SaveNew');button.disabled=true;notice.textContent='🔐 Checking worldwide nicknames…';
+ try{
+  await window.qfHQRegisterName(existing?.name||name);
+  if(!window.qfHQSelectProfile?.(existing?.name||name))throw Error('Could not activate your nickname.');
   form.hidden=true;
-  notice.textContent=existing?'👋 Welcome back, '+existing.name+'!':'🎉 New profile created: '+name+'!';
-  update();
- }else notice.textContent='⚠️ Could not save your profile. Try again.';
+  notice.textContent=existing?'👋 Welcome back, '+existing.name+'!':'🎉 Nickname registered: '+name+'!';
+ }catch(e){notice.textContent='❌ '+e.message;newName.focus()}
+ finally{button.disabled=false;update()}
 }
 $('qf51SaveNew').addEventListener('click',create);
 newName.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();create()}});
 document.addEventListener('qf:active-profile-changed',update);
+document.addEventListener('qf:nickname-warning',e=>{notice.textContent='⚠️ '+(e.detail?.message||'Nickname could not be verified.');update()});
 update();
 })();
 </script>
