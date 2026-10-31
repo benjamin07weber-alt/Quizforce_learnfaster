@@ -1,3 +1,4 @@
+import {requireClaim} from './nickname.js';
 /**
  * QUIZFORCE — private player-to-HQ messages.
  * Cloudflare Pages: GAME/functions/api/questions.js
@@ -55,6 +56,8 @@ export async function onRequestPost({request,env}) {
     if (!x || typeof x !== 'object' || Array.isArray(x) || !['send','inbox'].includes(x.action) || !UUID.test(x.playerId||'') || !KEY.test(x.inboxKey||'')) return respond({error:'Invalid player inbox'},400);
     const db=env.DB;
     await ensure(db);
+    const ownership=await requireClaim(db,x.nickname,x.playerId,x.inboxKey);
+    if(!ownership.ok)return respond({error:ownership.error},ownership.status);
     const inboxHash=await hashKey(x.inboxKey);
     if (x.action === 'inbox') {
       const rows = (await db.prepare(`SELECT question_id,category,message,reply,status,created_at,replied_at

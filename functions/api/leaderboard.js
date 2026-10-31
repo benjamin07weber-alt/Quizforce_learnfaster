@@ -1,3 +1,4 @@
+import {requireClaim} from './nickname.js';
 // QUIZFORCE Edition 12 — Cloudflare Pages Functions + D1 leaderboard.
 // Put this file at /functions/api/leaderboard.js in the GitHub repository.
 // In Cloudflare Pages > Settings > Bindings, bind the existing D1 database
@@ -128,6 +129,8 @@ export async function onRequestPost(context) {
     if (linked && (!UUID.test(x.playerId) || !UUID.test(x.runId))) {
       return reply({ error: 'Invalid HQ tracking reference' }, 400);
     }
+    const ownership=await requireClaim(db,name,x.playerId,x.inboxKey);
+    if(!ownership.ok)return reply({error:ownership.error},ownership.status);
     await ensureLinks(db);
     const inserted = await db.prepare(`
       INSERT INTO scores (player_name, subject, correct, total, country)

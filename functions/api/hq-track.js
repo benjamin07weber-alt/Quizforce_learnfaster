@@ -1,3 +1,4 @@
+import {requireClaim} from './nickname.js';
 // QUIZFORCE HQ — Cloudflare Pages Function, private statistics write endpoint.
 // Deploy as functions/api/hq-track.js. Requires the existing D1 binding DB
 // and qfhq_setup.sql run once on the same D1 database.
@@ -35,6 +36,8 @@ export async function onRequestPost({request,env}){
   // Distinct run IDs prevent double counting on retries, and SQL counts actual rows.
   const priorTests=Math.max(0,p.tests-(isRun?1:0));
   const db=env.DB;
+  const ownership=await requireClaim(db,nick,x.playerId,x.inboxKey);
+  if(!ownership.ok)return respond({error:ownership.error},ownership.status);
   // A player ID is permanently associated with its first submitted nickname.
   // A different nickname must use a NEW player ID, even on the same device.
   // This prevents old clients or queued events from silently merging players.

@@ -1,3 +1,4 @@
+import {requireClaim} from './nickname.js';
 /** QUIZFORCE v5 • nickname-specific cosmetic profiles and shop.
  * Cloudflare Pages Function: GAME/functions/api/profile.js
  * Uses existing D1 binding DB; no admin password in public code.
@@ -133,6 +134,8 @@ export async function onRequest({request,env}){
   const raw=await request.text();if(new TextEncoder().encode(raw).length>3000)return reply({ok:false,error:'Request too large'},413);
   let x;try{x=JSON.parse(raw)}catch{return reply({ok:false,error:'Invalid JSON'},400)}
   if(!x||typeof x!=='object'||Array.isArray(x)||!['load','buy','set'].includes(x.action))return reply({ok:false,error:'Invalid action'},400);
+  const ownership=await requireClaim(db,x.nickname,x.playerId,x.inboxKey);
+  if(!ownership.ok)return reply({ok:false,error:ownership.error},ownership.status);
   const auth=await authenticate(db,x);if(auth.error)return reply({ok:false,error:auth.error},auth.status);
   const p=auth.p;
   if(x.action==='buy'){
