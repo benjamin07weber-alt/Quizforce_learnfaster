@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>QUIZFORCE — Edition 12 • Exams 2026 • Cloudflare</title>
-<meta name="quizforce-build" content="2026-10-31-v5.3-hq-style-tabs"/>
+<title>QUIZFORCE — Learn Faster</title>
+<meta name="quizforce-build" content="2026-11-04-v5.5-secret-vault-levels"/>
 <style>
   :root{
     --bg:#f6f7fb;--card:#ffffff;--text:#134e4a;--muted:#6b7280;--accent:#1682d4;
@@ -303,6 +303,161 @@ body:has(#home:not(.hidden)) #qfGlobalHome{display:none!important}
 @media(max-width:619px){#qf6SwipeHint{display:block}}
 
 </style>
+<style id="qf54-mega-style">
+/* QUIZFORCE v5.4 — Profile Studio, big Shop, effects; original iPad and phone tab layouts preserved. */
+#qf6Active{display:flex;align-items:center;gap:9px;cursor:pointer;max-width:230px;padding:5px 12px 5px 6px;min-height:44px}
+#qf6Active:hover{border-color:#75f6de;background:#1d5860}
+#qf6Active:focus-visible{outline:3px solid #ffda74;outline-offset:3px}
+#qf6Active .qf54-pill-avatar{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border:2px solid #54e9ec;border-radius:50%;background:#102b43;font-size:21px;line-height:1;box-shadow:0 2px 10px #0004}
+#qf6Active .qf54-pill-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#qf6Nav button{transition:background .22s,border-color .22s,transform .2s,box-shadow .2s}
+#qf6Nav button:hover{transform:translateX(2px)}
+#qf6Views .qf6-view:not([hidden]){animation:qf54View .28s cubic-bezier(.22,1,.36,1)}
+@keyframes qf54View{from{opacity:.3;transform:translateY(9px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+#qf6Views button.primary:hover,#qf6Views .qf54-buy:not(:disabled):hover{filter:brightness(1.13);box-shadow:0 0 22px #46eedb55;transform:translateY(-1px)}
+#qf54Studio,#qf54ShopHub{color:#e8fcff;min-width:0}
+#qf54Studio * ,#qf54ShopHub *{box-sizing:border-box}
+#qf54Studio button,#qf54ShopHub button{cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s}
+#qf54Studio button:disabled,#qf54ShopHub button:disabled{opacity:.55;cursor:not-allowed}
+#qf54Studio .qf5-panel,#qf54ShopHub .qf5-panel{background:#102d45;border:1px solid #477789;border-radius:16px;padding:17px;margin:13px 0;color:#eaffff}
+#qf54Studio .qf5-panel h3,#qf54ShopHub .qf5-panel h3{color:#abf8e9;margin:0 0 8px}
+#qf54Studio .qf5-panel p,#qf54ShopHub .qf5-panel p{color:#bedee4;margin:0 0 12px;font-size:13px;line-height:1.5}
+#qf54Studio .qf5-options{margin:12px 0 5px;gap:8px}
+#qf54Studio .qf5-choice{background:#17465a;color:#fff;border:1px solid #6e98a7;border-radius:12px;padding:9px 12px;min-height:43px}
+#qf54Studio .qf5-choice.selected{background:#f4d574;color:#152c3e;border-color:#f4d574;box-shadow:0 0 0 2px #f4d57455}
+#qf54Studio #qf54Colors .qf5-choice{border-width:2px;color:var(--swatch);font-weight:900}
+#qf54Studio #qf54Colors .qf5-choice.selected{background:#183d50;color:var(--swatch);box-shadow:0 0 0 2px var(--swatch)}
+#qf54Studio .qf54-avatar-choices .qf5-choice{font-size:24px;min-width:50px;padding:7px}
+.qf54-intro{padding:13px 16px;border:1px solid #3d8187;border-radius:13px;background:linear-gradient(120deg,#175355,#27395e)}
+.qf54-intro strong{font-size:11px;letter-spacing:1.6px;color:#ffdb80}
+.qf54-intro p{font-size:13px;margin:5px 0 0;color:#d2f6f3}
+#qf54Status{padding:12px 14px;border-radius:12px;background:#133f40;border:1px solid #367b74;margin:12px 0;color:#e4fffa}
+#qf54Status.qf5-error{background:#512f44;border-color:#d37a8a}
+.qf54-profile-card{overflow:hidden;border:1px solid #4b8996;border-radius:19px;background:#102d43;margin:14px 0;box-shadow:0 10px 27px #0004;--qf54-accent:#54e9ec}
+.qf54-banner{height:120px;display:flex;align-items:flex-end;padding:13px 18px;background:linear-gradient(120deg,#0e6a68,#31466f);position:relative}
+.qf54-profile-card[data-banner="banner_stars"] .qf54-banner{background:radial-gradient(circle at 22% 22%,#f6f3bc 1px,transparent 2px),radial-gradient(circle at 76% 40%,#d5e5ff 1px,transparent 2px),linear-gradient(110deg,#0b244e,#3b2677);background-size:47px 47px,67px 67px,100% 100%}
+.qf54-profile-card[data-banner="banner_ocean"] .qf54-banner{background:linear-gradient(145deg,#0f7d8d,#1164ae 65%,#4dc8d6)}
+.qf54-profile-card[data-banner="banner_sunset"] .qf54-banner{background:linear-gradient(125deg,#e85c7e,#f7a15a,#9c6edc)}
+.qf54-profile-card[data-banner="banner_nebula"] .qf54-banner{background:radial-gradient(circle at 25% 45%,#a84fd6aa,transparent 40%),radial-gradient(circle at 80% 10%,#4ec5efaa,transparent 45%),#1d164b}
+.qf54-profile-card[data-banner="banner_aurora"] .qf54-banner{background:linear-gradient(120deg,#042e4b,#10a889,#8065e6,#09254a);background-size:200% 200%;animation:qf54Aurora 7s ease infinite}
+.qf54-profile-card[data-banner="banner_gold"] .qf54-banner{background:linear-gradient(120deg,#7e4714,#e3b353,#fff0a1,#a86b16)}
+@keyframes qf54Aurora{50%{background-position:100% 50%}}
+.qf54-avatar{width:88px;height:88px;display:grid;place-items:center;font-size:48px;line-height:1;background:#09283d;border:4px solid var(--qf54-accent);border-radius:23px;box-shadow:0 6px 20px #0006;transform:translateY(30px)}
+.qf54-avatar[data-frame="blue_frame"]{box-shadow:0 0 20px #3eaaff,0 6px 15px #0005}
+.qf54-avatar[data-frame="fire_frame"]{border-color:#ff8d40;box-shadow:0 0 25px #ff6a21}
+.qf54-avatar[data-frame="galaxy_frame"]{border-color:#a88cff;box-shadow:0 0 25px #a26bff,0 0 36px #3aaeff}
+.qf54-avatar[data-frame="neon_frame"]{border-color:#56ff96;box-shadow:0 0 26px #33ff99}
+.qf54-avatar[data-frame="ice_frame"]{border-color:#b2efff;box-shadow:0 0 25px #8cf1ff}
+.qf54-avatar[data-frame="rainbow_frame"]{border:4px solid transparent;background:linear-gradient(#09283d,#09283d) padding-box,linear-gradient(90deg,#ff668e,#f6e66d,#63eaa9,#8a8bff,#ff668e) border-box;background-size:100% 100%,300% 100%;animation:qf54Rainbow 4s linear infinite}
+.qf54-avatar[data-frame="diamond_frame"]{border-color:#b6f9ff;box-shadow:0 0 15px #9ef5ff,0 0 35px #8aafff}
+.qf54-avatar[data-frame="solar_frame"]{border-color:#ffe68b;box-shadow:0 0 15px #ffe085,0 0 36px #ffb232}
+@keyframes qf54Rainbow{to{background-position:0 0,100% 0}}
+.qf54-card-body{padding:39px 18px 17px}
+.qf54-name-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#qf54Name{font-size:clamp(22px,4vw,28px);color:var(--qf54-accent);overflow-wrap:anywhere}
+#qf54Flair{font-size:25px;filter:drop-shadow(0 0 7px #ffffff88)}
+.qf54-profile-card[data-style="style_neon"] #qf54Name{color:#7dffbf;text-shadow:0 0 12px #49ffa7}
+.qf54-profile-card[data-style="style_ice"] #qf54Name{color:#b7efff;text-shadow:0 0 10px #5cd9ff}
+.qf54-profile-card[data-style="style_glow"] #qf54Name{text-shadow:0 0 6px currentColor,0 0 20px currentColor}
+.qf54-profile-card[data-style="style_rainbow"] #qf54Name{background:linear-gradient(90deg,#ff8a91,#ffd46b,#80ffba,#8bc2ff,#dd99ff,#ff8a91);background-size:200% 100%;color:transparent;background-clip:text;-webkit-background-clip:text;animation:qf54Rainbow 5s linear infinite}
+.qf54-profile-card[data-style="style_gold"] #qf54Name{color:#ffda72;text-shadow:0 0 12px #f5ba4b}
+.qf54-profile-card[data-style="style_fire"] #qf54Name{color:#ff9d52;text-shadow:0 0 10px #ff4c25,0 0 18px #ffcb63}
+.qf54-title{font-size:14px;font-weight:850;color:#ffda87;margin:5px 0}
+.qf54-motto{color:#d8e9ed;font-style:italic;margin:8px 0}
+.qf54-stats{color:#b7dfe4;font-size:12px;margin:10px 0;line-height:1.5}
+.qf54-motto-form{display:flex;gap:8px;flex-wrap:wrap}
+#qf54MottoInput{flex:1;min-width:180px;min-height:44px;border:1px solid #5d8b9a;border-radius:11px;padding:10px;background:#08293e;color:#fff}
+.qf54-toggle{display:flex;align-items:center;gap:8px;color:#d5f5f1;font-weight:750;font-size:13px;cursor:pointer}
+.qf54-toggle input{width:18px;height:18px;accent-color:#25d3c3}
+#qf54TestSound{margin-top:12px}
+.qf54-wardrobe-row{border-top:1px solid #3e6174;padding:13px 0 4px}
+.qf54-wardrobe-row:first-child{border-top:0}
+.qf54-wardrobe-row>strong{font-size:14px;color:#f8e2a0}
+.qf54-privacy{font-size:12px;color:#b5d8dd;margin:15px 0}
+.qf54-shop-hero{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:22px;border:1px solid #53899a;border-radius:19px;background:radial-gradient(circle at 100% 0,#354981,#145454 70%);margin:0 0 17px}
+.qf54-shop-kicker{font-size:11px;font-weight:900;letter-spacing:1.6px;color:#ffdc85}
+.qf54-shop-hero h3{font-size:clamp(22px,3vw,29px);color:#fff;margin:7px 0}
+.qf54-shop-hero p{color:#c7e6e7;font-size:13px;margin:0;line-height:1.5}
+.qf54-wallet{border:1px solid #f3d482;border-radius:14px;padding:12px 15px;background:#263d51;color:#ffdf8e;font-size:13px;font-weight:900;max-width:300px}
+.qf54-shop-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:15px 0}
+.qf54-shop-controls>label:first-child{font-size:12px;font-weight:800;color:#b7e5e2}
+#qf54Search{flex:1 1 200px;min-width:140px;min-height:44px;border-radius:12px;border:1px solid #5b8e9d;background:#0d3046;color:white;padding:10px 13px}
+.qf54-categories{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.qf54-category{border:1px solid #54838e;background:#143e50;color:#d5eef0;padding:10px 13px;border-radius:999px;font-size:12px;font-weight:800}
+.qf54-category[aria-pressed="true"]{background:#ffdf88;color:#193c47;border-color:#ffdf88}
+.qf54-shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:13px;margin:14px 0 20px}
+.qf54-shop-count{grid-column:1/-1;color:#a9d8d8;font-size:12px;font-weight:800}
+.qf54-item{min-width:0;display:flex;flex-direction:column;gap:7px;border:1px solid #44778d;border-radius:16px;padding:15px;background:linear-gradient(145deg,#123a51,#10253c);box-shadow:0 8px 22px #0002}
+.qf54-item[data-rarity="Rare"]{border-color:#5996da}
+.qf54-item[data-rarity="Epic"]{border-color:#ad84eb}
+.qf54-item[data-rarity="Legendary"]{border-color:#f3c967;background:linear-gradient(145deg,#3d3654,#16354d)}
+.qf54-item-icon{font-size:34px;line-height:1.2}
+.qf54-rarity{color:#b4d9df;font-size:11px;font-weight:850}
+.qf54-item h4{font-size:16px;margin:0;color:#fff;line-height:1.3}
+.qf54-item p{font-size:12px;color:#bad4df;line-height:1.5;flex:1;margin:0}
+.qf54-price{color:#ffe08a;font-size:14px}
+.qf54-buy{width:100%;min-height:42px;border:1px solid #72dcd0;border-radius:11px;background:#14786e;color:white;font-weight:850;padding:9px}
+.qf54-buy:disabled{background:#234756;color:#a8d2cf}
+.qf54-shop-footnote{font-size:12px;color:#c2e1df;margin:15px 0 25px}
+#qf54Public{gap:13px;margin-top:15px}
+#qf54Public .qf5-panel{margin:0}
+/* Phone-only navigation and spacing. iPad/tablet >=620px remains in the original layout. */
+/* Phone navigation deliberately unchanged from QUIZFORCE v5.3. */
+@media(max-width:619px){
+ .qf54-shop-controls{gap:9px}
+ .qf54-categories{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:5px;scrollbar-width:thin}
+ .qf54-category{flex:0 0 auto;min-height:38px}
+ .qf54-shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .qf54-item{padding:11px;gap:6px}
+ .qf54-item h4{font-size:14px}
+ .qf54-item p{font-size:11px}
+ .qf54-buy{font-size:11px;padding:8px 4px;min-height:39px}
+ .qf54-item-icon{font-size:29px}
+}
+@media(max-width:360px){.qf54-shop-grid{grid-template-columns:1fr}.qf54-item{padding:14px}#qf6Nav button{font-size:10px}}
+/* Animated score effects */
+.qf54-confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:99999;overflow:hidden}
+.qf54-particle{position:absolute;top:-25px;width:9px;height:15px;border-radius:2px;opacity:.95;animation:qf54Fall var(--duration,2.5s) linear forwards;left:var(--left);background:var(--color);transform:rotate(var(--rotate,0deg))}
+@keyframes qf54Fall{0%{transform:translateY(-25px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(900deg);opacity:0}}
+.qf54-score-pop{animation:qf54ScorePop .7s ease-out 1}
+@keyframes qf54ScorePop{0%{transform:scale(.8)}45%{transform:scale(1.16);text-shadow:0 0 28px #ffcc4b}100%{transform:scale(1)}}
+.qf54-xp-fly{position:fixed;z-index:99999;pointer-events:none;color:#ffdd68;font-size:28px;font-weight:1000;text-shadow:0 3px 16px #000;animation:qf54Xp 1.5s ease-out forwards}
+@keyframes qf54Xp{0%{opacity:0;transform:translateY(12px) scale(.7)}20%{opacity:1;transform:translateY(0) scale(1.2)}100%{opacity:0;transform:translateY(-110px) scale(1)}}
+@media(prefers-reduced-motion:reduce){#qf6Views .qf6-view:not([hidden]),.qf54-profile-card .qf54-banner,.qf54-avatar,.qf54-profile-card #qf54Name,.qf54-score-pop,.qf54-xp-fly,.qf54-particle{animation:none!important}#qf6Nav button{transition:none!important}}
+
+
+/* QUIZFORCE v5.5 — level cards, unlockable cosmetics, profile auras. */
+.qf55-level{border:1px solid #5daea8;border-radius:15px;background:linear-gradient(120deg,#123f53,#1d355a);padding:15px;margin:12px 0;color:#e9fffb}
+.qf55-level-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.qf55-level-rank{color:#ffe29c;font-size:14px;font-weight:950;letter-spacing:.3px}
+.qf55-level-number{background:#f2d676;color:#132d40;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:1000}
+.qf55-level-bar{height:12px;background:#071e33;border:1px solid #477f88;border-radius:99px;overflow:hidden;margin:13px 0 6px}
+.qf55-level-fill{height:100%;width:0;background:linear-gradient(90deg,#28d9c7,#f7e08e);border-radius:99px;transition:width .5s ease}
+.qf55-level-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;color:#bddcde}
+.qf55-next-secret{font-size:12px;color:#f7dfa2;margin:8px 0 0}
+.qf55-locked{position:relative;border-style:dashed!important;border-color:#aa91d3!important;background:linear-gradient(160deg,#242a4c,#13253d)!important}
+.qf55-locked .qf54-item-icon{filter:grayscale(1);opacity:.75}
+.qf55-unlock{font-size:12px;font-weight:900;color:#ffd98b}
+.qf55-unlocked{color:#80f7d9;font-size:12px;font-weight:900}
+.qf55-locked .qf54-buy{background:#3d4862!important;color:#bfc9d9!important}
+.qf55-levelup{position:fixed;z-index:100005;left:50%;top:22%;transform:translateX(-50%);padding:24px 30px;text-align:center;border-radius:22px;border:2px solid #f7d878;background:linear-gradient(135deg,#163d58,#49367c);box-shadow:0 0 45px #d7a8ff66,0 20px 80px #0009;color:#fff;animation:qf55LevelPop .65s cubic-bezier(.2,1.5,.3,1)}
+.qf55-levelup strong{font-size:clamp(23px,5vw,35px);color:#ffe28c;display:block;margin:6px 0}
+@keyframes qf55LevelPop{from{opacity:0;transform:translate(-50%,15px) scale(.75)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+.qf54-profile-card[data-effect="aura_spark"] .qf54-avatar,.qf54-profile-card[data-effect="aura_neon"] .qf54-avatar{box-shadow:0 0 16px #8affce,0 0 38px #6affc288}
+.qf54-profile-card[data-effect="aura_ice"] .qf54-avatar,.qf54-profile-card[data-effect="secret_crystal_aura"] .qf54-avatar{box-shadow:0 0 15px #c2f5ff,0 0 35px #84bfff}
+.qf54-profile-card[data-effect="aura_gold"] .qf54-avatar,.qf54-profile-card[data-effect="secret_rainbow_aura"] .qf54-avatar{box-shadow:0 0 15px #ffe57d,0 0 40px #ecacff}
+.qf54-profile-card[data-effect="secret_dragon_aura"] .qf54-avatar{box-shadow:0 0 15px #ff8c4c,0 0 38px #ff4a41}
+.qf54-profile-card[data-frame="secret_meteor_frame"] .qf54-avatar,.qf54-profile-card[data-frame="secret_plasma_frame"] .qf54-avatar{border-color:#fbb5e4;box-shadow:0 0 26px #d88cff}
+.qf54-profile-card[data-frame="secret_blackhole_frame"] .qf54-avatar,.qf54-profile-card[data-frame="secret_omega_frame"] .qf54-avatar{border-color:#ffe08c;box-shadow:0 0 30px #e4c5ff,0 0 40px #ffd477}
+.qf54-profile-card[data-banner="secret_moon_banner"] .qf54-banner{background:radial-gradient(circle at 80% 30%,#dce8ff 0 23px,transparent 24px),linear-gradient(130deg,#142344,#363d78)}
+.qf54-profile-card[data-banner="secret_supernova_banner"] .qf54-banner{background:radial-gradient(circle at 52% 40%,#fff6b9,#e05d9c 25%,#52318c 55%,#151f46)}
+.qf54-profile-card[data-banner="secret_celestial_banner"] .qf54-banner,.qf54-profile-card[data-banner="secret_eternal_banner"] .qf54-banner{background:radial-gradient(ellipse at center,#67f9e8,#5365c8 40%,#161c45 75%)}
+.qf54-profile-card[data-style="secret_shadow_name"] #qf54Name{color:#c3a5ff;text-shadow:0 0 14px #a461fa}
+.qf54-profile-card[data-style="secret_nova_name"] #qf54Name,.qf54-profile-card[data-style="secret_quantum_name"] #qf54Name{background:linear-gradient(90deg,#ffb3d8,#91f2ff,#fbe38b,#b9a0ff);background-clip:text;-webkit-background-clip:text;color:transparent;background-size:200% 100%;animation:qf54Rainbow 4s linear infinite}
+#qf55Subject{width:100%;max-width:360px;min-height:43px;padding:9px;background:#092b40;color:#fff;border:1px solid #6799aa;border-radius:10px}
+@media(prefers-reduced-motion:reduce){.qf55-level-fill,.qf55-levelup,.qf54-profile-card[data-style="secret_nova_name"] #qf54Name,.qf54-profile-card[data-style="secret_quantum_name"] #qf54Name{animation:none!important;transition:none!important}}
+
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -310,8 +465,6 @@ body:has(#home:not(.hidden)) #qfGlobalHome{display:none!important}
 <div aria-label="Quizforce new logo" class="logo"><svg aria-label="Quizforce lightning Q logo" class="qf-emblem" role="img" viewbox="0 0 120 120"><defs><lineargradient id="qfGrad" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#2dd4bf"></stop><stop offset="1" stop-color="#0f766e"></stop></lineargradient></defs><rect fill="#082f35" height="114" rx="29" width="114" x="3" y="3"></rect><rect fill="none" height="104" opacity=".55" rx="25" stroke="#5eead4" stroke-width="2" width="104" x="8" y="8"></rect><path d="M83 80 A36 36 0 1 0 61 95" fill="none" stroke="url(#qfGrad)" stroke-linecap="round" stroke-width="15"></path><path d="M67 53 49 79h15l-5 24 29-37H71l9-13Z" fill="#fbbf24" stroke="#fff0b0" stroke-linejoin="round" stroke-width="1.5"></path><circle cx="89" cy="24" fill="#fbbf24" r="4"></circle><circle cx="28" cy="91" fill="#5eead4" r="3"></circle></svg></div>
 <h1>QUIZFORCE</h1>
 <div class="tag">Learn faster. Master your subjects.</div>
-<div class="note" style="text-align:center;font-size:12px;margin:0 0 12px">⚡ v5.3 • HQ-style tabs • Protected nicknames • Cloudflare</div>
-<div class="note">Five subjects • English 360 + Afrikaans PDF 70 + revision banks • 3 levels • Personal bests</div>
 <div id="qf51Switch" aria-label="Choose your QUIZFORCE player">
   <h2>👤 Who's playing?</h2>
   <label for="qf51Profiles">Choose your saved profile</label>
@@ -2826,6 +2979,7 @@ function checkAnswer(){
  ok=(q.exact||q.isDefinition)?definitionMatch(q,t.value):keywordMatch(q,t.value);t.disabled=true;
  }
  answered=true;$("#done").textContent=idx+1;
+ window.qf54PlaySound?.(ok?(qfIdkUsed.has(idx)?'learned':'correct'):'wrong');
  if(ok && qfIdkUsed.has(idx)){
    qfIdkLearned.add(idx);
    missed.push(q); // Keep IDK questions in the practice list, not in the scored total.
@@ -3019,6 +3173,8 @@ function finish(){if(qf11RunFinished)return;qf11RunFinished=true;qf11EndRun();sh
   try{qfLastResult.runId=window.qfHQRecordCompletedRun({subject:qfLastResult.subject,correct:score,total:test.length,difficulty:$("#difficulty").value})}
   catch(error){console.warn("QUIZFORCE HQ tracking unavailable:",error)}
  }
+ window.qf54CelebrateResult?.(pct,{review:reviewMode});
+ if(!reviewMode){setTimeout(()=>window.qf54LoadCurrent?.(true),2500);setTimeout(()=>window.qf54LoadCurrent?.(true),7500)}
 }
 for(const subject of ["maths","afrikaans"]){
  $("#"+subject+"ExamToggle").onclick=()=>{
@@ -3604,146 +3760,207 @@ if ('serviceWorker' in navigator) {
 #qf5Overlay{position:fixed;inset:0;z-index:999997;overflow-y:auto;background:radial-gradient(ellipse at top,#193a6a,#060e23 70%);color:#eefaff;font-family:system-ui,-apple-system,sans-serif;padding:22px 14px}#qf5Overlay[hidden],#qf5Private[hidden]{display:none!important}#qf5Overlay *{box-sizing:border-box}#qf5Overlay button,#qf5Overlay input{font:inherit}#qf5Overlay button{cursor:pointer}#qf5Overlay button:disabled{opacity:.55;cursor:not-allowed}
 .qf5-wrap{max-width:1000px;margin:auto}.qf5-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:16px}.qf5-head h2{color:#fff;font-size:clamp(22px,4vw,32px);margin:4px 0}.qf5-head p{margin:0;color:#b6d5e7}.qf5-overline{color:#72f5dd;font-size:12px;letter-spacing:2px;font-weight:900}.qf5-panel{padding:19px;margin:13px 0;background:#122746;border:1px solid #42638e;border-radius:18px;box-shadow:0 8px 26px #0003}.qf5-panel h3{color:#a7f6e7;margin:0 0 12px}.qf5-panel p,.qf5-panel small{color:#c2d8ed}.qf5-panel label{display:block;font-weight:850;margin-bottom:8px}.qf5-line{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:8px}.qf5-line input{flex:1;min-width:175px;padding:13px;background:#09172c;color:white;border:1px solid #6484a4;border-radius:10px}.qf5-line button,.qf5-choice,.qf5-secondary{border:1px solid #74d9d4;border-radius:11px;background:#173c55;color:white;padding:11px 14px;font-weight:800}.qf5-secondary{white-space:nowrap}.qf5-status{padding:13px;border-radius:12px;background:#143d39;border:1px solid #397a76;margin:10px 0}.qf5-status.qf5-error{background:#472a40;border-color:#b45e6c}.qf5-public{display:grid;grid-template-columns:1fr 1fr;gap:14px}.qf5-public>.qf5-panel{margin:0}.qf5-profile{display:flex;align-items:center;gap:20px}.qf5-avatar{font-size:70px;min-width:125px;min-height:125px;display:grid;place-items:center;border:5px solid #54e9ec;border-radius:30px;background:#0b1931}.qf5-avatar[data-frame=fire_frame]{box-shadow:0 0 30px #ff762a}.qf5-avatar[data-frame=galaxy_frame]{box-shadow:0 0 28px #b594ff,0 0 45px #51b3ff}.qf5-avatar[data-frame=blue_frame]{box-shadow:0 0 25px #2e9fff}.qf5-player h3{font-size:26px;margin:0 0 6px!important}.qf5-player p{margin:8px 0}.qf5-options{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 22px}.qf5-choice{min-width:52px;min-height:47px}.qf5-choice.selected{background:#f1d46c;color:#1c2947;border-color:#f1d46c;box-shadow:0 0 0 2px #f1d46c44}.qf5-shop{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.qf5-item{display:grid;gap:10px;border:1px solid #476c9c;background:#10203a;border-radius:14px;padding:15px}.qf5-item strong{font-size:18px}.qf5-item span{color:#ffdf83;font-weight:800}.qf5-standing{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #ffffff22;padding:8px 0}.qf5-footer{text-align:center;color:#a9c6dc;font-size:12px;margin:20px auto 45px;max-width:720px}@media(max-width:620px){.qf5-public{grid-template-columns:1fr}.qf5-profile{align-items:flex-start}.qf5-avatar{min-width:88px;min-height:88px;font-size:50px}.qf5-head{align-items:center}.qf5-head h2{font-size:20px}.qf5-secondary{padding:10px}}
 </style>
-<script id="qf5-profile-script">(function(){
+<script id="qf5-profile-script">
+/* QUIZFORCE v5.5 — expanded Shop + Secret Vault, preserving v5.2 identity keys. */
+(function(){
 'use strict';
-// QUIZFORCE v5: a private, nickname-specific cosmetics wallet and profile.
-// This uses the SAME random inbox key as v4 messages. It is never sent to HQ.
 const $=id=>document.getElementById(id);
-const NAME=/^[\p{L}\p{N}_ .-]{2,18}$/u;
-const colors={cyan:'#54e9ec',violet:'#b69aff',blue:'#71b8ff',green:'#8df2b6',orange:'#ffc274',pink:'#ff9dd0'};
-const AVATARS=['🦁','🚀','🦊','🐯','🦄','🤖','🐼','🦉','🐬','🐉'];
-const COLOR_NAMES=Object.keys(colors);
-const host=$('qfLeaderboard')||document.body;
-const openBtn=document.createElement('button');openBtn.id='qf5Open';openBtn.type='button';openBtn.textContent='👤 MY PROFILE & 🛒 XP SHOP';
-host.insertAdjacentElement('afterend',openBtn);
+const AVATARS=['🦁','🚀','🦊','🐯','🦄','🤖','🐼','🦉','🐬','🐉','🦋','🦖','🐺','🐸','🐙','🦈','🐲','🦅','🐱','🐶','🦇','👽','👾','🧑‍🚀','🛸','🌙','⭐','⚡','💎','🪐','🔥'];
+const COLORS={cyan:'#54e9ec',violet:'#b69aff',blue:'#71b8ff',green:'#8df2b6',orange:'#ffc274',pink:'#ff9dd0',red:'#ff8585',yellow:'#ffe47c',mint:'#66f4c4',indigo:'#9cafff',coral:'#ffa99e',silver:'#d7e7f2'};
+const CELEBRATIONS=[['confetti','🎉 Confetti'],['stars','⭐ Star shower'],['fireworks','🎆 Fireworks'],['none','🚫 No animation']];
+const FIELD_LABELS={frame:'Avatar frame',title:'Player title',banner:'Profile banner',flair:'Name flair',nameStyle:'Name style',soundPack:'Sound pack',profileEffect:'Profile aura'};
+const CATEGORIES=['All','Frames','Titles','Banners','Flair','Name styles','Sound packs','Auras','Secret Vault'];
+const studio=document.createElement('div');studio.id='qf54Studio';
+studio.innerHTML=`<div class="qf54-intro"><strong>PROFILE STUDIO</strong><p>Make your QUIZFORCE character your own. Your nickname and earned XP stay safe.</p></div>
+ <div id="qf54Status" class="qf5-status" role="status" aria-live="polite">Choose a player to customise your profile.</div>
+ <div id="qf54Card" class="qf54-profile-card" hidden>
+  <div class="qf54-banner" id="qf54Banner"><span id="qf54Avatar" class="qf54-avatar">🚀</span></div>
+  <div class="qf54-card-body"><div class="qf54-name-row"><strong id="qf54Name">Player</strong><span id="qf54Flair"></span></div>
+   <div id="qf54Title" class="qf54-title">Quizforce Explorer</div><p id="qf54Motto" class="qf54-motto"></p>
+   <div id="qf54Stats" class="qf54-stats"></div><div id="qf55Favourite"></div><div id="qf54Badge"></div></div>
+ </div>
+ <div id="qf55ProfileLevel" class="qf55-level" hidden></div>
+ <div id="qf54Controls" hidden>
+  <div class="qf5-panel"><h3>🎭 Choose your avatar — FREE</h3><p>31 characters to choose from!</p><div id="qf54Avatars" class="qf5-options qf54-avatar-choices"></div></div>
+  <div class="qf5-panel"><h3>🎨 Choose your colour — FREE</h3><p>12 colours to personalise your profile.</p><div id="qf54Colors" class="qf5-options"></div></div>
+  <div class="qf5-panel"><h3>✏️ Your motto — FREE</h3><p>Write a short slogan (48 characters max). Don't include private information.</p><div class="qf54-motto-form"><input id="qf54MottoInput" maxlength="48" placeholder="e.g. Born to learn. Built to win."><button id="qf54MottoSave" type="button" class="qf5-secondary">Save motto</button></div></div>
+  <div class="qf5-panel"><h3>📚 Favourite subject — FREE</h3><p>Show the subject you love most on your player card.</p><select id="qf55Subject"><option value="none">Choose a subject</option><option>Mathematics</option><option>English</option><option>Afrikaans</option><option>Natural Sciences</option><option>Social Sciences</option></select></div>
+  <div class="qf5-panel"><h3>🎉 Celebrations & sound</h3><p>Pick your perfect-score animation and choose whether sounds play on this device.</p><div id="qf54Celebrations" class="qf5-options"></div><label class="qf54-toggle"><input id="qf54Sound" type="checkbox" checked> 🔊 Game sounds (cheers, XP and shop)</label><button id="qf54TestSound" type="button" class="qf5-secondary">▶ Test cheering sound</button></div>
+  <div class="qf5-panel"><h3>👕 My wardrobe</h3><p>Equip your sound pack, aura, frame, title and more. Locked items need the right level.</p><p>Equip any item you've bought in the Shop. You can also remove an upgrade.</p><div id="qf54Wardrobe"></div></div>
+  <div class="qf5-panel"><h3>🎖️ Favourite badge</h3><div id="qf54Badges" class="qf5-options"></div><small>Special badges can also be awarded by QUIZFORCE HQ.</small></div>
+ </div><p class="qf54-privacy">🔐 Your private profile key stays on this device. Don't clear the app's storage or uninstall it.</p>`;
+const shopHub=document.createElement('div');shopHub.id='qf54ShopHub';
+shopHub.innerHTML=`<div class="qf54-shop-hero"><div><span class="qf54-shop-kicker">QUIZFORCE COSMETICS</span><h3>🛍️ Make it yours</h3><p>Frames, titles, banners, auras, sound packs and secret level rewards. All purchases are cosmetic.</p></div><div id="qf54Wallet" class="qf54-wallet">🪙 Open a profile to see your wallet</div></div>
+ <div class="qf54-shop-controls"><label for="qf54Search">Find an item</label><input id="qf54Search" type="search" placeholder="Search the Shop…" autocomplete="off"><label class="qf54-toggle"><input id="qf54Affordable" type="checkbox"> Only show items I can afford</label></div>
+ <div id="qf55ShopLevel" class="qf55-level" hidden></div><div id="qf54Categories" class="qf54-categories" role="group" aria-label="Shop categories"></div>
+ <div id="qf54ShopGrid" class="qf54-shop-grid"><p>Open a player profile to see the Shop.</p></div>
+ <div class="qf54-shop-footnote">Your lifetime XP and leaderboard rank never decrease when you buy an item. Your spendable XP balance does.</div>
+ <div id="qf54Public" class="qf5-public"><div class="qf5-panel"><h3>📡 HQ announcements</h3><p id="qf54Announcement">No announcement right now.</p></div><div class="qf5-panel"><h3>🏆 HQ competition</h3><p id="qf54Competition">No competition right now.</p><div id="qf54CompetitionBoard"></div></div></div>`;
+document.body.append(studio,shopHub);
 const news=document.createElement('button');news.id='qf5News';news.type='button';news.hidden=true;
-openBtn.insertAdjacentElement('afterend',news);
-const overlay=document.createElement('section');overlay.id='qf5Overlay';overlay.hidden=true;
-overlay.innerHTML=`<div class="qf5-wrap">
-  <header class="qf5-head"><div><div class="qf5-overline">⚡ QUIZFORCE v5.2</div><h2>👤 PROFILE & 🛒 XP SHOP</h2><p>Customise your astronaut. Shop items are cosmetic only!</p></div><button type="button" id="qf5Close" class="qf5-secondary">✕ Close</button></header>
-  <div class="qf5-panel qf5-login"><label for="qf5Name">Open or switch to a profile</label><div class="qf5-line"><input id="qf5Name" maxlength="18" placeholder="Your submitted nickname" autocomplete="off"><button id="qf5Load" type="button">🚀 Open profile</button></div><small>Opening a profile makes it the active player for quizzes and messages. Create another player using “Who's playing?” on Home. Each nickname has its own HQ wallet.</small></div>
-  <div id="qf5Status" role="status" class="qf5-status">Open your profile to see your items.</div>
-  <div id="qf5Public" class="qf5-public"><div class="qf5-panel"><h3>📡 HQ announcements</h3><p id="qf5Announcement">No announcement right now.</p></div><div class="qf5-panel"><h3>🏆 HQ competition</h3><p id="qf5Competition">No competition right now.</p><div id="qf5CompetitionBoard"></div></div></div>
-  <div id="qf5Private" hidden>
-    <div class="qf5-profile qf5-panel"><div id="qf5AvatarBig" class="qf5-avatar">🚀</div><div class="qf5-player"><h3 id="qf5DisplayName">Player</h3><div id="qf5Title">🚀 Space Cadet</div><p id="qf5Stats">0 XP • 0 games</p><p id="qf5Balance">🛒 0 spendable XP</p><div id="qf5Fav">🏅 No favourite badge</div></div></div>
-    <div class="qf5-panel"><h3>🎭 Choose your avatar — FREE</h3><div id="qf5Avatars" class="qf5-options"></div><h3>🎨 Profile colour — FREE</h3><div id="qf5Colors" class="qf5-options"></div></div>
-    <div class="qf5-panel"><h3>🛒 XP SHOP</h3><p>Buying an item uses <strong>spendable XP</strong>, not your lifetime XP or rank. Every item can be bought once.</p><div id="qf5Shop" class="qf5-shop"></div></div>
-    <div class="qf5-panel"><h3>🎖️ Favourite earned badge</h3><div id="qf5Badges" class="qf5-options"></div><small>HQ can also award you special badges!</small></div>
-  </div>
-  <p class="qf5-footer">🔐 Your profile key stays on this device. No real names, addresses or contact details needed. Internet required for the shop.</p>
-</div>`;
-document.body.append(overlay);
-let data=null,active=null,busy=false,publicState=null;
-const status=(message,bad=false)=>{const el=$('qf5Status');el.textContent=message;el.classList.toggle('qf5-error',bad)};
+const anchor=$('qfLeaderboard');if(anchor)anchor.insertAdjacentElement('afterend',news);else document.body.append(news);
+let data=null,active=null,busy=false,selectedCategory='All',lastLoadId='',publicState=null;
 const get=k=>{try{return localStorage.getItem(k)||''}catch{return ''}};
 const put=(k,v)=>{try{localStorage.setItem(k,v);return true}catch{return false}};
+const keyFor=id=>'qf54-appearance:'+id;
+function cachedAppearance(){const id=window.qfHQGetPlayerId?.()||'';if(!id)return null;try{return JSON.parse(get(keyFor(id))||'null')}catch{return null}}
+window.qf54GetCachedAppearance=cachedAppearance;
+window.qf54SoundEnabled=()=>{const id=window.qfHQGetPlayerId?.()||'guest';return get('qf54-sound:'+id)!=='off'};
+function status(message,bad=false){const el=$('qf54Status');el.textContent=message;el.classList.toggle('qf5-error',bad)}
+function cacheAppearance(){if(!active||!data)return;const a={avatar:data.avatar,color:data.color,frame:data.frame,title:data.title,banner:data.banner,flair:data.flair,nameStyle:data.nameStyle,motto:data.motto,celebration:data.celebration,soundPack:data.soundPack,profileEffect:data.profileEffect,level:data.level?.number||1};put(keyFor(active.playerId),JSON.stringify(a));document.dispatchEvent(new CustomEvent('qf:cosmetics-updated',{detail:{playerId:active.playerId,...a}}))}
 function credentials(){
- const nickname=$('qf5Name').value.normalize('NFC').trim().replace(/\s+/g,' ');
- if(!NAME.test(nickname))throw Error('Enter a nickname of 2–18 letters or numbers.');
- const playerId=window.qfHQPrepareSubmittedName?.(nickname);
- if(!playerId)throw Error('Player tracking is still loading. Reload QUIZFORCE.');
+ const nickname=window.qfHQGetActiveName?.()||'';
+ const playerId=window.qfHQGetPlayerId?.()||'';
+ if(!nickname||!playerId)throw Error('Create or choose a nickname in Profiles first.');
  const keyName='qf-feedback-inbox-key-v4:'+playerId;
- let inboxKey=get(keyName);
+ let inboxKey=window.qfHQGetInboxKey?.(playerId)||get(keyName);
  if(!/^[0-9a-f]{64}$/i.test(inboxKey)){
-  if(!crypto?.getRandomValues)throw Error('Open QUIZFORCE using HTTPS.');
+  if(!globalThis.crypto?.getRandomValues)throw Error('Open QUIZFORCE over HTTPS.');
   inboxKey=[...crypto.getRandomValues(new Uint8Array(32))].map(v=>v.toString(16).padStart(2,'0')).join('');
   if(!put(keyName,inboxKey))throw Error('Enable browser storage to keep your profile.');
  }
- return {playerId,nickname,inboxKey};
+ return {nickname,playerId,inboxKey};
 }
-async function request(body){
- const r=await fetch('/api/profile',{method:'POST',credentials:'same-origin',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
- let result;try{result=await r.json()}catch{throw Error('Profile server returned invalid data.');}
- if(!r.ok||!result.ok)throw Error(result.error||'Profile is temporarily unavailable.');
+async function request(payload){
+ const r=await fetch('/api/profile',{method:'POST',credentials:'same-origin',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+ let result;try{result=await r.json()}catch{throw Error('Profile server returned invalid data.')}
+ if(!r.ok||!result.ok)throw Error(result.error||'Profile service unavailable.');
  return result.data;
 }
-function button(text,action,value,selected=false,disabled=false){
- const b=document.createElement('button');b.type='button';b.className='qf5-choice'+(selected?' selected':'');b.textContent=text;b.disabled=disabled;
- b.dataset.action=action;b.dataset.value=value;return b;
+function choice(text,field,value,selected=false){const b=document.createElement('button');b.type='button';b.className='qf5-choice'+(selected?' selected':'');b.textContent=text;b.dataset.action='set';b.dataset.field=field;b.dataset.value=value;b.setAttribute('aria-pressed',String(selected));return b}
+function paintLevel(root){
+ if(!data?.level){root.hidden=true;return}
+ const lv=data.level;root.hidden=false;root.replaceChildren();
+ const top=document.createElement('div');top.className='qf55-level-top';
+ const rank=document.createElement('strong');rank.className='qf55-level-rank';rank.textContent='✦ '+lv.rank;
+ const number=document.createElement('span');number.className='qf55-level-number';number.textContent='LEVEL '+lv.number;
+ top.append(rank,number);
+ const bar=document.createElement('div');bar.className='qf55-level-bar';bar.setAttribute('role','progressbar');bar.setAttribute('aria-label','Progress to next level');bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax',String(lv.needed));bar.setAttribute('aria-valuenow',String(lv.earned));
+ const fill=document.createElement('div');fill.className='qf55-level-fill';fill.style.width=lv.percent+'%';bar.append(fill);
+ const meta=document.createElement('div');meta.className='qf55-level-meta';const a=document.createElement('span');a.textContent=lv.earned.toLocaleString()+' / '+lv.needed.toLocaleString()+' XP';const b=document.createElement('span');b.textContent=(lv.nextXp-data.xp).toLocaleString()+' XP to Level '+(lv.number+1);meta.append(a,b);
+ root.append(top,bar,meta);
+ if(Number.isFinite(data.nextSecretLevel)){const note=document.createElement('p');note.className='qf55-next-secret';note.textContent='🔒 Next secret items unlock at Level '+data.nextSecretLevel;root.append(note)}
 }
 function paint(){
  if(!data)return;
- $('qf5Private').hidden=false;
- $('qf5AvatarBig').textContent=data.avatar;
- $('qf5AvatarBig').style.borderColor=colors[data.color]||colors.cyan;
- $('qf5AvatarBig').dataset.frame=data.frame;
- $('qf5DisplayName').textContent=data.nickname;
- $('qf5DisplayName').style.color=data.title==='gold_name'?'#ffdf62':colors[data.color]||colors.cyan;
- $('qf5Title').textContent=data.title==='gold_name'?'👑 Golden Name':data.frame==='galaxy_frame'?'🌌 Galactic Profile':data.frame==='fire_frame'?'🔥 Fire Frame':'🚀 Quizforce Explorer';
- $('qf5Stats').textContent=`⚡ ${data.xp.toLocaleString()} lifetime XP · 🎮 ${data.games} games · 💯 ${data.perfect} perfect scores`;
- $('qf5Balance').textContent=`🛒 ${data.balance.toLocaleString()} spendable XP (${data.spent.toLocaleString()} spent)`;
- $('qf5Fav').textContent=data.favoriteBadge==='none'?'🏅 No favourite badge':'🏅 '+(data.badgeNames[data.favoriteBadge]||data.favoriteBadge);
- $('qf5Avatars').replaceChildren(...AVATARS.map(a=>button(a,'avatar',a,data.avatar===a)));
- $('qf5Colors').replaceChildren(...COLOR_NAMES.map(c=>{const b=button('● '+c,'color',c,data.color===c);b.style.borderColor=colors[c];return b}));
- const shop=$('qf5Shop');shop.replaceChildren();
- Object.entries(data.shop||{}).forEach(([id,item])=>{
-  const owned=data.owned.includes(id),equipped=data[item.field]===id;
-  const card=document.createElement('div');card.className='qf5-item';
-  const title=document.createElement('strong');title.textContent=item.name;
-  const price=document.createElement('span');price.textContent=owned?'✅ Owned':item.cost+' XP';
-  const b=button(equipped?'✓ Equipped':owned?'Equip':`Buy • ${item.cost} XP`,owned?'equip':'buy',id,equipped,equipped||!owned&&data.balance<item.cost);
-  card.append(title,price,b);shop.append(card);
+ $('qf54Card').hidden=false;$('qf54Controls').hidden=false;
+ const card=$('qf54Card');card.dataset.banner=data.banner||'none';card.dataset.frame=data.frame||'none';card.dataset.style=data.nameStyle||'none';card.dataset.effect=data.profileEffect||'none';card.style.setProperty('--qf54-accent',COLORS[data.color]||COLORS.cyan);
+ $('qf54Avatar').textContent=data.avatar||'🚀';$('qf54Avatar').dataset.frame=data.frame||'none';
+ $('qf54Name').textContent=data.nickname;$('qf54Flair').textContent=({flair_sparkles:'✨',flair_lightning:'⚡',flair_comet:'☄️',flair_crown:'👑',flair_dragon:'🐉',secret_rocket_flair:'🚀',secret_phoenix_flair:'🦅'})[data.flair]||'';
+ $('qf54Title').textContent=data.title==='none'?'🚀 Quizforce Explorer':data.shop?.[data.title]?.name||'🚀 Quizforce Explorer';
+ $('qf54Motto').textContent=data.motto||'Add your own motto below!';
+ $('qf54MottoInput').value=data.motto||'';
+ $('qf54Stats').textContent=`⚡ ${(data.xp||0).toLocaleString()} lifetime XP · 🎮 ${data.games||0} games · 💯 ${data.perfect||0} perfect · 🥇 Best ${data.bestPct||0}%`;
+ $('qf55Favourite').textContent=data.favouriteSubject&&data.favouriteSubject!=='none'?'📚 Favourite subject: '+data.favouriteSubject:'';
+ $('qf55Subject').value=data.favouriteSubject||'none';
+ paintLevel($('qf55ProfileLevel'));paintLevel($('qf55ShopLevel'));
+ $('qf54Badge').textContent=data.favoriteBadge==='none'?'🏅 No favourite badge':'🏅 '+(data.badgeNames?.[data.favoriteBadge]||data.favoriteBadge);
+ $('qf54Wallet').textContent=`🪙 ${(data.balance||0).toLocaleString()} spendable XP · ${(data.spent||0).toLocaleString()} spent`;
+ $('qf54Avatars').replaceChildren(...AVATARS.map(a=>choice(a,'avatar',a,data.avatar===a)));
+ $('qf54Colors').replaceChildren(...Object.entries(COLORS).map(([name,color])=>{const b=choice('● '+name,'color',name,data.color===name);b.style.borderColor=color;b.style.setProperty('--swatch',color);return b}));
+ $('qf54Celebrations').replaceChildren(...CELEBRATIONS.map(([v,label])=>choice(label,'celebration',v,(data.celebration||'confetti')===v)));
+ $('qf54Sound').checked=window.qf54SoundEnabled();
+ const wardrobe=$('qf54Wardrobe');wardrobe.replaceChildren();
+ for(const [field,label] of Object.entries(FIELD_LABELS)){
+  const row=document.createElement('div');row.className='qf54-wardrobe-row';
+  const h=document.createElement('strong');h.textContent=label;row.append(h);
+  const choices=document.createElement('div');choices.className='qf5-options';choices.append(choice(field==='soundPack'?'Classic sounds':'None',field,field==='soundPack'?'classic':'none',data[field]===(field==='soundPack'?'classic':'none')));
+  for(const id of data.owned||[]){const item=data.shop?.[id];if(item?.field===field)choices.append(choice(item.name,field,id,data[field]===id))}
+  row.append(choices);wardrobe.append(row);
+ }
+ const badges=$('qf54Badges');badges.replaceChildren(choice('No badge','favoriteBadge','none',data.favoriteBadge==='none'));
+ for(const id of data.badges||[])badges.append(choice(data.badgeNames?.[id]||id,'favoriteBadge',id,data.favoriteBadge===id));
+ paintShop();cacheAppearance();
+}
+function paintShop(){
+ const grid=$('qf54ShopGrid');grid.replaceChildren();
+ if(!data){const p=document.createElement('p');p.textContent='Choose a player in Profiles to see the Shop and your wallet.';grid.append(p);return}
+ const query=$('qf54Search').value.toLocaleLowerCase('en').trim();const affordable=$('qf54Affordable').checked;
+ const items=Object.entries(data.shop||{}).filter(([id,item])=>{
+  const owned=data.owned.includes(id);
+  return (selectedCategory==='All'||item.category===selectedCategory)&&(!query||(item.name+' '+item.description+' '+item.category).toLocaleLowerCase('en').includes(query))&&(!affordable||owned||item.cost<=data.balance);
  });
- const badges=$('qf5Badges');badges.replaceChildren(button('No badge','favoriteBadge','none',data.favoriteBadge==='none'));
- (data.badges||[]).forEach(id=>badges.append(button(data.badgeNames[id]||id,'favoriteBadge',id,data.favoriteBadge===id)));
+ const counter=document.createElement('div');counter.className='qf54-shop-count';counter.textContent=`${items.length} items · ${data.owned.length} owned · ${data.secretCount||0} secrets`;grid.append(counter);
+ if(!items.length){const p=document.createElement('p');p.textContent='No matching items. Try another category or search.';grid.append(p);return}
+ for(const [id,item] of items){
+  const owned=data.owned.includes(id),equipped=data[item.field]===id;
+  const card=document.createElement('article');card.className='qf54-item'+(item.locked?' qf55-locked':'');card.dataset.rarity=item.rarity||'Common';
+  const icon=document.createElement('div');icon.className='qf54-item-icon';icon.textContent=item.name.split(' ')[0];
+  const category=document.createElement('small');category.className='qf54-rarity';category.textContent=(item.rarity||'Common')+' · '+item.category;
+  const name=document.createElement('h4');name.textContent=item.name;
+  const description=document.createElement('p');description.textContent=item.description||'';
+  const price=document.createElement('strong');price.className='qf54-price';price.textContent=item.locked?'🔒 Unlock at Level '+item.unlockLevel:owned?'✓ Owned':item.cost.toLocaleString()+' XP';
+  const b=document.createElement('button');b.type='button';b.className='qf54-buy';b.dataset.action=owned?'set':'buy';b.dataset.field=item.field;b.dataset.value=id;
+  b.textContent=item.locked?'Secret locked':equipped?'✓ Equipped':owned?'Equip':`Buy for ${item.cost.toLocaleString()} XP`;
+  b.disabled=Boolean(item.locked)||equipped||(!owned&&data.balance<item.cost);
+  card.append(icon,category,name,description,price,b);grid.append(card);
+ }
 }
-async function openProfile(){
- if(busy)return;busy=true;$('qf5Load').disabled=true;
+async function loadCurrent(force=false){
+ if(busy)return;
+ const id=window.qfHQGetPlayerId?.()||'';
+ if(!id){data=null;active=null;lastLoadId='';$('qf54Card').hidden=true;$('qf54Controls').hidden=true;$('qf55ProfileLevel').hidden=true;$('qf55ShopLevel').hidden=true;$('qf54Wallet').textContent='🪙 Choose a player first';status('Choose a player above to start customising.');paintShop();return}
+ if(!force&&lastLoadId===id&&data)return;
+ busy=true;status('📡 Loading your profile…');
  try{
-  const nickname=$('qf5Name').value.normalize('NFC').trim().replace(/\s+/g,' ');
-  status('🔐 Checking nickname availability…');
-  await window.qfHQRegisterName(nickname);
-  const who=credentials();status('📡 Opening '+who.nickname+'…');
-  const result=await request({action:'load',...who});
-  if(!window.qfHQSelectProfile?.(who.nickname))throw Error('Could not activate this player.');
-  active=who;data=result;paint();status('✅ '+who.nickname+' is now your active player!');
- }catch(e){status('⚠️ '+e.message,true)}finally{busy=false;$('qf5Load').disabled=false}
-}
-async function change(action,value){
- if(busy||!active||!data)return;
- busy=true;status('📡 Saving to HQ…');
- try{
-  let payload;
-  if(action==='buy'){
-   if(!confirm('Buy '+data.shop[value]?.name+' for '+data.shop[value]?.cost+' spendable XP?')){busy=false;status('Purchase cancelled.');return;}
-   payload={action:'buy',itemId:value};
-  }else if(action==='equip'){
-   payload={action:'set',field:data.shop[value]?.field,value};
-  }else{
-   payload={action:'set',field:action,value};
-  }
-  data=await request({...payload,...active});paint();status('✅ Saved! Your lifetime XP and Galactic Rank stay the same.');
+  const who=credentials();const result=await request({action:'load',...who});
+  if(window.qfHQGetPlayerId?.()!==who.playerId)return;
+  active=who;data=result;lastLoadId=id;paint();checkLevelUp();status('✅ Your profile is ready!');
  }catch(e){status('⚠️ '+e.message,true)}finally{busy=false}
 }
+function checkLevelUp(){
+ if(!active||!data?.level)return;
+ const key='qf55-last-level:'+active.playerId,prior=Number(get(key)||0),current=data.level.number;
+ put(key,String(current));
+ if(prior>0&&current>prior){window.qf55LevelUp?.(current,data.level.rank);window.qf54PlaySound?.('level')}
+}
+window.qf54LoadCurrent=loadCurrent;
+async function change(action,field,value){
+ if(busy||!active||!data)return;
+ if(action==='buy'){
+  const item=data.shop?.[value];if(!item)return;
+  if(!confirm(`Buy ${item.name} for ${item.cost} spendable XP?`))return;
+ }
+ const who=active;busy=true;status(action==='buy'?'🛍️ Buying your upgrade…':'📡 Saving your customisation…');
+ try{
+  const payload=action==='buy'?{action:'buy',itemId:value}:{action:'set',field,value};
+  const next=await request({...payload,...who});
+  if(window.qfHQGetPlayerId?.()!==who.playerId)return;
+  data=next;paint();checkLevelUp();status(action==='buy'?'🎉 Purchased! Equip it in the Shop or Profile Studio.':'✅ Saved! Your profile is looking awesome!');
+  if(action==='buy')window.qf54PlaySound?.('purchase');
+ }catch(e){status('⚠️ '+e.message,true)}finally{busy=false}
+}
+for(const root of [studio,shopHub])root.addEventListener('click',e=>{
+ const b=e.target.closest('button[data-action]');if(b&&!b.disabled)void change(b.dataset.action,b.dataset.field,b.dataset.value);
+});
+$('qf54MottoSave').addEventListener('click',()=>void change('set','motto',$('qf54MottoInput').value.trim()));
+$('qf55Subject').addEventListener('change',e=>void change('set','favouriteSubject',e.target.value));
+$('qf54MottoInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('qf54MottoSave').click()}});
+$('qf54Sound').addEventListener('change',e=>{const id=window.qfHQGetPlayerId?.()||'guest';put('qf54-sound:'+id,e.target.checked?'on':'off');status(e.target.checked?'🔊 Sounds enabled on this device.':'🔇 Sounds muted on this device.')});
+$('qf54TestSound').addEventListener('click',()=>window.qf54PlaySound?.('cheer',true));
+const cats=$('qf54Categories');for(const c of CATEGORIES){const b=document.createElement('button');b.type='button';b.textContent=c;b.className='qf54-category';b.dataset.category=c;b.setAttribute('aria-pressed',String(c===selectedCategory));cats.append(b)}
+cats.addEventListener('click',e=>{const b=e.target.closest('[data-category]');if(!b)return;selectedCategory=b.dataset.category;for(const x of cats.children)x.setAttribute('aria-pressed',String(x===b));paintShop()});
+$('qf54Search').addEventListener('input',paintShop);$('qf54Affordable').addEventListener('change',paintShop);
 async function refreshPublic(){
  try{
-  const r=await fetch('/api/profile',{cache:'no-store'});if(!r.ok)throw Error('No public updates');
+  const r=await fetch('/api/profile',{cache:'no-store'});if(!r.ok)return;
   const response=await r.json();if(!response.ok)return;
   publicState=response.data;const a=publicState.announcement,c=publicState.competition;
-  $('qf5Announcement').textContent=a?.text||'No announcement right now.';
-  $('qf5Competition').textContent=c?.title?`${c.title} • ${c.subject} • Ends ${new Date(c.end).toLocaleString('en-ZA')}. First 10+ question attempt counts!`:'No competition right now.';
-  const board=$('qf5CompetitionBoard');board.replaceChildren();
-  (publicState.leaderboard||[]).slice(0,5).forEach((p,i)=>{
-   const row=document.createElement('div');row.className='qf5-standing';
-   const left=document.createElement('span');left.textContent=(['🥇','🥈','🥉'][i]||'⭐')+' '+p.nickname;
-   const right=document.createElement('strong');right.textContent=p.correct+'/'+p.total;
-   row.append(left,right);board.append(row);
-  });
-  if(a?.text||c?.title){news.hidden=false;news.textContent=a?.text?'📣 HQ NEWS: '+a.text.slice(0,100):'🏆 COMPETITION: '+c.title;}
-  else news.hidden=true;
- }catch(e){/* No internet: quiz questions still work offline. */}
+  $('qf54Announcement').textContent=a?.text||'No announcement right now.';
+  $('qf54Competition').textContent=c?.title?`${c.title} • ${c.subject} • Ends ${new Date(c.end).toLocaleString('en-ZA')}. First 10+ question attempt counts!`:'No competition right now.';
+  const board=$('qf54CompetitionBoard');board.replaceChildren();
+  (publicState.leaderboard||[]).slice(0,5).forEach((p,i)=>{const row=document.createElement('div');row.className='qf5-standing';const left=document.createElement('span');left.textContent=(['🥇','🥈','🥉'][i]||'⭐')+' '+p.nickname;const right=document.createElement('strong');right.textContent=p.correct+'/'+p.total;row.append(left,right);board.append(row)});
+  news.hidden=!(a?.text||c?.title);news.textContent=a?.text?'📣 HQ NEWS: '+a.text.slice(0,100):c?.title?'🏆 COMPETITION: '+c.title:'';
+ }catch(e){/* offline play remains available */}
 }
-openBtn.addEventListener('click',()=>{overlay.hidden=false;document.body.style.overflow='hidden';$('qf5Name').value=get('qf-nickname')||'';void refreshPublic();if($('qf5Name').value)void openProfile();});
-news.addEventListener('click',()=>openBtn.click());
-$('qf5Close').addEventListener('click',()=>{overlay.hidden=true;document.body.style.overflow=''});
-$('qf5Load').addEventListener('click',()=>void openProfile());
-$('qf5Name').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();void openProfile()}});
-$('qf5Name').addEventListener('change',()=>{$('qf5Private').hidden=true;active=null;data=null;status('Tap Open profile for this nickname.')});
-overlay.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(b)void change(b.dataset.action,b.dataset.value)});
-window.qf5Refresh=()=>{void refreshPublic();if(!overlay.hidden&&active)void openProfile()};
-setTimeout(refreshPublic,1700);
+window.qf54RefreshPublic=refreshPublic;
+window.qf5Refresh=()=>{void refreshPublic();void loadCurrent(true)};
+news.addEventListener('click',()=>window.qf6OpenTab?.('shop'));
+document.addEventListener('qf:active-profile-changed',()=>{data=null;active=null;lastLoadId='';$('qf54Card').hidden=true;$('qf54Controls').hidden=true;$('qf55ProfileLevel').hidden=true;$('qf55ShopLevel').hidden=true;paintShop();void loadCurrent(true)});
+setTimeout(()=>{void loadCurrent();void refreshPublic()},1700);
 setInterval(()=>{if(!document.hidden)void refreshPublic()},120000);
 })();
+
 </script>
 <script id="qf51-profile-switch-script">
 (function(){
@@ -3806,7 +4023,8 @@ update();
 })();
 </script>
 <script id="qf6-hq-tabs-script">
-/* QUIZFORCE v5.3 • HQ-style navigation, no backend changes. */
+
+/* QUIZFORCE v5.5 • HQ-style navigation with expanded profile, levels and Shop. */
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
@@ -3818,24 +4036,24 @@ const oldTag=home.querySelector(':scope > .tag');
 if(!oldLogo||!oldTitle||!oldTag)return;
 const brand=document.createElement('header');brand.id='qf6Brand';
 const brandText=document.createElement('div');brandText.className='qf6-brand-text';
-const version=document.createElement('div');version.className='qf6-version';version.textContent='⚡ QUIZFORCE v5.3 • MISSION CONTROL';
-brandText.append(version,oldTitle,oldTag);
+brandText.append(oldTitle,oldTag);
 const activePill=document.createElement('div');activePill.id='qf6Active';activePill.setAttribute('aria-live','polite');
 brand.append(oldLogo,brandText,activePill);
+activePill.setAttribute('role','button');activePill.tabIndex=0;activePill.setAttribute('aria-label','Open your player profile');
 const shell=document.createElement('div');shell.id='qf6Shell';
 const nav=document.createElement('nav');nav.id='qf6Nav';nav.setAttribute('role','tablist');nav.setAttribute('aria-label','QUIZFORCE sections');
 const navLabel=document.createElement('div');navLabel.className='qf6-nav-label';navLabel.textContent='YOUR QUIZFORCE';nav.append(navLabel);
 const views=document.createElement('div');views.id='qf6Views';
 const sections=[
- ['home','🏠','Home'],['play','🎮','Play'],['profiles','👤','Profiles'],
- ['shop','🛒','XP Shop'],['leaderboard','🏆','Leaderboard'],
- ['messages','💬','Messages'],['learn','📚','Learn']
+ ['home','Home'],['play','Play'],['profiles','Profiles'],
+ ['shop','Shop'],['leaderboard','Leaderboard'],
+ ['messages','Messages'],['learn','Learn']
 ];
 const buttons=new Map(),panels=new Map();
-for(const [id,emoji,label] of sections){
+for(const [id,label] of sections){
  const button=document.createElement('button');button.type='button';button.id='qf6-tab-'+id;
  button.setAttribute('role','tab');button.setAttribute('aria-controls','qf6-'+id);
- button.innerHTML='<span class="qf6-emoji" aria-hidden="true">'+emoji+'</span><span>'+label+'</span>';
+ button.textContent=label;
  nav.append(button);buttons.set(id,button);
  const panel=document.createElement('section');panel.id='qf6-'+id;panel.className='qf6-view';
  panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',button.id);
@@ -3865,9 +4083,10 @@ const homeView=panels.get('home');
 const hero=document.createElement('div');hero.className='qf6-hero';
 hero.innerHTML='<div class="qf6-kicker">🛰️ MISSION OVERVIEW</div><h2>Ready to level up?</h2><p>Choose your mission, earn XP and climb the worldwide rankings. Your QUIZFORCE universe is one tap away.</p>';
 homeView.append(hero);
+const homeLevel=document.createElement('div');homeLevel.id='qf55HomeLevel';homeLevel.className='qf55-level';homeLevel.hidden=true;homeView.append(homeLevel);
 actions('home',[['🎮 Create a test','play',true],['👤 Switch player','profiles',false],['🏆 Rankings','leaderboard',false]]);
 const notes=Array.from(home.querySelectorAll(':scope > .note'));
-notes.forEach(el=>homeView.append(el));
+notes.forEach(el=>{if(/v5\.3|HQ-style tabs|Protected nicknames|Cloudflare|Five subjects|English 360|Edition 12/i.test(el.textContent))el.remove();else homeView.append(el)});
 move('home','qf11Dashboard');
 move('home','qf5News');
 addTitle('play','🎮 Choose your mission','Create a quiz or try the 90-second Speedrun Challenge.');
@@ -3875,12 +4094,10 @@ move('play','create');move('play','qf11SpeedHome');
 addPanel('play','<strong>⚡ Study smart!</strong><p>Pick a subject, difficulty and question count. Pressing IDK teaches you, but that question stays worth 0 marks and 0 XP.</p>');
 addTitle('profiles','👤 Who’s playing?','Create a new nickname or switch between saved players. Your chosen name is used for messages and finished tests.');
 move('profiles','qf51Switch');
-const profileShortcut=document.createElement('button');profileShortcut.className='primary';profileShortcut.type='button';profileShortcut.textContent='🎭 Customise my avatar & open XP Shop →';
-profileShortcut.addEventListener('click',()=>activate('shop'));panels.get('profiles').append(profileShortcut);
-addTitle('shop','🛒 My Profile & XP Shop','Customise your astronaut, buy cosmetic upgrades and see announcements from HQ. Shopping never lowers lifetime XP.');
-const shopOpen=move('shop','qf5Open');if(shopOpen)shopOpen.classList.add('qf6-legacy-open');
-const shopOverlay=move('shop','qf5Overlay');
-if(!shopOverlay)addPanel('shop','<p>Profile shop is temporarily unavailable. Refresh QUIZFORCE and try again.</p>');
+move('profiles','qf54Studio');
+actions('profiles',[['🛍️ Visit the Shop','shop',false]]);
+addTitle('shop','🛍️ Shop','Browse 61 cosmetics including secret level unlocks, sound packs and profile auras. Shop XP never changes your lifetime rank.');
+move('shop','qf54ShopHub');
 addTitle('leaderboard','🏆 Worldwide Leaderboard','See the best scores and Galactic XP Champions from QUIZFORCE HQ.');
 move('leaderboard','qfLeaderboard');move('leaderboard','qfhqLivePanel');
 addTitle('messages','💬 Questions & Ideas','Send a question, suggest an update or report a bug. Check here for private replies from HQ.');
@@ -3894,8 +4111,14 @@ for(const el of Array.from(home.children)){
 let current='home';
 function updatePlayer(){
  const name=window.qfHQGetActiveName?.()||'';
- activePill.textContent=name?'🟢 '+name:'👤 Choose a player';
- activePill.title=name?'Currently playing as '+name:'Open Profiles to create a nickname';
+ const appearance=window.qf54GetCachedAppearance?.();
+ activePill.replaceChildren();
+ const avatar=document.createElement('span');avatar.className='qf54-pill-avatar';avatar.textContent=appearance?.avatar||'🚀';avatar.style.borderColor=({cyan:'#54e9ec',violet:'#b69aff',blue:'#71b8ff',green:'#8df2b6',orange:'#ffc274',pink:'#ff9dd0',red:'#ff8585',yellow:'#ffe47c',mint:'#66f4c4',indigo:'#9cafff',coral:'#ffa99e',silver:'#d7e7f2'})[appearance?.color]||'#54e9ec';
+ const label=document.createElement('span');label.className='qf54-pill-name';label.textContent=name||'Choose a player';
+ activePill.append(avatar,label);
+  const lv=appearance?.level;if(lv){const chip=document.createElement('span');chip.className='qf55-pill-level';chip.textContent='Lv '+lv;chip.style.cssText='font-size:10px;color:#ffe5a1;font-weight:900;white-space:nowrap';activePill.append(chip)}
+  homeLevel.hidden=!lv;homeLevel.textContent=lv?'✦ Level '+lv+' · '+(name||'Player')+' · Open Profiles to see your progress and secret unlocks.':'';
+ activePill.title=name?'Profile: '+name+' — tap to customise':'Open Profiles to create a nickname';
 }
 function activate(id){
  if(!panels.has(id))id='home';
@@ -3905,7 +4128,8 @@ function activate(id){
   buttons.get(key).setAttribute('aria-selected',String(isActive));
   buttons.get(key).tabIndex=isActive?0:-1;
  }
- if(id==='shop'&&shopOverlay?.hidden&&shopOpen)shopOpen.click();
+ if(id==='shop'){window.qf54LoadCurrent?.();window.qf54RefreshPublic?.()}
+ if(id==='profiles')window.qf54LoadCurrent?.();
  if(id==='messages'){
   const ideas=$('qfIdeasContent');if(ideas?.hidden)$('qfIdeasToggle')?.click();
  }
@@ -3930,18 +4154,106 @@ for(const [id,button] of buttons){
   buttons.get(ids[index]).focus();activate(ids[index]);
  });
 }
-// The v5 profile shop used to be a fullscreen overlay. It now lives in its own tab.
-shopOpen?.addEventListener('click',()=>{
- if(current!=='shop')activate('shop');
- document.body.style.overflow='';
-});
-$('qf5Close')?.addEventListener('click',()=>activate('profiles'));
+// The active avatar is also a shortcut to the Profile Studio.
+activePill.addEventListener('click',()=>activate('profiles'));
+activePill.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activate('profiles')}});
 for(const id of ['qfGlobalHome','rhome','toHome']){
  $(id)?.addEventListener('click',()=>activate('home'));
 }
 document.addEventListener('qf:active-profile-changed',updatePlayer);
+document.addEventListener('qf:cosmetics-updated',updatePlayer);
 updatePlayer();activate('home');
 window.qf6OpenTab=activate;
+})();
+
+
+</script>
+<script id="qf54-effects-script">
+/* QUIZFORCE v5.5 — optional sounds + celebration animations, offline and self-contained. */
+(function(){
+'use strict';
+let audio=null,noise=null,lastSound=0;
+const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+const reduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+function context(){
+ if(!AudioContextClass)return null;
+ try{
+  if(!audio)audio=new AudioContextClass();
+  if(audio.state==='suspended')void audio.resume();
+  if(!noise){noise=audio.createBuffer(1,Math.ceil(audio.sampleRate*.14),audio.sampleRate);const ch=noise.getChannelData(0);for(let i=0;i<ch.length;i++)ch[i]=(Math.random()*2-1)*(1-i/ch.length)}
+  return audio;
+ }catch{return null}
+}
+function tone(ctx,freq,time,length,volume=.07,type='sine',endFreq){
+ const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=type;osc.frequency.setValueAtTime(freq,time);
+ if(endFreq)osc.frequency.exponentialRampToValueAtTime(Math.max(40,endFreq),time+length);
+ gain.gain.setValueAtTime(.0001,time);gain.gain.exponentialRampToValueAtTime(volume,time+.025);gain.gain.exponentialRampToValueAtTime(.0001,time+length);
+ osc.connect(gain).connect(ctx.destination);osc.start(time);osc.stop(time+length+.02);
+}
+function clap(ctx,time,volume=.055){
+ const src=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();src.buffer=noise;filter.type='highpass';filter.frequency.value=1000;
+ gain.gain.setValueAtTime(.0001,time);gain.gain.exponentialRampToValueAtTime(volume,time+.006);gain.gain.exponentialRampToValueAtTime(.0001,time+.11);
+ src.connect(filter).connect(gain).connect(ctx.destination);src.start(time);src.stop(time+.12);
+}
+function play(kind,force=false){
+ if(!force&&window.qf54SoundEnabled?.()===false)return;
+ const now=Date.now();if(kind!=='cheer'&&now-lastSound<70)return;lastSound=now;
+ const ctx=context();if(!ctx)return;const t=ctx.currentTime+.02;
+ const pack=window.qf54GetCachedAppearance?.()?.soundPack||'classic';
+ const variant=pack==='sound_retro'?'square':pack==='sound_arcade'?'triangle':pack==='sound_space'?'sine':pack==='sound_stadium'?'sawtooth':pack==='secret_cosmic_sound'?'sine':pack==='secret_legendary_sound'?'triangle':pack==='secret_hyperdrive_sound'?'sawtooth':'sine';
+ const pitch=pack==='sound_retro'?.8:pack==='sound_arcade'?1.15:pack==='sound_space'?.75:pack==='secret_hyperdrive_sound'?1.3:1;
+ if(kind==='correct'){tone(ctx,520*pitch,t,.09,.035,variant);tone(ctx,780*pitch,t+.08,.14,.035,variant);return}
+ if(kind==='wrong'){tone(ctx,235*pitch,t,.15,.027,variant,185*pitch);return}
+ if(kind==='learned'){tone(ctx,440*pitch,t,.10,.025,variant);tone(ctx,660*pitch,t+.09,.15,.035,variant);return}
+ if(kind==='purchase'){[392,494,587,784].forEach((f,i)=>tone(ctx,f*pitch,t+i*.09,.26,.045,variant));return}
+ if(kind==='level'){[392,523,659,784,1046].forEach((f,i)=>tone(ctx,f*pitch,t+i*.13,.4,.052,variant));return}
+ if(kind==='great'){[523,659,784].forEach((f,i)=>tone(ctx,f*pitch,t+i*.11,.24,.04,variant));return}
+ if(kind==='cheer'){
+  // An arcade crowd cheer: layered rising 'woo!' voices, applause and a fanfare.
+  // Synthesised in Web Audio — no external media downloads or tracking.
+  for(let i=0;i<10;i++){
+   const start=t+i*.065,base=190+(i%5)*38;
+   tone(ctx,base*pitch,start,.62+(i%3)*.12,.018,variant,base*pitch*(1.35+(i%3)*.14));
+   tone(ctx,base*2,start+.09,.44,.011,'triangle',base*2.2);
+  }
+  for(let i=0;i<(pack==='sound_stadium'?48:29);i++)clap(ctx,t+.1+i*.07+(i%3)*.012,.045+(i%5)*.006);
+  [392,494,587,784,988].forEach((f,i)=>tone(ctx,f*pitch,t+.16+i*.15,.45,.052,variant));
+ }
+}
+window.qf54PlaySound=play;
+window.qf55LevelUp=(level,rank)=>{
+ if(document.querySelector('.qf55-levelup'))return;
+ const box=document.createElement('div');box.className='qf55-levelup';box.setAttribute('role','status');
+ const title=document.createElement('strong');title.textContent='LEVEL '+level+' UNLOCKED!';
+ const sub=document.createElement('div');sub.textContent=rank+' · Check the Secret Vault!';
+ box.append('🏆',title,sub);document.body.append(box);particles('stars',60);setTimeout(()=>box.remove(),3500);
+};
+// Unlock iOS Web Audio during the first real tap, not from a timer.
+document.addEventListener('pointerdown',()=>{if(window.qf54SoundEnabled?.()!==false)context()},{once:true,passive:true});
+function particles(kind='confetti',count=90){
+ if(reduceMotion())return;
+ const layer=document.createElement('div');layer.className='qf54-confetti-layer';layer.setAttribute('aria-hidden','true');
+ const colors=['#ffe28a','#56e9dc','#bba0ff','#ff98bc','#8bcbff','#fff'];
+ for(let i=0;i<count;i++){
+  const p=document.createElement('span');p.className='qf54-particle';
+  const shape=kind==='stars'?'★':kind==='fireworks'?'✦':'';
+  if(shape){p.textContent=shape;p.style.width='auto';p.style.height='auto';p.style.fontSize=(10+Math.random()*17)+'px';p.style.background='transparent';p.style.color=colors[i%colors.length]}
+  p.style.setProperty('--left',(Math.random()*100)+'%');p.style.setProperty('--duration',(1.8+Math.random()*1.7)+'s');p.style.setProperty('--color',colors[i%colors.length]);p.style.setProperty('--rotate',(Math.random()*360)+'deg');p.style.animationDelay=(Math.random()*.65)+'s';layer.append(p);
+ }
+ document.body.append(layer);setTimeout(()=>layer.remove(),4500);
+}
+function xpFloat(){if(reduceMotion())return;const rewards=document.getElementById('qf11Rewards');if(!rewards)return;const m=rewards.textContent.match(/\+(\d+) XP/);if(!m||Number(m[1])<=0)return;
+ const r=rewards.getBoundingClientRect(),el=document.createElement('div');el.className='qf54-xp-fly';el.textContent='+'+m[1]+' XP';el.style.left=Math.max(15,Math.min(innerWidth-130,r.left+r.width/2-55))+'px';el.style.top=Math.max(60,Math.min(innerHeight-110,r.top))+'px';document.body.append(el);setTimeout(()=>el.remove(),1700)}
+window.qf54CelebrateResult=(pct,details={})=>{
+ if(details.review)return;
+ const score=document.getElementById('finalScore');if(score&&!reduceMotion()){score.classList.remove('qf54-score-pop');void score.offsetWidth;score.classList.add('qf54-score-pop')}
+ setTimeout(xpFloat,220);
+ if(pct===100){
+  const style=window.qf54GetCachedAppearance?.()?.celebration||'confetti';
+  if(style!=='none')particles(style,style==='fireworks'?115:90);
+  play('cheer');
+ }else if(pct>=80){play('great');if(pct>=90)particles('stars',30)}
+};
 })();
 
 </script>
