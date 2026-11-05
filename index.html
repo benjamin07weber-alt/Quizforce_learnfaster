@@ -3174,6 +3174,7 @@ function finish(){if(qf11RunFinished)return;qf11RunFinished=true;qf11EndRun();sh
   catch(error){console.warn("QUIZFORCE HQ tracking unavailable:",error)}
  }
  window.qf54CelebrateResult?.(pct,{review:reviewMode});
+ window.qf56FinishVoice?.(pct,reviewMode);
  if(!reviewMode){setTimeout(()=>window.qf54LoadCurrent?.(true),2500);setTimeout(()=>window.qf54LoadCurrent?.(true),7500)}
 }
 for(const subject of ["maths","afrikaans"]){
@@ -4169,7 +4170,7 @@ window.qf6OpenTab=activate;
 
 </script>
 <script id="qf54-effects-script">
-/* QUIZFORCE v5.5 — optional sounds + celebration animations, offline and self-contained. */
+/* QUIZFORCE v5.6 — optional sounds + celebration animations, offline and self-contained. */
 (function(){
 'use strict';
 let audio=null,noise=null,lastSound=0;
@@ -4251,11 +4252,54 @@ window.qf54CelebrateResult=(pct,details={})=>{
  if(pct===100){
   const style=window.qf54GetCachedAppearance?.()?.celebration||'confetti';
   if(style!=='none')particles(style,style==='fireworks'?115:90);
-  play('cheer');
- }else if(pct>=80){play('great');if(pct>=90)particles('stars',30)}
+  play('cheer',true);
+ }else if(pct>=80){play('great',true);if(pct>=90)particles('stars',30)}else{play('wrong',true)}
 };
 })();
 
+</script>
+<style id="qf56-style">
+#qf56DrawToggle{margin:12px 0 8px;max-width:240px}
+#qf56Drawer{border:1px solid #5ce9d5;border-radius:16px;padding:12px;margin:12px 0;background:#102e35}
+#qf56Canvas{width:100%;height:310px;display:block;background:#fff;border-radius:10px;touch-action:none;cursor:crosshair}
+#qf56Drawer .qf56tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+#qf56Drawer button{width:auto;min-width:0;padding:9px 12px}
+#qf56Drawer button[aria-pressed="true"]{outline:2px solid #5ce9d5}
+</style>
+<script id="qf56-upgrade">
+(function(){
+'use strict';
+// Keep the existing question/score/leaderboard logic untouched.
+const quiz=document.getElementById('quiz'),answers=document.getElementById('answers');
+const mathsChooser=document.getElementById('mathsChooser');
+if(!quiz||!answers||!mathsChooser)return;
+const toggle=document.createElement('button');toggle.id='qf56DrawToggle';toggle.type='button';toggle.className='secondary';toggle.textContent='✏️ Draw';
+const drawer=document.createElement('div');drawer.id='qf56Drawer';drawer.hidden=true;
+drawer.innerHTML='<div class="qf56tools"><button type="button" data-tool="pen" aria-pressed="true">✏️ Pencil</button><button type="button" data-tool="erase" aria-pressed="false">🧽 Eraser</button><button type="button" data-act="undo">↩️ Undo</button><button type="button" data-act="clear">🗑️ Clear</button><button type="button" data-act="close">✕ Close</button></div><canvas id="qf56Canvas" aria-label="Freehand working space"></canvas>';
+answers.after(toggle,drawer);
+const canvas=drawer.querySelector('canvas'),ctx=canvas.getContext('2d');let strokes=[],current=null,tool='pen',lastQuestion='',lastOpen=false;
+function render(){const rect=canvas.getBoundingClientRect();if(!rect.width)return;const dpr=Math.min(2,window.devicePixelRatio||1);const w=Math.round(rect.width*dpr),h=Math.round(310*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,rect.width,310);ctx.fillStyle='#fff';ctx.fillRect(0,0,rect.width,310);for(const s of [...strokes,...(current?[current]:[])]){if(!s.points.length)continue;ctx.beginPath();ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=s.tool==='erase'?22:2.5;ctx.strokeStyle=s.tool==='erase'?'#fff':'#17304c';ctx.moveTo(s.points[0].x*rect.width,s.points[0].y*310);for(const pt of s.points.slice(1))ctx.lineTo(pt.x*rect.width,pt.y*310);if(s.points.length===1){ctx.lineTo(s.points[0].x*rect.width+.1,s.points[0].y*310+.1)}ctx.stroke()}}
+function point(e){const r=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))}}
+canvas.addEventListener('pointerdown',e=>{e.preventDefault();canvas.setPointerCapture(e.pointerId);current={tool,points:[point(e)]};render()});
+canvas.addEventListener('pointermove',e=>{if(!current)return;e.preventDefault();current.points.push(point(e));render()});
+function end(){if(!current)return;strokes.push(current);current=null;render()}
+canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
+drawer.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.tool){tool=b.dataset.tool;drawer.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.tool===tool)))}else if(b.dataset.act==='undo'){strokes.pop();render()}else if(b.dataset.act==='clear'){if(confirm('Clear your working space?')){strokes=[];render()}}else if(b.dataset.act==='close'){drawer.hidden=true;toggle.textContent='✏️ Draw'}});
+toggle.addEventListener('click',()=>{drawer.hidden=!drawer.hidden;toggle.textContent=drawer.hidden?'✏️ Draw':'✕ Hide Drawing';if(!drawer.hidden)requestAnimationFrame(render)});
+function sync(){const isMath=!mathsChooser.classList.contains('hidden');const visible=!quiz.classList.contains('hidden');toggle.hidden=!(isMath&&visible);if(toggle.hidden){drawer.hidden=true;return}const question=document.getElementById('qText')?.textContent||'';if(question!==lastQuestion){lastQuestion=question;strokes=[];current=null;drawer.hidden=true;toggle.textContent='✏️ Draw'}}
+const observer=new MutationObserver(sync);observer.observe(quiz,{attributes:true,attributeFilter:['class']});observer.observe(mathsChooser,{attributes:true,attributeFilter:['class']});const question=document.getElementById('qText');if(question)observer.observe(question,{childList:true,characterData:true,subtree:true});sync();window.addEventListener('resize',()=>{if(!drawer.hidden)render()});
+// Voice is triggered by the actual result function, not by the sound test button.
+let speechUnlocked=false;
+document.addEventListener('pointerdown',()=>{speechUnlocked=true;try{window.speechSynthesis?.getVoices()}catch{}},{passive:true});
+window.qf56FinishVoice=(pct,review)=>{if(review)return;
+ const message=pct===100?'WHAAAAT! A PERFECT SCORE! YOU ABSOLUTE LEGEND! QUIZFORCE CHAMPION!':pct>=80?'Great work, Space Cadet! You smashed that test!':pct>=60?'Good effort, Space Cadet! Keep practising and you will get even better!':'Better luck next time, Space Cadet! Do not give up! Every question makes you smarter. Let us try again!';
+ const speak=()=>{try{if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(message);u.lang='en-ZA';u.rate=1.08;u.pitch=1.12;u.volume=1;window.speechSynthesis.speak(u)}catch(e){console.warn('QUIZFORCE voice unavailable',e)}};
+ // Play result effects even if the optional celebration handler failed to load.
+ if(typeof window.qf54CelebrateResult!=='function' && window.qf54PlaySound){window.qf54PlaySound(pct===100?'cheer':pct>=80?'great':'wrong',true)}
+ // iOS requires voice to be unlocked through an earlier tap.
+ if(speechUnlocked)speak();
+};
+})();
 </script>
 </body>
 </html>
