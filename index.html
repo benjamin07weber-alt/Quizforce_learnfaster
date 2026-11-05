@@ -4317,6 +4317,7 @@ window.qf56FinishVoice=(pct,review)=>{if(review)return;
 <script id="qf57-music-and-announcer">
 (function(){'use strict';
 const playlist='0oaDpwrddPqmLg4W2C7wPB';
+const playlistShareUrl='https://open.spotify.com/playlist/0oaDpwrddPqmLg4W2C7wPB?si=3RdNOW2zSMi8xEA0NXkmsw&utm_source=copy-link&pt=1ebfb2845a6ac09f8dff633f2f408129';
 const panel=document.getElementById('qf6-music');
 if(!panel)return;
 const area=document.createElement('div');area.id='qf57MusicArea';
@@ -4330,7 +4331,7 @@ const iframe=document.createElement('iframe');iframe.title='QUIZFORCE Radio Spot
 let keepOpen=true;
 function sync(){const onMusic=!panel.hidden;if(onMusic){if(iframe.parentNode!==home)home.append(iframe);iframe.style.height='352px';dock.hidden=true}else if(keepOpen){if(iframe.parentNode!==document.getElementById('qf57DockPlayer'))document.getElementById('qf57DockPlayer').append(iframe);iframe.style.height='152px';dock.hidden=false}else{dock.hidden=true;}}
 new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['hidden']});
-document.getElementById('qf57OpenSpotify').addEventListener('click',()=>window.open('https://open.spotify.com/playlist/'+playlist,'_blank','noopener'));
+document.getElementById('qf57OpenSpotify').addEventListener('click',()=>window.open(playlistShareUrl,'_blank','noopener'));
 document.getElementById('qf57ToggleDock').addEventListener('click',()=>{keepOpen=!keepOpen;document.getElementById('qf57ToggleDock').textContent=keepOpen?'🎵 Keep player open: ON':'🎵 Keep player open: OFF';sync()});
 document.getElementById('qf57ReturnMusic').addEventListener('click',()=>window.qf6OpenTab?.('music'));
 document.getElementById('qf57HideDock').addEventListener('click',()=>{keepOpen=false;document.getElementById('qf57ToggleDock').textContent='🎵 Keep player open: OFF';sync()});
