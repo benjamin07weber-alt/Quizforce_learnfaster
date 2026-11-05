@@ -4323,6 +4323,13 @@ if(!panel)return;
 const area=document.createElement('div');area.id='qf57MusicArea';
 area.innerHTML='<h2 style="margin:0 0 8px">🎧 QUIZFORCE RADIO</h2><p>Choose a track from the QUIZFORCE Spotify playlist. Spotify controls which tracks play in full; some visitors may hear previews or need to open Spotify. The player stays visible in a small dock when you leave this tab.</p><div id="qf57MusicActions"><button type="button" id="qf57OpenSpotify">↗ Open in Spotify</button><button type="button" id="qf57ToggleDock">🎵 Keep player open</button></div><div id="qf57PlayerHome"></div><p>Tip: press Play in Spotify first. iPad Safari may require a tap and may pause playback during navigation.</p>';
 panel.append(area);
+// Quick Check plays an embedded track inside QUIZFORCE; no link to the Spotify app.
+const quick=document.createElement('section');
+quick.id='qf58QuickCheck';
+quick.setAttribute('aria-label','Quick Check Spotify song');
+quick.innerHTML='<h3 style="margin:0 0 7px">Quick Check</h3><p style="margin:0 0 12px;opacity:.86">Test your new Spotify song right here without opening the Spotify app. Tap Play in the player. Spotify may still limit playback to a preview.</p><iframe title="Quick Check Spotify track" loading="lazy" style="width:100%;height:152px;border:0;border-radius:12px;display:block" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" src="https://open.spotify.com/embed/track/3KkXRkHbMCARz0aVfEt68P?utm_source=generator"></iframe>';
+quick.style.cssText='margin:18px 0;padding:18px;border:1px solid rgba(130,230,220,.35);border-radius:16px;background:rgba(13,35,48,.4)';
+area.insertBefore(quick,document.getElementById('qf57PlayerHome'));
 const home=document.getElementById('qf57PlayerHome');
 const dock=document.createElement('aside');dock.id='qf57Dock';dock.hidden=true;
 dock.innerHTML='<div id="qf57DockHeader"><strong>🎵 QUIZFORCE RADIO</strong><button type="button" id="qf57ReturnMusic">Open Music tab</button><button type="button" id="qf57HideDock">✕</button></div><div id="qf57DockPlayer"></div>';
