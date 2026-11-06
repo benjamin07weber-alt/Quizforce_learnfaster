@@ -4313,6 +4313,33 @@ window.qf56FinishVoice=(pct,review)=>{if(review)return;
 #qf57MusicActions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
 #qf57MusicActions button{width:auto!important;min-width:0!important;padding:10px 13px!important}
 @media(max-width:600px){#qf57Dock{bottom:8px;right:8px;width:min(310px,calc(100vw - 16px))}}
+
+#qf58SpotifyTip{display:flex;align-items:center;gap:12px;margin:15px 0 12px;padding:13px 15px;border:1px solid #42d6bb88;border-radius:15px;background:linear-gradient(120deg,#103b4e,#155a57);color:#eafff9;font-size:13px;line-height:1.5}
+#qf58SpotifyTip .qf58-tip-icon{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:12px;background:#22e6c328;color:#76ffe2;font-size:23px;font-weight:900}
+@media(max-width:600px){
+ html,body{max-width:100%;overflow-x:hidden}
+ #home.qf6-tabbed{padding:9px!important}
+ #qf6Brand{padding:14px 13px!important;margin:0 0 12px!important;border:1px solid #57e8d455!important;border-radius:22px!important;background:linear-gradient(125deg,#08263d,#114d57 65%,#125f65)!important;box-shadow:0 12px 30px #001f3299!important}
+ #qf6Brand h1{font-size:clamp(22px,6vw,29px)!important;letter-spacing:-.6px}
+ #qf6Active{border-radius:13px!important}
+ #qf6Nav{position:sticky!important;top:env(safe-area-inset-top,0px)!important;z-index:80!important;display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(86px,auto)!important;gap:7px!important;padding:9px!important;border:1px solid #4eead077!important;border-radius:18px!important;background:#08293eee!important;box-shadow:0 8px 25px #00192799!important;scroll-snap-type:x proximity!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+ #qf6Nav button{scroll-snap-align:center;min-width:0!important;min-height:48px!important;padding:11px 12px!important;border:1px solid #43858c66!important;border-radius:13px!important;background:#ffffff0b!important;color:#ddfffa!important;font-size:12px!important;font-weight:850!important}
+ #qf6Nav button[aria-selected="true"]{background:linear-gradient(135deg,#19c7b3,#247ac7)!important;color:#fff!important;border-color:#a0fff0!important;box-shadow:0 3px 14px #14d3c25e!important}
+ #qf6Views .qf6-view{padding:15px 12px!important;border-radius:21px!important;border:1px solid #4aadb27a!important;background:linear-gradient(150deg,#0b3045,#0c4249)!important;box-shadow:0 14px 32px #001a2b66!important}
+ #qf6Views h2.qf6-title{font-size:clamp(21px,6vw,27px)!important}
+ #qf6Views .qf6-hero{border-radius:20px!important;background:linear-gradient(135deg,#125c6c,#193a73)!important;border:1px solid #65f3e47a!important;padding:21px 17px!important}
+ #qf6Views .qf6-actions{display:grid!important;grid-template-columns:1fr!important;gap:9px!important}
+ #qf6Views .qf6-actions button{width:100%!important;min-height:49px!important;border-radius:13px!important}
+ #qf57MusicArea{max-width:100%!important;margin:10px auto 0!important}
+ #qf57MusicArea h2{font-size:clamp(23px,7vw,30px)!important;letter-spacing:-.6px}
+ #qf58SpotifyTip{align-items:flex-start;padding:13px 12px;font-size:12px;border-radius:15px}
+ #qf57MusicActions{display:grid!important;grid-template-columns:1fr!important;gap:9px!important}
+ #qf57MusicActions button{width:100%!important;min-height:50px!important;border-radius:14px!important;font-weight:850!important;font-size:14px!important}
+ #qf57OpenSpotify{background:linear-gradient(110deg,#1ed760,#10b6a4)!important;color:#062c22!important;box-shadow:0 5px 16px #00bd7580!important}
+ #qf57PlayerHome{overflow:hidden;border-radius:18px;border:1px solid #4bdbbb70;box-shadow:0 10px 26px #001a2c99}
+ #qf57MusicArea iframe{height:352px!important;max-width:100%!important;border-radius:17px!important}
+ #qf57Dock{max-height:65dvh;overflow:auto}
+}
 </style>
 <script id="qf57-music-and-announcer">
 (function(){'use strict';
@@ -4321,15 +4348,17 @@ const playlistShareUrl='https://open.spotify.com/playlist/0oaDpwrddPqmLg4W2C7wPB
 const panel=document.getElementById('qf6-music');
 if(!panel)return;
 const area=document.createElement('div');area.id='qf57MusicArea';
-area.innerHTML='<h2 style="margin:0 0 8px">🎧 QUIZFORCE RADIO</h2><p>Choose a track from the QUIZFORCE Spotify playlist. Spotify controls which tracks play in full; some visitors may hear previews or need to open Spotify. The player stays visible in a small dock when you leave this tab.</p><div id="qf57MusicActions"><button type="button" id="qf57OpenSpotify">↗ Open in Spotify</button><button type="button" id="qf57ToggleDock">🎵 Keep player open</button></div><div id="qf57PlayerHome"></div><p>Tip: press Play in Spotify first. iPad Safari may require a tap and may pause playback during navigation.</p>';
+area.innerHTML='<h2 style="margin:0 0 8px">🎧 QUIZFORCE RADIO</h2><p>Choose a song below to listen to a preview. <strong>Want the FULL SONG?</strong> Tap the existing <strong>Open in Spotify</strong> button below to listen in Spotify. Spotify controls full-song playback.</p><div id="qf58SpotifyTip" role="note"><span class="qf58-tip-icon">↗</span><span><strong>Want the full song?</strong> Tap <b>Open in Spotify</b> just below. The player here may only play previews.</span></div><div id="qf57MusicActions"><button type="button" id="qf57OpenSpotify">↗ Open in Spotify</button><button type="button" id="qf57ToggleDock">🎵 Keep player open: OFF</button></div><div id="qf57PlayerHome"></div><p>Tip: press Play in Spotify first. iPad Safari may require a tap and may pause playback during navigation.</p>';
 panel.append(area);
 const home=document.getElementById('qf57PlayerHome');
 const dock=document.createElement('aside');dock.id='qf57Dock';dock.hidden=true;
 dock.innerHTML='<div id="qf57DockHeader"><strong>🎵 QUIZFORCE RADIO</strong><button type="button" id="qf57ReturnMusic">Open Music tab</button><button type="button" id="qf57HideDock">✕</button></div><div id="qf57DockPlayer"></div>';
 document.body.append(dock);
-const iframe=document.createElement('iframe');iframe.title='QUIZFORCE Radio Spotify playlist';iframe.loading='lazy';iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.src='https://open.spotify.com/embed/playlist/'+playlist+'?utm_source=generator';home.append(iframe);
-let keepOpen=true;
-function sync(){const onMusic=!panel.hidden;if(onMusic){if(iframe.parentNode!==home)home.append(iframe);iframe.style.height='352px';dock.hidden=true}else if(keepOpen){if(iframe.parentNode!==document.getElementById('qf57DockPlayer'))document.getElementById('qf57DockPlayer').append(iframe);iframe.style.height='152px';dock.hidden=false}else{dock.hidden=true;}}
+const iframe=document.createElement('iframe');iframe.title='QUIZFORCE Radio Spotify playlist';iframe.loading='lazy';iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';iframe.referrerPolicy='strict-origin-when-cross-origin';let playerLoaded=false;
+function loadPlayer(){if(!playerLoaded){iframe.src='https://open.spotify.com/embed/playlist/'+playlist+'?utm_source=generator';playerLoaded=true;}}
+home.append(iframe);
+let keepOpen=false;
+function sync(){const onMusic=!panel.hidden;if(onMusic){loadPlayer();if(iframe.parentNode!==home)home.append(iframe);iframe.style.height='352px';dock.hidden=true}else if(keepOpen){if(iframe.parentNode!==document.getElementById('qf57DockPlayer'))document.getElementById('qf57DockPlayer').append(iframe);iframe.style.height='152px';dock.hidden=false}else{dock.hidden=true;}}
 new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['hidden']});
 document.getElementById('qf57OpenSpotify').addEventListener('click',()=>window.open(playlistShareUrl,'_blank','noopener'));
 document.getElementById('qf57ToggleDock').addEventListener('click',()=>{keepOpen=!keepOpen;document.getElementById('qf57ToggleDock').textContent=keepOpen?'🎵 Keep player open: ON':'🎵 Keep player open: OFF';sync()});
