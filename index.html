@@ -2031,8 +2031,14 @@ function levelQuestion(q,level){
 // A direct knowledge question can be answered without options; prompts that
 // explicitly refer to a list of choices must retain those choices.
 function scienceNeedsVisibleChoices(q){
- const prompt=String(q.q||"");
- return /\b(of the following|from the options|from these options|which (statement|sentence|option|choice) (is|best|correct)|choose (the|from) (following|options)|select (the|from) (following|options))\b/i.test(prompt);
+ if(q.type!=="mc")return false;
+ const prompt=String(q.q||"").trim();
+ if(/\bwhich\b/i.test(prompt))return true; // All Which questions stay multiple choice.
+ // Preserve the authored choices for selection/comparison questions. Turning
+ // these into free text can make the expected answer unclear or unfair.
+ return needsVisibleChoices(q)
+   || /\b(of the following|from the options|from these options|which (statement|sentence|option|choice) (is|best|correct)|choose (the|from) (following|options)|select (the|from) (following|options))\b/i.test(prompt)
+   || /\b(which (is|are|takes|lasts|happens|comes|moves|gives|causes|shows|helps|makes|has|can|would|should)|what (is|are) (the )?(best|correct|most|least))\b/i.test(prompt);
 }
 function toScienceTyped(q){
  if(q.type==="shape"||q.type==="graph"||scienceNeedsVisibleChoices(q))return q;
@@ -2072,21 +2078,21 @@ function scienceAnswerMatch(q,value){
  const v=normalExact(value);if(!v)return false;
  const accepts=[...(q.accept||q.answers||[]),String(getAnswer(q))];
  if(accepts.some(a=>normalExact(a)===v))return true;
- // An accepted answer may be embedded in a complete natural sentence.
  if(accepts.some(a=>{const n=normalExact(a);return n.length>=5 && (" "+v+" ").includes(" "+n+" ");}))return true;
- const canonical=normalExact(getAnswer(q));
- const filler=new Set(['to','the','a','an','and','or','of','for','from','it','its','in','on','at','by','with','is','are','was','were','be','been','as','this','that','these','those','can','could','may','might','should','will','would','do','does','did','have','has','had','if','when','what','why','how','which','who','there','their','they','them','you','your','we','our','more','than','one','two','many','much','very','too','also','into','through','above','below','before','after','up','off','over','under','only','used','use','using','help','helps','make','makes','making','something','thing','things','some','such']);
- const words=canonical.split(' ').filter(w=>w.length>2&&!filler.has(w));
- if(!words.length)return false;
- // If a reference answer includes a negative, a positive opposite is not correct.
- if(/\b(cannot|not|never|without|no)\b/.test(canonical) && !/\b(cannot|not|never|without|no|doesnt|dont|wont|stops|stop|off|away)\b/.test(v))return false;
- const normWord=w=>w.replace(/(ing|ed|es|s)$/,'');
- const synonymGroups=[['safe','safer','safety'],['drink','drinking'],['electric','electrical','electricity'],['germ','germs','bacteria','microorganism','microorganisms','microbe','microbes'],['flow','flows','flowing','pass','passes','travel'],['filter','filtering','filtration'],['settle','settling','sedimentation','sink','sinks'],['destroy','kill','kills','killing'],['remove','removes','removing'],['current','electricity'],['water','waters'],['light','lighting']];
- const equivalent=(a,b)=>a===b || (a.length>4&&b.length>4&&normWord(a)===normWord(b)) || synonymGroups.some(g=>g.includes(a)&&g.includes(b));
+ // Normal Natural Sciences typed questions use ONE meaningful answer keyword.
+ // Definitions, exact wording, numeric values and other strict formats are handled elsewhere.
+ const filler=new Set('a an the and or of for from to in on at by with is are was were be been it its this that these those can could may might should will would do does did have has had when what why how which who there their they them you your we our more than one two many much very too also into through above below before after up off over under only used use using help helps make makes making something thing things some such'.split(' '));
+ const synonymGroups=[['solid','solids','sediment','sediments','particles','dirt'],['sink','sinks','sinking','settle','settles','settling','sedimentation'],['bottom','base'],['safe','safer','safety'],['drink','drinking'],['electric','electrical','electricity'],['germ','germs','bacteria','microorganism','microorganisms','microbe','microbes'],['flow','flows','flowing','pass','passes','travel'],['filter','filtering','filtration'],['destroy','kill','kills','killing'],['remove','removes','removing'],['current','electricity'],['water','waters'],['light','lighting']];
+ const stem=w=>w.replace(/ies$/,'y').replace(/(ing|ed|es|s)$/,'');
+ const equivalent=(a,b)=>a===b || (a.length>4&&b.length>4&&stem(a)===stem(b)) || synonymGroups.some(g=>g.includes(a)&&g.includes(b));
  const userWords=v.split(' ');
- const matched=words.filter(w=>userWords.some(t=>equivalent(w,t))).length;
- const required=words.length===1?1:Math.max(2,Math.ceil(words.length*0.65));
- return matched>=required;
+ // Do not accept a statement that reverses a required negative.
+ const canonical=normalExact(getAnswer(q));
+ if(/\b(cannot|not|never|without|no)\b/.test(canonical)&&!/\b(cannot|not|never|without|no|doesnt|dont|wont|stops|stop|off|away)\b/.test(v))return false;
+ return accepts.some(answer=>{
+   const keys=normalExact(answer).split(' ').filter(w=>w.length>2&&!filler.has(w));
+   return keys.some(k=>userWords.some(word=>equivalent(k,word)));
+ });
 }
 
 function normalExact(s){return String(s).toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ")}
@@ -3012,7 +3018,7 @@ function checkAnswer(){
    learn.onclick=()=>startDefinitionTeach(true);
    skip.onclick=()=>actions.remove();
    actions.append(learn,skip);$("#feedback").appendChild(actions);
- }else $("#feedback").textContent=q.type==="graph"?"❌ Review the highlighted graph and the correct values below.":q.type==="shape"?"❌ Review the highlighted boxes and the correct answers below.":("❌ Not quite. "+getExplanation(q)+(q.pdfSource || q.scienceTyped?" • Correct answer: "+getAnswer(q):q.type==="text"?" • Key words: "+keywordsFor(q).join(", "):""));
+ }else $("#feedback").textContent=q.type==="graph"?"❌ Review the highlighted graph and the correct values below.":q.type==="shape"?"❌ Review the highlighted boxes and the correct answers below.":("❌ Not quite. "+(q.scienceTyped ? "Correct answer: "+getAnswer(q) : getExplanation(q)+(q.pdfSource ? " • Correct answer: "+getAnswer(q) : q.type==="text" ? " • Key words: "+keywordsFor(q).join(", ") : "")));
 }
  $("#check").disabled=true;$("#qfIdkButton").disabled=true;$("#next").disabled=false;$("#next").textContent=idx===test.length-1?"See My Score":"Next →";
 }
