@@ -1487,7 +1487,7 @@ MC("Which pair is correctly matched?","Barnard — heart transplant",["Fleming �
 // v6.9: Democracy facts and important South African history.
 banks.social6.push(
 MC("How often are South Africa's national and provincial elections normally held?","Every five years",["Every year","Every ten years","Every two years"],"National and provincial elections normally take place every five years."),
-TX("How many years are there between South African national elections?",["5","five","five years","5 years"],"National elections are held every five years."),
+TX("How many years are there between South African national elections?",["5","five","five years","5 years","every 5 years","every five years"],"National elections are held every five years."),
 MC("Who elects South Africa's President?","The National Assembly",["Every voter directly on a separate presidential ballot","The Constitutional Court","The police"],"Members of the National Assembly elect the President."),
 MC("What is usually the connection between the President and the governing party?","The President is normally a leader supported by the governing party or coalition",["The President must be the leader of the smallest party","The President is appointed by the courts","The President must be an independent judge"],"The National Assembly elects the President, generally with support from the governing party or coalition."),
 MC("Who composed Nkosi Sikelel' iAfrika?","Enoch Sontonga",["Nelson Mandela","Chris Barnard","Louis Pasteur"],"Enoch Sontonga composed Nkosi Sikelel' iAfrika."),
@@ -2074,10 +2074,10 @@ function selectedSocialDefinitions(){
 banks.math_add_sub.push(
 TX("Calculate 7 345 892 − 2 867 459.",["4478433"],"7 345 892 − 2 867 459 = 4 478 433."),
 TX("Calculate 3 475 680 + 4 826 795.",["8302475"],"3 475 680 + 4 826 795 = 8 302 475."),
-TX("A school collects R24 875 in March and R37 650 in April. How much altogether?",["62525"],"R24 875 + R37 650 = R62 525."),
+TX("A school collects R24 875 in March and R37 650 in April. How much altogether?",["62525","R62525","R62 525","R 62 525"],"R24 875 + R37 650 = R62 525."),
 TX("Calculate 5 000 000 − 1 786 245.",["3213755"],"The difference is 3 213 755."),
-TX("Calculate 2 5/6 − 1 3/4. Give a mixed number.",["1 1/12","13/12"],"Borrow or use twelfths: 34/12 − 21/12 = 13/12 = 1 1/12."),
-TX("Calculate 4 1/5 − 2 3/5. Give a mixed number.",["1 3/5","8/5"],"Borrow one whole: 3 6/5 − 2 3/5 = 1 3/5."),
+TX("Calculate 2 5/6 − 1 3/4. Give a mixed number.",["1 1/12"],"Borrow or use twelfths: 34/12 − 21/12 = 13/12 = 1 1/12."),
+TX("Calculate 4 1/5 − 2 3/5. Give a mixed number.",["1 3/5"],"Borrow one whole: 3 6/5 − 2 3/5 = 1 3/5."),
 TX("Calculate 3/4 + 1/4.",["1","4/4"],"The sum is one whole."),
 TX("Calculate 2/8 − 2/8.",["0","0/1"],"Equal fractions subtract to zero."),
 TX("Calculate 4/4 + 1/4.",["1 1/4","5/4"],"Five quarters = 1 1/4."),
@@ -2432,7 +2432,22 @@ function qf69MathMatch(q,s){
  const enteredExpanded=expanded(v);
  if(enteredExpanded!==null)return accepted.some(a=>expanded(a)===enteredExpanded);
  const entered=qf69MathNumber(v);
- if(entered!==null)return accepted.some(a=>{const expected=qf69MathNumber(a);return expected!==null&&Math.abs(entered-expected)<1e-9;});
+ if(entered!==null){
+   const prompt=String(q.q||'');
+   // Formatting requirements are part of the answer, not optional.
+   if(/(?:simplif(?:y|ied)|lowest terms|simplest form)/i.test(prompt)){
+     const m=v.match(/^([+-]?\d+)\s*\/\s*(\d+)$/);
+     if(!m)return false;
+     const gcd=(a,b)=>b?gcd(b,a%b):a;
+     if(gcd(Math.abs(+m[1]),+m[2])!==1)return false;
+   }
+   if(/(?:give|write|express|convert|answer).*mixed number/i.test(prompt)){
+     // Require a whole-number part plus a proper fraction for non-integer results.
+     const m=v.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+     if(!m||!(+m[2]>0&&+m[2]<+m[3]))return false;
+   }
+   return accepted.some(a=>{const expected=qf69MathNumber(a);return expected!==null&&Math.abs(entered-expected)<1e-9;});
+ }
  return null;
 }
 function keywordMatch(q,s){
