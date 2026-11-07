@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://quizforce-learnfaster.pages.dev/sitemap.xml
