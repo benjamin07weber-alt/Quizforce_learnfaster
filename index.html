@@ -19,7 +19,7 @@
 <meta name="twitter:description" content="Fun quizzes, XP, themes and leaderboards for school subjects.">
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"QUIZFORCE","url":"https://quizforce-learnfaster.pages.dev/","description":"An online educational quiz game with Mathematics, English, Afrikaans, Natural Sciences and Social Sciences practice.","applicationCategory":"EducationalApplication","operatingSystem":"Any","isAccessibleForFree":true}</script>
-<meta content="2026-11-07-v6.3-seo-contrast" name="quizforce-build"/>
+<meta content="2026-11-07-v6.5-playercards-sounds" name="quizforce-build"/>
 <style>
   :root{
     --bg:#f6f7fb;--card:#ffffff;--text:#134e4a;--muted:#6b7280;--accent:#1682d4;
@@ -310,7 +310,7 @@ body:has(#home:not(.hidden)) #qfGlobalHome{display:none!important}
 @media(prefers-reduced-motion:reduce){#qf6Views .qf6-view{animation:none}}
 /* Keep all seven tabs visible on portrait iPads; allow swipe on narrow phones. */
 @media(min-width:620px) and (max-width:860px){
- #qf6Nav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;overflow:visible}
+ #qf6Nav{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:3px;overflow:visible}
  #qf6Nav button{min-width:0;max-width:none;width:100%;flex-direction:column;gap:4px;padding:9px 3px;font-size:10px;line-height:1.2;white-space:normal;text-align:center}
  #qf6Nav button .qf6-emoji{font-size:20px}
 }
@@ -4090,7 +4090,7 @@ const nav=document.createElement('nav');nav.id='qf6Nav';nav.setAttribute('role',
 const navLabel=document.createElement('div');navLabel.className='qf6-nav-label';navLabel.textContent='YOUR QUIZFORCE';nav.append(navLabel);
 const views=document.createElement('div');views.id='qf6Views';
 const sections=[
- ['home','Home'],['play','Play'],['profiles','Profiles'],
+ ['home','Home'],['playercards','Player Cards'],['play','Play'],['profiles','Profiles'],
  ['shop','Shop'],['music','Music'],['leaderboard','Leaderboard'],
  ['messages','Messages'],['learn','Learn']
 ];
@@ -4134,6 +4134,7 @@ const notes=Array.from(home.querySelectorAll(':scope > .note'));
 notes.forEach(el=>{if(/v5\.3|HQ-style tabs|Protected nicknames|Cloudflare|Five subjects|English 360|Edition 12/i.test(el.textContent))el.remove();else homeView.append(el)});
 move('home','qf11Dashboard');
 move('home','qf5News');
+addTitle('playercards','Player Cards','Browse live public player cards from QUIZFORCE.');
 addTitle('play','🎮 Choose your mission','Create a quiz or try the 90-second Speedrun Challenge.');
 move('play','create');move('play','qf11SpeedHome');
 addPanel('play','<strong>⚡ Study smart!</strong><p>Pick a subject, difficulty and question count. Pressing IDK teaches you, but that question stays worth 0 marks and 0 XP.</p>');
@@ -4186,6 +4187,7 @@ function activate(id){
   $('qfBoardRefresh')?.click();
  }
  if(id==='profiles')updatePlayer();
+ if(id==='playercards')window.qf65RenderCards?.();
  if(id!=='shop')document.body.style.overflow='';
  window.scrollTo({top:0,behavior:'instant'});
 }
@@ -4450,5 +4452,80 @@ function sync(){const root=document.getElementById('qf60Themes');if(!root)return
 function mount(){const shop=document.getElementById('qf54ShopHub');if(!shop||document.getElementById('qf60Themes'))return;const section=document.createElement('section');section.id='qf60Themes';section.innerHTML='<h3>THEME COLLECTION</h3><p>Transform the entire QUIZFORCE look. Normal is free and equipped first. Earn lifetime XP to unlock more looks — no XP is spent.</p><div class="qft-grid"></div><div id="qft-status" role="status"></div>';const hero=shop.querySelector('.qf54-shop-hero');if(hero)hero.insertAdjacentElement('afterend',section);else shop.prepend(section);sync();}
 function init(){mount();apply(store(key('active'))||'normal');document.addEventListener('qf:cosmetics-updated',sync);document.getElementById('qf6-tab-shop')?.addEventListener('click',()=>setTimeout(sync,300));document.getElementById('qf6-tab-profiles')?.addEventListener('click',()=>setTimeout(sync,300));document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-})();</script></body>
+})();</script><style id="qf65-styles">
+#qf65Cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+.qf65-card{background:linear-gradient(150deg,#123e50,#152d4a);border:1px solid #4d8794;border-radius:16px;padding:16px;color:#ecfffb;text-align:left;min-height:165px;cursor:pointer}
+.qf65-card:hover,.qf65-card:focus-visible{border-color:#f7d478;outline:2px solid #f7d478}
+.qf65-avatar{font-size:42px;display:block;margin-bottom:9px}.qf65-name{font-size:20px;font-weight:900;overflow-wrap:anywhere}
+#qf65Detail{margin-top:18px}.qf65-detail{overflow:hidden;border:1px solid #5c9ba1;border-radius:19px;background:#102d43;color:#effffb}
+.qf65-banner{height:105px;background:linear-gradient(110deg,#ba7826,#ffe59b,#ac7629)}
+.qf65-body{padding:18px}.qf65-bigavatar{font-size:58px;margin-top:-65px;position:relative;width:95px;height:95px;display:grid;place-items:center;background:#09283d;border:5px solid #b49bff;border-radius:25px}
+.qf65-muted{color:#b7d7dd;font-size:13px;line-height:1.6}.qf65-controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+#qf65Search{flex:1;min-width:150px;padding:11px;border:1px solid #5c9ba1;border-radius:10px;background:#123745;color:#fff}
+@media(max-width:619px){#qf65Cards{grid-template-columns:1fr}}
+</style>
+<script id="qf65-playercards-and-sounds">
+(function(){'use strict';
+const $=id=>document.getElementById(id);
+const panel=$('qf6-playercards');if(!panel)return;
+const controls=document.createElement('div');controls.className='qf65-controls';
+const search=document.createElement('input');search.id='qf65Search';search.type='search';search.placeholder='Search players';search.setAttribute('aria-label','Search player cards');
+const refresh=document.createElement('button');refresh.className='secondary';refresh.textContent='Refresh';
+controls.append(search,refresh);panel.append(controls);
+const info=document.createElement('p');info.className='qf65-muted';info.textContent='Full customised cards are available for profiles saved on this device. Other players may appear from the public leaderboard with only their public score; private profile cosmetics are not available from the current API.';panel.append(info);
+const grid=document.createElement('div');grid.id='qf65Cards';panel.append(grid);
+const detail=document.createElement('div');detail.id='qf65Detail';panel.append(detail);
+let entries=[];
+const clean=s=>String(s||'').trim();
+function appearanceFor(id){try{return JSON.parse(localStorage.getItem('qf54-appearance:'+id)||'null')||{}}catch{return {}}}
+function cardView(e){detail.replaceChildren();const a=e.appearance||{};
+ const card=document.createElement('div');card.className='qf65-detail';card.dataset.banner=a.banner||'none';card.dataset.frame=a.frame||'none';card.dataset.style=a.nameStyle||'none';card.dataset.effect=a.profileEffect||'none';
+ const banner=document.createElement('div');banner.className='qf65-banner';
+ const colors={banner_ocean:'linear-gradient(120deg,#0f7d8d,#1164ae,#4dc8d6)',banner_sunset:'linear-gradient(120deg,#e85c7e,#f7a15a,#9c6edc)',banner_nebula:'linear-gradient(120deg,#202052,#7d43aa,#1c4a88)',banner_aurora:'linear-gradient(120deg,#042e4b,#10a889,#334ca0)',banner_gold:'linear-gradient(120deg,#975016,#ffe79b,#a86b20)',banner_stars:'linear-gradient(120deg,#081b3e,#234e88,#0c1737)',secret_eternal_banner:'linear-gradient(120deg,#140e36,#5e308b,#102b58)'};
+ if(colors[a.banner])banner.style.background=colors[a.banner];
+ const body=document.createElement('div');body.className='qf65-body';const avatar=document.createElement('div');avatar.className='qf65-bigavatar';avatar.dataset.frame=a.frame||'none';avatar.textContent=a.avatar||'🚀';
+ const title=document.createElement('h2');title.textContent=e.name+({'flair_crown':' 👑','flair_dragon':' 🐉','flair_lightning':' ⚡','flair_sparkles':' ✨','flair_comet':' ☄️'}[a.flair]||'');
+ const rank=document.createElement('strong');rank.textContent=a.titleName||a.rank||'QUIZFORCE Player';
+ const motto=document.createElement('p');motto.textContent=a.motto||'';motto.style.fontStyle='italic';
+ const stats=document.createElement('p');stats.className='qf65-muted';stats.textContent=`⚡ ${(a.xp||0).toLocaleString()} lifetime XP · 🎮 ${a.games||0} games · 💯 ${a.perfect||0} perfect · 🥇 Best ${a.bestPct||0}%`;
+ const subject=document.createElement('p');subject.className='qf65-muted';subject.textContent=a.favouriteSubject&&a.favouriteSubject!=='none'?'📚 Favourite subject: '+a.favouriteSubject:'';
+ const badge=document.createElement('p');badge.textContent=a.badgeName||'';
+ body.append(avatar,title,rank,motto,stats,subject,badge);card.append(banner,body);detail.append(card);detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function paint(){grid.replaceChildren();const q=search.value.trim().toLowerCase();const shown=entries.filter(e=>e.name.toLowerCase().includes(q));
+ for(const e of shown){const b=document.createElement('button');b.type='button';b.className='qf65-card';
+ const avatar=document.createElement('span');avatar.className='qf65-avatar';avatar.textContent=e.appearance?.avatar||'🚀';
+ const name=document.createElement('div');name.className='qf65-name';name.textContent=e.name;
+ const sub=document.createElement('div');sub.className='qf65-muted';sub.textContent='Level '+(e.appearance?.level||1)+' · '+(e.appearance?.rank||'Player')+' · '+(e.appearance?.xp||0).toLocaleString()+' XP';
+ b.append(avatar,name,sub);b.addEventListener('click',()=>cardView(e));grid.append(b)}
+ if(!shown.length){const msg=document.createElement('p');msg.className='qf65-muted';msg.textContent='No matching public cards yet. Players appear after opening their Profiles tab.';grid.append(msg)}
+}
+async function render(){info.textContent='Live public cards from QUIZFORCE. Tap a player to see their latest avatar, banner, frame, title, motto and stats. Press Refresh to check for updates.';
+ try{const response=await fetch('/api/player-cards',{cache:'no-store'});const json=await response.json();if(!response.ok||!json.ok)throw Error(json.error||'Cannot load cards');
+ entries=(json.cards||[]).map(p=>({name:p.nickname,id:p.playerId,public:true,appearance:p}));
+ }catch(err){entries=[];info.textContent='Live player cards unavailable: '+(err.message||'Please try again');}
+ paint();}
+window.qf65RenderCards=render;refresh.onclick=render;search.oninput=paint;
+document.addEventListener('qf:cosmetics-updated',()=>{if(!$('qf6-playercards')?.hidden)void render()});
+// Distinctive sound packs: each has its own rhythm, timbre, pitch movement and musical character.
+// Classic keeps the original sound. No external files required.
+const old=window.qf54PlaySound;if(typeof old!=='function')return;
+let ctx;
+function beep(f,at,d,wave='sine',gain=.035,to){const o=ctx.createOscillator(),g=ctx.createGain();o.type=wave;o.frequency.setValueAtTime(f,at);if(to)o.frequency.exponentialRampToValueAtTime(to,at+d);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(gain,at+.012);g.gain.exponentialRampToValueAtTime(.0001,at+d);o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+d+.02)}
+window.qf54PlaySound=function(kind,force=false){if(!force&&window.qf54SoundEnabled?.()===false)return;
+ const pack=window.qf54GetCachedAppearance?.()?.soundPack||'classic';if(pack==='classic')return old(kind,force);
+ try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return old(kind,force);ctx=ctx||new AC();if(ctx.state==='suspended')void ctx.resume();const t=ctx.currentTime+.025;
+ const seq=(notes,wave='sine',vol=.035)=>notes.forEach(([f,delay,d,to])=>beep(f,t+delay,d,wave,vol,to));
+ if(pack==='sound_retro'){seq(kind==='wrong'?[[220,0,.12],[165,.15,.25]]:kind==='cheer'?[[262,0,.12],[330,.14,.12],[392,.28,.12],[523,.42,.2],[784,.65,.3]]:[[330,0,.07],[660,.1,.07],[990,.2,.12]],'square',.024);return}
+ if(pack==='sound_arcade'){seq(kind==='wrong'?[[900,0,.14,200]]:kind==='cheer'?[[440,0,.1,880],[660,.13,.1,1320],[880,.27,.15,1760],[1320,.46,.45,660]]:[[740,0,.07,1100],[980,.09,.16,1400]],'triangle',.04);return}
+ if(pack==='sound_space'||pack==='secret_cosmic_sound'){seq(kind==='wrong'?[[240,0,.65,90]]:kind==='cheer'?[[130,0,1.4,460],[260,.2,1.2,790],[520,.45,1,1040]]:[[280,0,.48,600],[420,.12,.65,840]],'sine',.04);return}
+ if(pack==='sound_stadium'){seq(kind==='wrong'?[[160,0,.4,90]]:kind==='cheer'?[[196,0,.22],[247,.2,.22],[294,.4,.22],[392,.6,.4],[587,.95,.55]]:[[392,0,.16],[494,.18,.16],[587,.36,.3]],'sawtooth',.018);return}
+ if(pack==='secret_legendary_sound'){seq(kind==='wrong'?[[220,0,.35,110]]:kind==='cheer'?[[392,0,.3],[587,.2,.3],[784,.4,.4],[1175,.7,.7]]:[[523,0,.2],[784,.18,.22],[1046,.36,.36]],'triangle',.045);return}
+ if(pack==='secret_hyperdrive_sound'){seq(kind==='wrong'?[[600,0,.35,80]]:kind==='cheer'?[[160,0,.5,950],[220,.13,.5,1200],[330,.28,.5,1600],[440,.43,.65,2000]]:[[200,0,.24,800],[350,.12,.3,1300]],'sawtooth',.022);return}
+ return old(kind,force);
+ }catch(_){return old(kind,force)}
+};
+})();
+</script>
+</body>
 </html>
