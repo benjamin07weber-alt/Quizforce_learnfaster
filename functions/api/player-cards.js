@@ -32,10 +32,12 @@ export async function onRequestGet({env}){
    WHERE COALESCE(ov.hidden,0)=0
    ORDER BY COALESCE(ov.xp_override,pl.xp,0) DESC,cp.updated_at DESC LIMIT 200`;
   const rows=(await db.prepare(query).all()).results||[];
+  let names={};try{const a=(await db.prepare('SELECT player_id,color_id,font_id FROM qf70_name_equipped').all()).results||[];names=Object.fromEntries(a.map(v=>[v.player_id,v]));}catch{}
   return reply({ok:true,cards:rows.map(r=>{
    const xp=clamp(r.xp),level=getLevel(xp);
    return {playerId:r.playerId,nickname:String(r.nickname||'Player').slice(0,18),avatar:r.avatar||'🚀',color:r.color||'cyan',frame:r.frame||'none',title:r.title||'none',titleName:titleNames[r.title]||level.rank,
     banner:r.banner||'none',flair:r.flair||'none',nameStyle:r.nameStyle||'none',motto:String(r.motto||'').slice(0,48),profileEffect:r.profileEffect||'none',favouriteSubject:r.favouriteSubject||'none',
+    colorId:names[r.playerId]?.color_id||'default',fontId:names[r.playerId]?.font_id||'default',
     xp,games:clamp(r.games),perfect:clamp(r.perfect),bestPct:clamp(r.bestPct),level:level.number,rank:level.rank,badgeName:badgeNames[r.favoriteBadge]||''};
   })});
  }catch(err){console.error('Player cards endpoint error',err);return reply({ok:false,error:'Player cards are not ready. Open Profiles in QUIZFORCE and try again.'},503)}
