@@ -4650,7 +4650,7 @@ function cardView(e){detail.replaceChildren();const a=e.appearance||{};
  banner.style.background=Object.prototype.hasOwnProperty.call(colors,a.banner)?colors[a.banner]:'linear-gradient(110deg,#12445b,#19687a,#17445e)';
  const body=document.createElement('div');body.className='qf65-body';const avatar=document.createElement('div');avatar.className='qf65-bigavatar';avatar.dataset.frame=a.frame||'none';avatar.textContent=a.avatar||'🚀';
  const title=document.createElement('h2');title.textContent=e.name+({'flair_crown':' 👑','flair_dragon':' 🐉','flair_lightning':' ⚡','flair_sparkles':' ✨','flair_comet':' ☄️'}[a.flair]||'');
- const rank=document.createElement('strong');rank.textContent=a.titleName||a.rank||'QUIZFORCE Player';
+ window.qf70ApplyName?.(title,a);const rank=document.createElement('strong');rank.textContent=a.titleName||a.rank||'QUIZFORCE Player';
  const motto=document.createElement('p');motto.textContent=a.motto||'';motto.style.fontStyle='italic';
  const stats=document.createElement('p');stats.className='qf65-muted';stats.textContent=`⚡ ${(a.xp||0).toLocaleString()} lifetime XP · 🎮 ${a.games||0} games · 💯 ${a.perfect||0} perfect · 🥇 Best ${a.bestPct||0}%`;
  const subject=document.createElement('p');subject.className='qf65-muted';subject.textContent=a.favouriteSubject&&a.favouriteSubject!=='none'?'📚 Favourite subject: '+a.favouriteSubject:'';
@@ -4660,7 +4660,7 @@ function cardView(e){detail.replaceChildren();const a=e.appearance||{};
 function paint(){grid.replaceChildren();const q=search.value.trim().toLowerCase();const shown=entries.filter(e=>e.name.toLowerCase().includes(q));
  for(const e of shown){const b=document.createElement('button');b.type='button';b.className='qf65-card';
  const avatar=document.createElement('span');avatar.className='qf65-avatar';avatar.textContent=e.appearance?.avatar||'🚀';
- const name=document.createElement('div');name.className='qf65-name';name.textContent=e.name;
+ const name=document.createElement('div');name.className='qf65-name';name.textContent=e.name;window.qf70ApplyName?.(name,e.appearance);
  const sub=document.createElement('div');sub.className='qf65-muted';sub.textContent='Level '+(e.appearance?.level||1)+' · '+(e.appearance?.rank||'Player')+' · '+(e.appearance?.xp||0).toLocaleString()+' XP';
  b.append(avatar,name,sub);b.addEventListener('click',()=>cardView(e));grid.append(b)}
  if(!shown.length){const msg=document.createElement('p');msg.className='qf65-muted';msg.textContent='No matching public cards yet. Players appear after opening their Profiles tab.';grid.append(msg)}
@@ -4690,6 +4690,41 @@ window.qf54PlaySound=function(kind,force=false){if(!force&&window.qf54SoundEnabl
  return old(kind,force);
  }catch(_){return old(kind,force)}
 };
+})();
+</script>
+
+<style id="qf70-name-style">
+#qf70Panel{margin:15px 0;padding:17px;background:#112b47;border:1px solid #4c90a3;border-radius:18px;color:#eaffff}
+#qf70Panel h3{margin:0 0 6px;color:#aaf8eb}#qf70Panel button{border:1px solid #75c9c8;background:#163f56;color:white;border-radius:11px;padding:10px 12px;margin:4px;cursor:pointer;font-weight:750}
+#qf70Panel button:disabled{opacity:.55;cursor:default}#qf70Panel button.equipped{border-color:#ffce5c;color:#ffce5c}
+#qf70Panel .qf70-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:8px}
+#qf70Panel .qf70-grid button{text-align:left;min-height:66px}#qf70Status{color:#b5d6de;font-size:13px;margin:8px 0}
+.qf70-rainbow{background:linear-gradient(90deg,#ff6e8d,#ffe47c,#63e6c0,#72b7ff,#b39aff);background-clip:text;-webkit-background-clip:text;color:transparent!important}
+</style>
+<script id="qf70-name-customizer">
+(()=>{'use strict';
+const fonts={font_classic:'system-ui,sans-serif',font_gaming:'monospace',font_royal:'Georgia,serif',font_handwritten:'cursive',font_cosmic:'Impact,Arial Black,sans-serif'};
+const colors={color_cyan:'#35e5d0',color_pink:'#ff77b7',color_orange:'#ff9c50',color_green:'#6ff7a2',color_purple:'#bd9cff',color_neon:'#d1ff42',color_neonblue:'#51a8ff',color_gold:'#ffce5c',color_rainbow:'rainbow'};
+function apply(el,a){if(!el)return;el.classList.remove('qf70-rainbow');el.style.removeProperty('color');el.style.removeProperty('font-family');if(!a)return;if(fonts[a.fontId])el.style.fontFamily=fonts[a.fontId];if(a.colorId==='color_rainbow')el.classList.add('qf70-rainbow');else if(colors[a.colorId])el.style.color=colors[a.colorId]}
+window.qf70ApplyName=apply;
+const panel=document.createElement('section');panel.id='qf70Panel';panel.innerHTML='<h3>🎨 Name Customiser Shop</h3><p>Buy colours and fonts with spendable XP. Purchases are permanent; default is always free.</p><div id="qf70Status">Open your profile to load name upgrades.</div><div id="qf70Options"></div>';
+const studio=document.getElementById('qf54Studio');if(studio)studio.append(panel);
+let state=null,who=null,working=false;
+const status=t=>{const s=document.getElementById('qf70Status');if(s)s.textContent=t};
+async function call(x){const r=await fetch('/api/name-customizer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...who,...x}),cache:'no-store'});const j=await r.json();if(!r.ok||!j.ok)throw Error(j.error||'Cannot save');return j.data}
+function getWho(){const playerId=window.qfHQGetPlayerId?.(),nickname=window.qfHQGetActiveName?.();let inboxKey=window.qfHQGetInboxKey?.(playerId);if(!inboxKey&&playerId)try{inboxKey=localStorage.getItem('qf-feedback-inbox-key-v4:'+playerId)}catch{}return playerId&&nickname&&inboxKey?{playerId,nickname,inboxKey}:null}
+function repaint(){if(!state)return;const opts=document.getElementById('qf70Options');opts.replaceChildren();status('Spendable XP: '+state.balance.toLocaleString()+' • Owned: '+state.owned.length);
+ for(const type of ['color','font']){const h=document.createElement('h4');h.textContent=type==='color'?'Name colours':'Name fonts';opts.append(h);const grid=document.createElement('div');grid.className='qf70-grid';
+ for(const [id,item] of [['default',{label:'Default',type,cost:0}],...Object.entries(state.items).filter(([,v])=>v.type===type)]){
+ const owned=id==='default'||state.owned.includes(id),equipped=state[type+'Id']===id;const b=document.createElement('button');b.type='button';b.textContent=item.label+' — '+(equipped?'✓ Equipped':owned?'Equip':item.cost+' XP');b.classList.toggle('equipped',equipped);b.disabled=equipped||working||(!owned&&state.balance<item.cost);
+ if(type==='color'&&colors[id]&&colors[id]!=='rainbow')b.style.borderColor=colors[id];if(type==='font'&&fonts[id])b.style.fontFamily=fonts[id];
+ b.onclick=async()=>{if(working)return;if(!owned&&!confirm('Buy '+item.label+' for '+item.cost+' spendable XP?'))return;working=true;status('Saving…');try{state=await call(owned?{action:'equip',type,itemId:id}:{action:'buy',itemId:id});if(!owned)state=await call({action:'equip',type,itemId:id});apply(document.getElementById('qf54Name'),state);document.dispatchEvent(new CustomEvent('qf70:name-updated'));}catch(e){status(e.message)}finally{working=false;repaint()}};grid.append(b)}opts.append(grid)}
+ apply(document.getElementById('qf54Name'),state)}
+async function load(){const next=getWho();if(!next)return;who=next;try{state=await call({action:'load'});repaint()}catch(e){status('Name customiser: '+e.message)}}
+const observer=new MutationObserver(()=>{const id=window.qfHQGetPlayerId?.();if(id&&id!==who?.playerId)load()});if(studio)observer.observe(studio,{attributes:true,attributeFilter:['hidden']});
+const original=window.qf54LoadCurrent;if(typeof original==='function')window.qf54LoadCurrent=async(...args)=>{await original(...args);await load()};
+document.addEventListener('qf:cosmetics-updated',()=>{if(!state||who?.playerId!==window.qfHQGetPlayerId?.())void load();else apply(document.getElementById('qf54Name'),state)});
+window.qf70Refresh=load;setTimeout(load,1000);
 })();
 </script>
 </body>
