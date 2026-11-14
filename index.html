@@ -4952,8 +4952,30 @@ function turn(d){const n=Math.max(0,Math.min(pages.length-1,i+d));if(n===i)retur
 function render(d=0){clearUrls();spread.replaceChildren();try{localStorage.setItem(posKey,String(i))}catch{}label.textContent=(i+1)+'–'+Math.min(i+2,pages.length)+' / '+pages.length;jump.value=nums[i]??i+1;prev.disabled=i===0;next.disabled=i+2>=pages.length;for(let j=i;j<Math.min(i+2,pages.length);j++){const page=node('div','',spread);page.className='qf-book-page';const img=node('img','',page);const url=URL.createObjectURL(pages[j]);urls.push(url);img.src=url;img.alt='Page '+(j+1);node('p',nums[j]!=null?'Printed page '+nums[j]:'Unnumbered • image '+(j+1),page);button('Set page number',page,async()=>{const v=prompt('Printed page number',nums[j]??'');if(v===null)return;const n=Number(v);if(!Number.isInteger(n)||n<1||n>9999){alert('Enter a valid page number.');return;}nums[j]=n;await storage(imageKey(b),pages);await storage(numKey(b),nums);viewer(b,pages,nums)});button('Scan this page',page,()=>{current=b.id;currentOwner=key();activeBook=b;activePages=pages;showPage(pages[j]);clearUrls()});button('Remove page',page,async()=>{if(!confirm('Remove page '+(j+1)+'?'))return;try{const updated=pages.filter((_,k)=>k!==j);await storage(imageKey(b),updated);nums=nums.filter((_,k)=>k!==j);await storage(numKey(b),nums);pages=updated;if(!pages.length){paint();return}i=Math.min(i,pages.length-1);render()}catch(e){alert(e.message)}})}if(d&&spread.animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches)spread.animate([{opacity:.65,transform:'perspective(1200px) rotateY('+(d>0?'-12':'12')+'deg)'},{opacity:1,transform:'none'}],{duration:320,easing:'ease-out'})}render()}
 button('Save textbook photo',$('labPrefs'),save);$('qf6-tab-mybooks').addEventListener('click',paint);document.addEventListener('qf:active-profile-changed',()=>{current=null;currentOwner=null;activePages=[];activeBook=null;paint()});paint();
 const subjects=[['English','english'],['Afrikaans','afrikaans'],['Mathematics','maths'],['Natural Sciences','science'],['Social Sciences','social']];
-function study(subject){window.qf6OpenTab('play');$('create').click();const label=subjects.find(x=>x[1]===subject)?.[0];const b=[...$('subjects').querySelectorAll('button')].find(x=>x.firstChild?.textContent.trim().toLowerCase()===label?.toLowerCase()||x.textContent.toLowerCase().startsWith(label?.toLowerCase()||'\u0000'));if(b)b.click()}
-const query=new URLSearchParams(location.search),target=query.get('study');if(subjects.some(x=>x[1]===target))study(target);
+function study(subject){
+ if(!subjects.some(x=>x[1]===subject))return;
+ window.qf6OpenTab('play');
+ $('create').click();
+ selected=subject;renderSubjects();updateChooser();
+ $('difficulty').value='medium';
+ $('qf11SpeedToggle').checked=false;
+ $('exactWords').checked=false;
+ const slider=$('qf11Slider');slider.value='20';slider.dispatchEvent(new Event('input',{bubbles:true}));$('count').value='20';
+ if(subject==='science'){$('scienceTopic').value='scienceExam';$('scienceQuestionType').value='mixed';}
+ if(subject==='social')$('socialModule').value='socialExam';
+ const chooser={english:'englishChooser',afrikaans:'afrikaansChooser',maths:'mathsChooser'}[subject];
+ if(chooser)document.querySelectorAll('#'+chooser+' input[type=checkbox]').forEach(el=>{el.checked=true});
+ for(const id of ['mathsQuestionType','afrikaansQuestionType'])$(id).value='mixed';
+ updateChooser();
+ $('start').click();
+ if(!$('quiz').classList.contains('hidden')){
+  const url=new URL(location.href);url.searchParams.delete('study');history.replaceState(history.state,'',url.href);
+ }
+}
+const query=new URLSearchParams(location.search),target=query.get('study');
+const aliases={'math':'maths','mathematics':'maths','natural sciences':'science','natural-sciences':'science','ns':'science','social sciences':'social','social-sciences':'social','ss':'social'};
+if(target){const key=target.trim().toLowerCase();study(aliases[key]||key);}
+
 })();
 </script>
 <style>.qf-book-spread{display:flex;gap:5px;overflow:auto;align-items:flex-start;padding:10px 0;--bookzoom:100%}.qf-book-page{flex:0 0 calc(49% * 1);min-width:0;background:#f5f1e7;color:#17273a;padding:8px;border-radius:5px;box-shadow:0 4px 14px #0005;overflow:auto}.qf-book-page img{display:block;width:var(--bookzoom);max-width:none;height:auto}.qf-book-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:12px 0}.qf-book-page button{margin:4px;white-space:normal}@media(max-width:600px){.qf-book-page{flex-basis:95%}}</style></body>
